@@ -17,7 +17,10 @@ import Modal from './Modal'
  * (o botão ✂ por linha na lista principal continua existindo também, esse
  * aqui é só mais um lugar pra fazer a mesma ação). O modal fica aberto
  * depois de desfazer — `medleyGroups` vem de `items` (prop), que atualiza
- * sozinho quando o pai re-renderiza após o save. */
+ * sozinho quando o pai re-renderiza após o save. Quando há medleys
+ * existentes, as duas listas (medleys atuais / criar novo) ficam lado a
+ * lado (`flex-wrap: wrap` empilha em telas estreitas) — pedido explícito
+ * do usuário, pra comparar/gerenciar sem rolar a página inteira. */
 export default function MedleyModal({ items, isEligible, medleyGroups, onUngroup, onConfirm, onClose }) {
   const { t } = useTranslation('setlistDetail')
   const [order, setOrder] = useState([])
@@ -33,28 +36,11 @@ export default function MedleyModal({ items, isEligible, medleyGroups, onUngroup
     return null
   }
 
-  return (
-    <Modal title={t('createMedley')} onClose={onClose} maxWidth={560}>
-      {medleyGroups.length > 0 && (
-        <div style={{ marginBottom: 18 }}>
-          <h4 style={{ margin: '0 0 8px', fontSize: 13, color: 'var(--muted)' }}>{t('currentMedleysTitle')}</h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            {medleyGroups.map((group) => (
-              <div key={group.medleyId} className="row"
-                style={{ gap: 10, padding: '6px 10px', borderRadius: 8, background: 'var(--glass)', flexWrap: 'nowrap' }}>
-                <div style={{ minWidth: 0, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  🔗 {group.members.map((m) => m.song?.titulo || m.ref).join(', ')}
-                </div>
-                <button type="button" className="btn ghost" style={{ flexShrink: 0 }}
-                  onClick={() => onUngroup(group.medleyId)}>
-                  {t('ungroupMedley')}
-                </button>
-              </div>
-            ))}
-          </div>
-          <h4 style={{ margin: '16px 0 8px', fontSize: 13, color: 'var(--muted)' }}>{t('createMedleyNewSection')}</h4>
-        </div>
-      )}
+  const hasGroups = medleyGroups.length > 0
+
+  const createColumn = (
+    <div style={{ minWidth: 0, flex: '1 1 320px' }}>
+      {hasGroups && <h4 style={{ margin: '0 0 8px', fontSize: 13, color: 'var(--muted)' }}>{t('createMedleyNewSection')}</h4>}
       <p className="page-sub" style={{ marginTop: 0 }}>{t('medleyModalHint')}</p>
       <div style={{ maxHeight: '50vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
         {items.map((item, idx) => {
@@ -87,6 +73,33 @@ export default function MedleyModal({ items, isEligible, medleyGroups, onUngroup
           )
         })}
       </div>
+    </div>
+  )
+
+  return (
+    <Modal title={t('createMedley')} onClose={onClose} maxWidth={hasGroups ? 860 : 560}>
+      {hasGroups ? (
+        <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
+          <div style={{ minWidth: 0, flex: '1 1 280px' }}>
+            <h4 style={{ margin: '0 0 8px', fontSize: 13, color: 'var(--muted)' }}>{t('currentMedleysTitle')}</h4>
+            <div style={{ maxHeight: '50vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {medleyGroups.map((group) => (
+                <div key={group.medleyId} className="row"
+                  style={{ gap: 10, padding: '6px 10px', borderRadius: 8, background: 'var(--glass)', flexWrap: 'wrap' }}>
+                  <div style={{ minWidth: 0, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    🔗 {group.members.map((m) => m.song?.titulo || m.ref).join(', ')}
+                  </div>
+                  <button type="button" className="btn ghost" style={{ flexShrink: 0 }}
+                    onClick={() => onUngroup(group.medleyId)}>
+                    {t('ungroupMedley')}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+          {createColumn}
+        </div>
+      ) : createColumn}
       <div className="row" style={{ marginTop: 16, justifyContent: 'flex-end' }}>
         <button className="btn ghost" onClick={onClose}>{t('cancel')}</button>
         <button className="btn primary" disabled={order.length < 2} onClick={() => onConfirm(order)}>
