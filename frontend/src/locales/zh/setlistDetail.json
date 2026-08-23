@@ -13,6 +13,8 @@
   "cancel": "取消",
   "confirmMedley": "确认",
   "ungroupMedley": "取消串烧分组",
+  "currentMedleysTitle": "当前串烧",
+  "createMedleyNewSection": "创建新串烧",
   "activateFeedback": "启用反馈",
   "deactivateFeedback": "停用反馈",
   "feedbackActive": "反馈已启用",

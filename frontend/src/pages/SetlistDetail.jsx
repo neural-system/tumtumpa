@@ -154,7 +154,13 @@ export default function SetlistDetail() {
     setItems(next); save.mutate(next)
   }
   const removeAt = (i) => {
-    const next = items.filter((_, idx) => idx !== i)
+    let next = items.filter((_, idx) => idx !== i)
+    // se a remoção deixou algum medley com uma música só, desfaz o grupo —
+    // um "medley" de uma música não faz sentido (mesmo efeito de
+    // ungroupMedley, só que automático, pra não deixar grupo órfão pra trás)
+    const counts = {}
+    next.forEach((it) => { if (it.medley_id) counts[it.medley_id] = (counts[it.medley_id] || 0) + 1 })
+    next = next.map((it) => (it.medley_id && counts[it.medley_id] === 1 ? { ...it, medley_id: null } : it))
     setItems(next); save.mutate(next)
   }
 
@@ -201,6 +207,20 @@ export default function SetlistDetail() {
   // outro medley — grupos ficam sempre disjuntos, sem sobreposição.
   const isEligibleForMedley = (it) => Boolean(it.song) && (it.song.modo_execucao || 'rolagem') === 'rolagem' && !it.medley_id
   const eligibleForMedleyCount = items.filter(isEligibleForMedley).length
+
+  // grupos já existentes (contíguos, mesma premissa de isFirstOfGroup mais
+  // abaixo) — mostrados no MedleyModal com um "Desfazer" cada, além do
+  // clique-pra-criar já existente.
+  const medleyGroups = (() => {
+    const groups = []
+    items.forEach((it) => {
+      if (!it.medley_id) return
+      const last = groups[groups.length - 1]
+      if (last && last.medleyId === it.medley_id) last.members.push(it)
+      else groups.push({ medleyId: it.medley_id, members: [it] })
+    })
+    return groups
+  })()
 
   const playFrom = (playableIndex) => {
     playlist.start(id, nome, playableItems, playableIndex)
@@ -255,7 +275,8 @@ export default function SetlistDetail() {
           </button>
         )}
         {isOwner && (
-          <button className="btn" disabled={eligibleForMedleyCount < 2} onClick={() => setMedleyModalOpen(true)}>
+          <button className="btn" disabled={eligibleForMedleyCount < 2 && medleyGroups.length === 0}
+            onClick={() => setMedleyModalOpen(true)}>
             {t('createMedley')}
           </button>
         )}
@@ -280,6 +301,7 @@ export default function SetlistDetail() {
 
       {medleyModalOpen && (
         <MedleyModal items={items} isEligible={isEligibleForMedley}
+          medleyGroups={medleyGroups} onUngroup={ungroupMedley}
           onConfirm={createMedley} onClose={() => setMedleyModalOpen(false)} />
       )}
       {orderModalOpen && (

@@ -13,6 +13,8 @@
   "cancel": "Отмена",
   "confirmMedley": "Подтвердить",
   "ungroupMedley": "Разгруппировать попурри",
+  "currentMedleysTitle": "Текущие попурри",
+  "createMedleyNewSection": "Создать новое попурри",
   "activateFeedback": "Включить фидбэк",
   "deactivateFeedback": "Выключить фидбэк",
   "feedbackActive": "Фидбэк активен",
