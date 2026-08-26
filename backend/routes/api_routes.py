@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from flask import Blueprint, Response, g, jsonify, request
 
+from config import Config
 from middlewares.rate_limit import client_ip
 from services.ai_service import AIError
 from services.auth_service import AuthError
@@ -463,6 +464,29 @@ def build_blueprint(ctx) -> Blueprint:
     def admin_youtube_link_batch():
         d = request.get_json(silent=True) or {}
         limit = min(max(int(d.get("limit", 20)), 1), 50)
+        try:
+            return jsonify(ctx.songs.youtube_link_batch(limit=limit))
+        except YoutubeError as e:
+            code = youtube_error_code(str(e))
+            return jsonify({"error": str(e), "error_code": code}), 429 if code == "YOUTUBE_QUOTA_EXCEEDED" else 502
+
+    @api.get("/cron/youtube-link-batch")
+    def cron_youtube_link_batch():
+        """Disparada pelo Vercel Cron (ver "crons" em vercel.json), uma vez
+        por dia — não pelo admin logado, então não dá pra usar @require_admin
+        aqui. Autenticação é o header que a própria Vercel injeta sozinha
+        quando existe uma env var chamada exatamente CRON_SECRET no projeto
+        (ver https://vercel.com/docs/cron-jobs/manage-cron-jobs#securing-cron-jobs)
+        — sem essa env var configurada, a rota recusa qualquer chamada.
+
+        Lote pequeno de propósito (YOUTUBE_CRON_BATCH_LIMIT, padrão 10): cada
+        música processada aqui faz 2 chamadas sequenciais de rede pra API do
+        YouTube (busca + duração, ver YoutubeService/SongsService.youtube_link_batch)
+        — um lote grande demais estoura o tempo máximo de execução da função
+        serverless antes até de chegar perto do teto de cota da API."""
+        if not Config.CRON_SECRET or request.headers.get("Authorization") != f"Bearer {Config.CRON_SECRET}":
+            return jsonify({"error": "unauthorized"}), 401
+        limit = min(max(Config.YOUTUBE_CRON_BATCH_LIMIT, 1), 50)
         try:
             return jsonify(ctx.songs.youtube_link_batch(limit=limit))
         except YoutubeError as e:
