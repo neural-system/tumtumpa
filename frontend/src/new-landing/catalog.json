@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Anunciação",
+    "artist": "Alceu Valença",
+    "genre": "Cifras",
+    "slug": "cifras--alceu-valenca--anunciacao"
+  },
+  {
+    "title": "Boate Azul",
+    "artist": "Bruno e Marrone",
+    "genre": "Cifras",
+    "slug": "cifras--bruno-e-marrone--boate-azul"
+  },
+  {
+    "title": "Toda Forma de Amor",
+    "artist": "Lulu Santos",
+    "genre": "Cifras",
+    "slug": "cifras--lulu-santos--toda-forma-de-amor"
+  },
+  {
+    "title": "Tempo Perdido",
+    "artist": "Amado Batista",
+    "genre": "Sertanejo",
+    "slug": "sertanejo--amado-batista--tempo-perdido"
+  },
+  {
+    "title": "Whisky a Go Go",
+    "artist": "Roupa Nova",
+    "genre": "Cifras",
+    "slug": "cifras--roupa-nova--whisky-a-go-go"
+  },
+  {
+    "title": "Evidências",
+    "artist": "Daniel",
+    "genre": "Sertanejo",
+    "slug": "sertanejo--daniel--evidencias"
+  },
+  {
+    "title": "Deixa Acontecer",
+    "artist": "Toquinho",
+    "genre": "MPB",
+    "slug": "mpb--toquinho--deixa-acontecer"
+  },
+  {
+    "title": "Bicho Maluco Beleza",
+    "artist": "Alceu Valença",
+    "genre": "MPB",
+    "slug": "mpb--alceu-valenca--bicho-maluco-beleza"
+  },
+  {
+    "title": "A Volta do Trem das Onze 8 5 Milhoes de Km",
+    "artist": "Tom Zé",
+    "genre": "MPB",
+    "slug": "mpb--tom-ze--a-volta-do-trem-das-onze-8-5-milhoes-de-km"
+  }
+]

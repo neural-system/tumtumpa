@@ -30,6 +30,10 @@ import Tuner from './pages/Tuner'
 import PedalSetup from './pages/PedalSetup'
 import AdminTools from './pages/AdminTools'
 import AdminSales from './pages/AdminSales'
+import LandingPage from './new-landing/LandingPage'
+import CommunityPage from './new-landing/CommunityPage'
+import ClassifiedsPage from './new-landing/ClassifiedsPage'
+import CifraDemoPage from './new-landing/cifra/CifraDemoPage'
 
 export default function App() {
   useColorSettings()
@@ -39,8 +43,12 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<About />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/landing-anterior" element={<About />} />
         <Route path="/sobre" element={<Sobre2 />} />
+        <Route path="/monte-sua-banda" element={<CommunityPage />} />
+        <Route path="/classificados" element={<ClassifiedsPage />} />
+        <Route path="/demonstracao/cifra/:slug" element={<CifraDemoPage />} />
         <Route path="/cifra/:slug" element={<PublicSongView />} />
         <Route path="/feedback/:token" element={<PublicFeedback />} />
         <Route path="/login" element={<Login />} />

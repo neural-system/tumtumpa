@@ -1,0 +1,36 @@
+.community-preview { margin: 0; min-width: 0; border: 1px solid #34353b; background: #111216; border-radius: 12px; overflow: hidden; text-align: left; }
+.community-preview-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 22px 26px; border-bottom: 1px solid #2c2d33; }
+.community-preview-bar > span:first-child { display: flex; align-items: center; gap: 12px; font-size: 1rem; font-weight: 700; color: #f2f0e9; }
+.community-preview-bar svg { color: var(--acid); flex: none; }
+.community-preview-label { font: 500 .75rem var(--font-geist-mono), monospace; letter-spacing: .12em; color: #afb0b7; }
+.community-preview-location { padding: 22px 26px 4px; display: flex; align-items: center; gap: 9px; color: #afb0b7; font-size: .875rem; }
+.community-preview-location svg, .community-preview-post p svg { width: 16px; height: 16px; flex: none; }
+.community-preview-posts { display: grid; gap: 12px; padding: 20px; }
+.community-preview-post { padding: 23px; background: #191a1f; border: 1px solid #34353b; border-radius: 7px; }
+.community-post-type { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; color: #b7b8c0; font-size: .8125rem; }
+.community-post-type > span:last-child { color: var(--acid); }
+.community-preview-post h3 { font-size: clamp(1.125rem, 1.6vw, 1.375rem); font-weight: 700; letter-spacing: -.025em; line-height: 1.25; margin: 16px 0 12px; color: #f2f0e9; }
+.community-preview-post p { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin: 0; color: #afb0b7; font-size: .875rem; line-height: 1.5; }
+.community-post-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 18px; }
+.community-post-tags span { padding: 5px 9px; border: 1px solid #3d3e45; border-radius: 4px; color: #c9cad0; font-size: .8125rem; line-height: 1.4; }
+.community-preview-alert { display: flex; align-items: center; gap: 14px; background: #242013; border: 1px solid #685020; border-radius: 7px; padding: 18px; margin: 0 20px; }
+.community-bell { display: grid; place-items: center; flex: none; color: var(--acid); }
+.community-preview-alert strong { display: block; color: #f2f0e9; font-size: .9375rem; line-height: 1.4; }
+.community-preview-alert p { color: #bcb49e; font-size: .875rem; margin: 5px 0 0; line-height: 1.5; }
+.community-alert-check { color: var(--acid); margin-left: auto; flex: none; }
+.community-preview figcaption { font-size: .75rem; color: #9b9da7; line-height: 1.5; padding: 16px 20px 20px; }
+.community-preview-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 20px 20px 0; padding: 5px; background: #090a0c; border: 1px solid #34353b; border-radius: 6px; }
+.community-preview-tabs button { min-height: 44px; padding: 10px; background: transparent; border: 0; border-radius: 3px; color: #b6b7be; font-size: .875rem; cursor: pointer; }
+.community-preview-tabs button[aria-pressed="true"] { background: #f2f0e9; color: #101114; font-weight: 700; }
+.community-preview-tabs button:focus-visible { outline: 2px solid var(--acid); outline-offset: 3px; }
+.community-preview-interactive .community-preview-post { min-height: 230px; }
+@media (max-width: 600px) {
+  .community-preview-bar { padding: 18px; }
+  .community-preview-location { padding: 18px 18px 0; }
+  .community-preview-posts { padding: 14px; }
+  .community-preview-post { padding: 18px; }
+  .community-preview-alert { margin: 0 14px; padding: 15px; gap: 10px; }
+  .community-preview-tabs { margin: 14px 14px 0; }
+  .community-preview figcaption { padding: 14px; }
+}
+
