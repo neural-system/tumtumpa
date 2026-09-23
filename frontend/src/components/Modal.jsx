@@ -14,7 +14,7 @@ export default function Modal({ title, onClose, children, maxWidth = 520 }) {
   }, [onClose])
 
   return createPortal(
-    <div className="modal-overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose() }}>
+    <div className="modal-overlay app-modal-overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose() }}>
       <div className="modal-panel" style={{ maxWidth }}>
         <div className="modal-header">
           <h3>{title}</h3>

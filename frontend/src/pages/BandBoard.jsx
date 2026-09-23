@@ -18,7 +18,7 @@ export default function BandBoard() {
   const { data: posts } = useQuery({ queryKey: ['band-board'], queryFn: () => api.get('/band-board').then((r) => r.data) })
 
   return (
-    <div className="landing-page">
+    <div className="landing-page app-public-page">
       <header className="landing-header no-print">
         <BrandLogo className="landing-logo" />
         <div className="landing-header-actions">

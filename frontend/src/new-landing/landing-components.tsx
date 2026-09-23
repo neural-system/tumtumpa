@@ -1,43 +1,98 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import api from "../services/api";
+import { useAuthStore } from "../store/authStore";
+import { useDebounce } from "../hooks/useDebounce";
 import { CheckIcon, CommunityPreview } from "./community-preview";
-
-const APP = "";
 
 export function Arrow({ direction = "diagonal" }: { direction?: "diagonal" | "right" }) {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">{direction === "right" ? <path d="M4 12h16m-6-6 6 6-6 6"/> : <path d="M5 19 19 5M5 5h14v14"/>}</svg>;
 }
 
+/** CTA que depende de sessão: com token vai pro destino do app (`to`), sem
+ * token vai pro cadastro (ou `guestTo`). Antes os links de ação da landing
+ * apontavam sempre pra rotas dentro do <Layout> — que exige token (ver
+ * Layout.jsx) — então um visitante clicava e caía numa tela de login, e o
+ * backend nem era alcançado. */
+export function AuthAwareLink({ to, guestTo = "/cadastro", className, children }: { to: string; guestTo?: string; className?: string; children: ReactNode }) {
+  const token = useAuthStore((s) => s.token);
+  return <Link className={className} to={token ? to : guestTo}>{children}</Link>;
+}
+
 export function FlowNav({ active = "cifras" }: { active?: "cifras" | "mural" | "classificados" }) {
   const [open, setOpen] = useState(false);
+  const token = useAuthStore((s) => s.token);
+  // Âncoras seguem <a href="/#...">: a partir de "/" o navegador trata como
+  // navegação de fragmento no mesmo documento (rola sem recarregar), e a
+  // partir de outra rota recarrega já posicionado na seção. Um <Link> do
+  // react-router perderia o scroll, que ele não faz sozinho no v6.
   return <header className="flow-nav">
     <Link className="brand" to="/" aria-label="TumTumPá, início">TUM TUM <b>PÁ</b></Link>
     <button className="nav-toggle" aria-expanded={open} aria-controls="flow-links" onClick={() => setOpen(!open)}>{open ? "Fechar" : "Menu"}<svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path d={open ? "m5 5 14 14M5 19 19 5" : "M4 7h16M4 12h16M4 17h16"}/></svg></button>
     <nav id="flow-links" className={open ? "flow-links is-open" : "flow-links"} aria-label="Navegação principal" onClick={() => setOpen(false)}>
       <a href="/#cifras" className={active === "cifras" ? "current" : ""}>Cifras</a>
-      <a href="/monte-sua-banda" className={active === "mural" ? "current" : ""}>Monte sua banda <Arrow/></a>
-      <a href="/classificados" className={active === "classificados" ? "current" : ""}>Classificados <Arrow/></a>
+      <Link to="/monte-sua-banda" className={active === "mural" ? "current" : ""}>Monte sua banda <Arrow/></Link>
+      <Link to="/classificados" className={active === "classificados" ? "current" : ""}>Classificados <Arrow/></Link>
       <a href="/#ferramentas">Ferramentas</a>
       <a href="/#recursos">Recursos</a>
       <a href="/#planos">Planos</a>
     </nav>
-    <a className="flow-login" href={`${APP}/login`}>Entrar <Arrow/></a>
+    <Link className="flow-login" to={token ? "/painel" : "/login"}>{token ? "Painel" : "Entrar"} <Arrow/></Link>
   </header>;
 }
 
+/** Formato que CifraDemoPage/CifraPlayer esperam (vem de catalog.json). */
 export type CatalogSong = { title: string; artist: string; genre: string; slug: string };
 
-export function TrendingSongs({ songs, live = false }: { songs: CatalogSong[]; live?: boolean }) {
+/** Linha de GET /api/public/songs — só as colunas que esta seção usa. */
+type LibrarySong = {
+  slug: string; titulo: string; interprete: string;
+  genero: string; tom: string; velocidade: number | string | null;
+};
+
+/** Catálogo público real (GET /public/songs + /public/songs/facets), o mesmo
+ * endpoint sem login que a biblioteca de /sobre2 consome. A busca e o filtro
+ * de gênero são resolvidos no servidor; antes esta seção filtrava um
+ * catalog.json fixo no bundle, com gêneros que não existem no acervo (ex.:
+ * "Cifras" como se fosse gênero) e links pra /demonstracao/cifra — a prévia
+ * fictícia — em vez da cifra pública de verdade. */
+export function TrendingSongs() {
   const [query, setQuery] = useState("");
-  const [genre, setGenre] = useState("Todas");
-  const genres = ["Todas", ...Array.from(new Set(songs.map(song => song.genre).filter(Boolean)))];
-  const normalize = (text: string) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-  const filtered = useMemo(() => songs.filter(song => (genre === "Todas" || song.genre === genre) && normalize(`${song.title} ${song.artist}`).includes(normalize(query))), [songs, query, genre]);
+  const [genre, setGenre] = useState("");
+  // 400ms: /api/public/* tem teto de 60 req/min por IP (ver
+  // middlewares/rate_limit.py) — sem debounce uma busca digitada rápido
+  // sozinha chegaria perto do limite.
+  const debouncedQuery = useDebounce(query, 400);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["landing-songs", debouncedQuery, genre],
+    queryFn: () => api.get("/public/songs", {
+      params: { q: debouncedQuery, genero: genre, page_size: 60, sort: "titulo" },
+    }).then((r) => r.data),
+    // v5: `keepPreviousData: true` é opção da v4 e é ignorada em silêncio
+    // (react-query 5.101 instalada) — sem isto a grade some e volta a cada
+    // busca, porque `data` fica undefined durante o fetch.
+    placeholderData: keepPreviousData,
+  });
+  const { data: facets } = useQuery({
+    queryKey: ["landing-song-facets"],
+    queryFn: () => api.get("/public/songs/facets").then((r) => r.data),
+  });
+
+  const songs: LibrarySong[] = data?.items ?? [];
+  const total: number = data?.total ?? 0;
+  const genres: string[] = facets?.generos ?? [];
+  const searching = Boolean(debouncedQuery || genre);
+
   return <section className="trending-section" id="cifras" aria-label="Catalogo de musicas">
-    <div className="catalog-controls"><div className="catalog-genres" aria-label="Filtrar músicas por gênero">{genres.map(item => <button key={item} aria-pressed={genre === item} onClick={() => setGenre(item)}>{item}</button>)}</div><label className="catalog-search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg><input value={query} onChange={event => setQuery(event.target.value)} placeholder="Música ou artista" aria-label="Buscar música ou artista" type="search"/></label></div>
-    <div className="trending-grid">{filtered.map(song => <a className="trending-song" key={song.slug} href={`/demonstracao/cifra/${encodeURIComponent(song.slug)}`}><span className="song-number">{String(songs.indexOf(song) + 1).padStart(2, "0")}</span><span className="trending-song-info"><b>{song.title}</b><small>{song.artist}</small></span><span className="song-open"><Arrow direction="right"/></span></a>)}</div>
-    {filtered.length === 0 && <div className="catalog-empty" role="status"><p>Nenhuma música nesta seleção. Tente outro nome ou gênero.</p><button onClick={() => {setQuery("");setGenre("Todas");}}>Limpar filtros</button></div>}
-    <div className="catalog-foot"><span>{live ? "Mais tocadas no TumTumPá · seleção de 10 set. 2026" : "Seleção de demonstração"}</span><span>Cifras gratuitas. O show é seu.</span></div>
+    <div className="catalog-controls"><div className="catalog-genres" aria-label="Filtrar músicas por gênero"><button aria-pressed={genre === ""} onClick={() => setGenre("")}>Todas</button>{genres.map(item => <button key={item} aria-pressed={genre === item} onClick={() => setGenre(item)}>{item}</button>)}</div><label className="catalog-search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg><input value={query} onChange={event => setQuery(event.target.value)} placeholder="Música ou artista" aria-label="Buscar música ou artista" type="search"/></label></div>
+    <div className="trending-grid">{songs.map((song, index) => <Link className="trending-song" key={song.slug} to={`/cifra/${encodeURIComponent(song.slug)}`}><span className="song-number">{String(index + 1).padStart(2, "0")}</span><span className="trending-song-info"><b>{song.titulo}</b><small>{[song.interprete, song.tom].filter(Boolean).join(" · ")}</small></span><span className="song-open"><Arrow direction="right"/></span></Link>)}</div>
+    {isLoading && <div className="catalog-empty" role="status"><p>Carregando cifras da biblioteca…</p></div>}
+    {isError && <div className="catalog-empty" role="status"><p>Não foi possível carregar a biblioteca agora.</p><button onClick={() => {setQuery("");setGenre("");}}>Tentar de novo</button></div>}
+    {!isLoading && !isError && songs.length === 0 && <div className="catalog-empty" role="status"><p>Nenhuma cifra encontrada. Tente outro nome ou gênero.</p><button onClick={() => {setQuery("");setGenre("");}}>Limpar filtros</button></div>}
+    <div className="catalog-foot"><span>{(searching ? `${total} resultado${total === 1 ? "" : "s"}` : `${total} cifra${total === 1 ? "" : "s"} na biblioteca pública`)}</span><span>Cifras gratuitas. O show é seu.</span></div>
   </section>;
 }
 
@@ -72,7 +127,7 @@ export function FeatureSummary() {
   return <section className="feature-summary" id="recursos">
     <div className="feature-section-heading"><span className="section-kicker">OS RECURSOS. NO SEU RITMO.</span><h2>Você toca.<br/><em>O TumTumPá acompanha.</em></h2></div>
     <div className="feature-switch" aria-label="Explorar funcionalidades por momento">{groups.map((item, index) => <button key={item.name} aria-pressed={selected === index} onClick={() => setSelected(index)}><span>0{index + 1}</span>{item.name}</button>)}</div>
-    <div className="feature-content"><div className="feature-editorial"><h3>{group.headline.split("\n").map((line, index) => <span key={index}>{line}</span>)}</h3><p>{group.intro}</p><a className="text-link" href={`${APP}/cadastro`}>Criar minha conta <Arrow/></a><span className="feature-giant-number" aria-hidden="true">0{selected + 1}</span></div><div className="feature-details">{group.items.map(([title, copy]) => <details key={title}><summary>{title}<span aria-hidden="true">+</span></summary><p>{copy}</p></details>)}</div></div>
+    <div className="feature-content"><div className="feature-editorial"><h3>{group.headline.split("\n").map((line, index) => <span key={index}>{line}</span>)}</h3><p>{group.intro}</p><Link className="text-link" to="/cadastro">Criar minha conta <Arrow/></Link><span className="feature-giant-number" aria-hidden="true">0{selected + 1}</span></div><div className="feature-details">{group.items.map(([title, copy]) => <details key={title}><summary>{title}<span aria-hidden="true">+</span></summary><p>{copy}</p></details>)}</div></div>
   </section>;
 }
 
@@ -82,11 +137,11 @@ export function RehearsalTools() {
     { n: "02", title: "Metrônomo", detail: "Encontre o tempo com tap tempo, escolha o compasso e retome o BPM salvo no próximo ensaio.", url: "/metronomo", signal: "1 · 2 · 3 · 4" },
     { n: "03", title: "Afinador", detail: "Afine pelo microfone. Violão, baixo, ukulelê, violino ou modo cromático: cada instrumento no seu tom.", url: "/afinador", signal: "E A D G B E" },
   ];
-  return <section className="rehearsal-section" id="ferramentas"><div className="rehearsal-heading"><span className="section-kicker">ANTES DO PRIMEIRO ACORDE</span><h2>Afine. Conte.<br/><em>Comece.</em></h2><p>As ferramentas de ensaio ficam sempre à mão.</p></div><div className="rehearsal-tools">{tools.map(tool => <a key={tool.n} href={`${APP}${tool.url}`}><div className="tool-heading"><span>{tool.n}</span><Arrow/></div><div className="tool-signal" aria-hidden="true">{tool.signal}</div><h3>{tool.title}</h3><p>{tool.detail}</p></a>)}</div><div className="language-strip"><b>No seu idioma. No seu ritmo.</b><span>9 idiomas, incluindo português do Brasil e de Portugal.</span></div></section>;
+  return <section className="rehearsal-section" id="ferramentas"><div className="rehearsal-heading"><span className="section-kicker">ANTES DO PRIMEIRO ACORDE</span><h2>Afine. Conte.<br/><em>Comece.</em></h2><p>As ferramentas de ensaio ficam sempre à mão.</p></div><div className="rehearsal-tools">{tools.map(tool => <AuthAwareLink key={tool.n} to={tool.url}><div className="tool-heading"><span>{tool.n}</span><Arrow/></div><div className="tool-signal" aria-hidden="true">{tool.signal}</div><h3>{tool.title}</h3><p>{tool.detail}</p></AuthAwareLink>)}</div><div className="language-strip"><b>No seu idioma. No seu ritmo.</b><span>9 idiomas, incluindo português do Brasil e de Portugal.</span></div></section>;
 }
 
 export function BandCommunity() {
-  return <section className="band-community" id="monte-sua-banda"><div className="band-visual"><CommunityPreview /></div><div className="band-copy"><span className="section-kicker">MONTE SUA BANDA</span><h2>Seu próximo show<br/>pode começar<br/><em>com um encontro.</em></h2><p>Encontre músicos e bandas da sua cidade que combinam com seu som.</p><p className="band-secondary">Receba avisos no app quando surgir uma vaga para seu instrumento.</p><a className="yellow-link" href="/monte-sua-banda">Encontrar músicos e bandas <Arrow/></a></div></section>;
+  return <section className="band-community" id="monte-sua-banda"><div className="band-visual"><CommunityPreview /></div><div className="band-copy"><span className="section-kicker">MONTE SUA BANDA</span><h2>Seu próximo show<br/>pode começar<br/><em>com um encontro.</em></h2><p>Encontre músicos e bandas da sua cidade que combinam com seu som.</p><p className="band-secondary">Receba avisos no app quando surgir uma vaga para seu instrumento.</p><Link className="yellow-link" to="/monte-sua-banda">Encontrar músicos e bandas <Arrow/></Link></div></section>;
 }
 
 const comparisons = [
@@ -106,15 +161,32 @@ export function ComparisonSection() {
 }
 
 export function UpdatedPlans() {
-  const plans = [
-    { name: "Hobby", price: "9,70", intro: "Seu repertório começa aqui.", setlists: "7", storage: "25 MB" },
-    { name: "Practitioner", price: "49,70", intro: "Mais espaço entre o ensaio e o palco.", setlists: "15", storage: "150 MB" },
-    { name: "Professional", price: "99,70", intro: "Para uma agenda cheia de música.", setlists: "50", storage: "500 MB" },
-  ];
-  return <section className="updated-plans" id="planos"><div className="updated-plans-heading"><span className="section-kicker">MAIS REPERTÓRIO. MAIS POSSIBILIDADES.</span><h2>Seu ritmo.<br/><em>Seu plano.</em></h2><p>As cifras são gratuitas.<br/>Escolha o espaço para os seus setlists e áudios.</p></div><div className="updated-plans-grid">{plans.map((plan, index) => <article className={`updated-plan ${index === 1 ? "highlight-plan" : ""}`} key={plan.name}><div className="plan-name"><span>0{index + 1}</span><h3>{plan.name}</h3></div><p>{plan.intro}</p><div className="plan-price"><span>R$</span><strong>{plan.price}</strong><small>/mês</small></div><ul><li><b>{plan.setlists}</b> setlists</li><li><b>{plan.storage}</b> de armazenamento de áudio</li></ul><a href={`${APP}/planos`}>Escolher {plan.name} <Arrow/></a></article>)}</div><div className="free-plan-strip"><div><b>O primeiro acorde é por nossa conta.</b><p>Explore as cifras gratuitamente e experimente os planos por 14 dias, sem cartão.</p></div><a className="text-link" href={`${APP}/cadastro`}>Começar grátis <Arrow/></a></div></section>;
+  // Planos reais (GET /public/plans, sem login). Mesma queryKey de
+  // PricingSection.jsx e AuthGate.jsx — o react-query reaproveita a resposta
+  // em vez de repetir a chamada quando as duas telas aparecem. Antes os
+  // nomes, preços e limites eram digitados à mão aqui e passavam a divergir
+  // silenciosamente de qualquer edição feita em /admin/plans.
+  const { data: allPlans } = useQuery({
+    queryKey: ["public-plans"],
+    queryFn: () => api.get("/public/plans").then((r) => r.data),
+  });
+
+  // Os cards são só os planos pagos; o Convidado (kind='guest') não é
+  // assinável pela Stripe (ver PlansService.list_public) e é o que a faixa
+  // final da seção descreve como o plano de entrada.
+  const plans = useMemo(() => (allPlans ?? []).filter((p) => p.kind === "paid"), [allPlans]);
+  const guest = useMemo(() => (allPlans ?? []).find((p) => p.kind === "guest"), [allPlans]);
+  // Copy de posicionamento não existe no banco — é editorial, então segue
+  // posicional, com um texto neutro de reserva caso o admin mude a ordem.
+  const intros = ["Seu repertório começa aqui.", "Mais espaço entre o ensaio e o palco.", "Para uma agenda cheia de música."];
+
+  return <section className="updated-plans" id="planos"><div className="updated-plans-heading"><span className="section-kicker">MAIS REPERTÓRIO. MAIS POSSIBILIDADES.</span><h2>Seu ritmo.<br/><em>Seu plano.</em></h2><p>As cifras são gratuitas.<br/>Escolha o espaço para os seus setlists e áudios.</p></div>
+    {plans.length === 0 ? <p className="comparison-note">Carregando planos…</p> : <div className="updated-plans-grid">{plans.map((plan, index) => <article className={`updated-plan ${plans.length > 2 && index === 1 ? "highlight-plan" : ""}`} key={plan.id}><div className="plan-name"><span>0{index + 1}</span><h3>{plan.name}</h3></div><p>{intros[index] ?? "Mais espaço para o seu repertório."}</p><div className="plan-price"><span>R$</span><strong>{(plan.price_cents / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong><small>/mês</small></div><ul><li><b>{plan.max_setlists}</b> setlists</li><li><b>{plan.storage_limit_mb} MB</b> de armazenamento de áudio</li></ul><AuthAwareLink to="/planos">Escolher {plan.name} <Arrow/></AuthAwareLink></article>)}</div>}
+    <div className="free-plan-strip"><div><b>O primeiro acorde é por nossa conta.</b><p>{guest ? `Plano ${guest.name}: ${guest.max_setlists} setlists e ${guest.storage_limit_mb} MB de áudio, sem pagar nada. Os planos pagos têm 14 dias de teste.` : "Explore as cifras gratuitamente e experimente os planos pagos por 14 dias."}</p></div><AuthAwareLink className="text-link" to="/planos">Começar grátis <Arrow/></AuthAwareLink></div>
+  </section>;
 }
 
 export function FlowFooter() {
-  return <footer className="flow-footer"><Link className="brand" to="/">TUM TUM <b>PÁ</b></Link><span>Do primeiro ensaio ao último bis.</span><a href={`${APP}/cadastro`}>Vamos tocar? <Arrow/></a><small>© {new Date().getFullYear()} TumTumPá</small></footer>;
+  return <footer className="flow-footer"><Link className="brand" to="/">TUM TUM <b>PÁ</b></Link><span>Do primeiro ensaio ao último bis.</span><AuthAwareLink to="/painel">Vamos tocar? <Arrow/></AuthAwareLink><small>© {new Date().getFullYear()} TumTumPá</small></footer>;
 }
 

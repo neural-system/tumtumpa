@@ -29,7 +29,7 @@ export default function PublicSongView() {
   if (isLoading) return <div className="empty">{tEditor('loading')}</div>
   if (isError || !data) {
     return (
-      <div className="landing-page">
+      <div className="landing-page app-public-page">
         <PublicHeader />
         <main className="landing-container" style={{ paddingTop: 108, paddingLeft: '6vw', paddingRight: '6vw' }}>
           <div className="empty">{t('songNotFound')}</div>
@@ -44,7 +44,7 @@ export default function PublicSongView() {
   const body = previewBody || data.body
 
   return (
-    <div className="landing-page">
+    <div className="landing-page app-public-page">
       <PublicHeader />
       <main className="landing-container" style={{ paddingTop: 108, paddingBottom: 60, paddingLeft: '6vw', paddingRight: '6vw' }}>
         <div className="row no-print" style={{ justifyContent: 'space-between' }}>

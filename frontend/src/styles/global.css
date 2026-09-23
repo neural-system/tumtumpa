@@ -115,6 +115,89 @@
   --accent: #b87800; --accent-soft: rgba(184, 120, 0, 0.12); --accent-ink: #ffffff;
 }
 
+/* ---------- tokens semânticos (compatíveis com os temas existentes) ----------
+   Esta camada nomeia escolhas que já existem. Componentes antigos continuam
+   usando os aliases originais enquanto a migração visual acontece por etapas. */
+:root {
+  --surface-0: var(--bg);
+  --surface-1: var(--bg-raise);
+  --surface-2: var(--glass-strong);
+  --border: var(--stroke);
+  --text-strong: var(--text);
+  --text-muted: var(--muted);
+  --ink: #090a0c;
+  --paper: #f2f0e9;
+
+  --text-display-1: clamp(3.5rem, 7.4vw, 7.25rem);
+  --text-display-2: clamp(2.75rem, 5.8vw, 5.75rem);
+  --text-title-1: clamp(1.5rem, 2.6vw, 2.125rem);
+  --text-title-2: 1.5rem;
+  --text-title-3: 0.9375rem;
+  --text-body: 1rem;
+  --text-body-sm: 0.90625rem;
+  --text-label: 0.6875rem;
+  --tracking-tight: -0.065em;
+  --tracking-label: 0.15em;
+
+  --btn-pad-y: 9px;
+  --btn-pad-x: 16px;
+  --btn-radius: 10px;
+  --btn-weight: 600;
+  --btn-font-size: 13.5px;
+}
+
+/* Paleta do produto baseada na nova landing. O escopo deixa as páginas de
+   marketing antigas intactas e continua respeitando o tema e o acento escolhidos. */
+.app-shell,
+.login-wrap,
+.app-public-page,
+.app-modal-overlay {
+  --bg: #090a0c;
+  --bg-raise: #101114;
+  --glass: rgba(242, 240, 233, 0.045);
+  --glass-strong: rgba(242, 240, 233, 0.09);
+  --stroke: rgba(242, 240, 233, 0.12);
+  --text: #f2f0e9;
+  --muted: #a8a49a;
+  --sidebar-bg: rgba(9, 10, 12, 0.82);
+  --input-bg: rgba(0, 0, 0, 0.3);
+  --btn-hover-border: rgba(242, 240, 233, 0.22);
+
+  --surface-0: var(--bg);
+  --surface-1: var(--bg-raise);
+  --surface-2: var(--glass-strong);
+  --border: var(--stroke);
+  --text-strong: var(--text);
+  --text-muted: var(--muted);
+
+  --ink: #090a0c;
+  --paper: #f2f0e9;
+  --btn-radius: 2px;
+}
+:root[data-theme="light"] .app-shell,
+:root[data-theme="light"] .login-wrap,
+:root[data-theme="light"] .app-public-page,
+:root[data-theme="light"] .app-modal-overlay {
+  --bg: #f2f0e9;
+  --bg-raise: #fbfaf6;
+  --glass: rgba(8, 8, 8, 0.035);
+  --glass-strong: rgba(8, 8, 8, 0.065);
+  --stroke: rgba(8, 8, 8, 0.12);
+  --text: #141311;
+  --muted: #6b6860;
+  --sidebar-bg: rgba(242, 240, 233, 0.85);
+  --input-bg: rgba(8, 8, 8, 0.045);
+  --btn-hover-border: rgba(8, 8, 8, 0.22);
+}
+.app-shell,
+.login-wrap,
+.app-public-page {
+  background: var(--surface-0);
+  color: var(--text-strong);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body, #root { height: 100%; }
 body {
@@ -142,6 +225,16 @@ button { font-family: inherit; }
 .page-title { font-family: var(--font-display); font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
 .page-sub { color: var(--muted); margin-top: 4px; margin-bottom: 24px; }
 .section-heading { font-size: 15px; font-weight: 700; color: var(--text); margin: 0 0 10px; }
+.app-shell .page-title,
+.login-wrap .page-title,
+.app-public-page .page-title {
+  font-size: var(--text-title-2);
+  letter-spacing: var(--tracking-tight);
+}
+.app-shell .page-sub,
+.login-wrap .page-sub,
+.app-public-page .page-sub { font-size: var(--text-body-sm); }
+.app-shell .section-heading { font-size: var(--text-title-3); }
 
 /* ---------- sidebar ---------- */
 .sidebar {
@@ -178,6 +271,12 @@ button { font-family: inherit; }
   text-transform: uppercase; color: var(--muted);
 }
 .sidebar .spacer { flex: 1; }
+.app-shell .nav-section-label,
+.app-shell .stat .label {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+}
 
 /* ---------- vidro / cartões ---------- */
 .card {
@@ -187,6 +286,12 @@ button { font-family: inherit; }
   backdrop-filter: blur(14px);
   padding: 18px 20px;
 }
+.app-shell .card,
+.login-wrap .card,
+.app-public-page .card {
+  background: var(--surface-1);
+  border-color: var(--border);
+}
 .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 22px; }
 .stat .big { font-family: var(--font-display); font-size: 30px; font-weight: 700; color: var(--accent); }
 .stat .label { color: var(--muted); font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
@@ -194,16 +299,33 @@ button { font-family: inherit; }
 /* ---------- controles ---------- */
 .btn {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 9px 16px; border-radius: 10px; border: 1px solid var(--stroke);
+  padding: var(--btn-pad-y) var(--btn-pad-x); border-radius: var(--btn-radius); border: 1px solid var(--stroke);
   background: var(--glass-strong); color: var(--text);
-  font-weight: 600; font-size: 13.5px; cursor: pointer; transition: 120ms;
+  font-weight: var(--btn-weight); font-size: var(--btn-font-size); cursor: pointer; transition: 120ms;
 }
 .btn:hover { border-color: var(--btn-hover-border); }
-.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
-.btn.primary:hover { filter: brightness(1.08); }
+.btn.primary, .btn.accent { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+.btn.primary:hover, .btn.accent:hover { filter: brightness(1.08); }
 .btn.danger { color: var(--danger); }
 .btn.ghost { background: transparent; }
+.btn.outline { background: transparent; border-color: var(--border); }
+.btn.link {
+  background: transparent; border: 0; border-bottom: 1px solid var(--accent);
+  border-radius: 0; color: var(--text); padding: 6px 0;
+  font-size: var(--text-body-sm); font-weight: 500;
+}
+.btn.link:hover { color: var(--accent); border-color: var(--accent); }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.app-shell .btn.primary,
+.app-shell .btn.accent,
+.login-wrap .btn.primary,
+.login-wrap .btn.accent,
+.app-public-page .btn.primary,
+.app-public-page .btn.accent {
+  --btn-pad-y: 12px;
+  --btn-pad-x: 18px;
+  --btn-weight: 800;
+}
 
 .input, select.input, textarea.input {
   width: 100%; padding: 10px 13px; border-radius: 10px;
@@ -778,6 +900,10 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .modal-overlay {
   position: fixed; inset: 0; z-index: 100; background: rgba(6, 8, 14, 0.55);
   display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.app-modal-overlay .modal-panel {
+  background: var(--surface-1);
+  border-color: var(--border);
 }
 .modal-panel {
   width: 100%; max-height: 88vh; overflow-y: auto; background: var(--bg-raise);

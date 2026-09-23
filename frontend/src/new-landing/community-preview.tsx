@@ -1,6 +1,5 @@
-"use client";
-
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import api from "../services/api";
 import "./community.css";
 
 export function CheckIcon() {
@@ -15,27 +14,52 @@ export function CommunityIcon({ name }: { name: "people" | "pin" | "bell" }) {
   </svg>;
 }
 
-const examples = [
-  { label: "Banda busca músico", title: "Uma voz para completar a banda", instrument: "Vocal", style: "MPB e pop", level: "Intermediário", goal: "Ensaios regulares" },
-  { label: "Músico busca banda", title: "Tecladista em busca de uma banda", instrument: "Teclado", style: "MPB e soul", level: "Intermediário", goal: "Ensaios regulares" },
-];
+/** Linha de GET /api/band-board (rota pública, mesma que BandBoard.jsx e
+ * BandBoardTeaser.jsx consomem) — só os campos que esta prévia mostra. */
+type BoardPost = {
+  id: string; band_name: string; city: string; genero: string; style_freeform: string;
+  skill_level: string; goal: string; rehearsal_days: string[]; instruments_needed: string[];
+  vocal_languages: string; bio: string;
+};
 
-export function CommunityPreview({ interactive = false }: { interactive?: boolean }) {
-  const [selected, setSelected] = useState(0);
-  const posts = interactive ? [examples[selected]] : examples;
-  return <figure className={`community-preview${interactive ? " community-preview-interactive" : ""}`}>
-    <div className="community-preview-bar"><span><CommunityIcon name="people" />Monte sua banda</span><span className="community-preview-label">PRÉVIA</span></div>
-    {interactive ? <div className="community-preview-tabs" aria-label="Tipo de anúncio na prévia"><button type="button" aria-pressed={selected === 0} onClick={() => setSelected(0)}>Busco músicos</button><button type="button" aria-pressed={selected === 1} onClick={() => setSelected(1)}>Busco uma banda</button></div> : <div className="community-preview-location"><CommunityIcon name="pin" /><span>Conexões na mesma cidade</span></div>}
-    <div className="community-preview-posts" aria-live={interactive ? "polite" : undefined}>
-      {posts.map(post => <article className="community-preview-post" key={post.label}>
-        <div className="community-post-type"><span>{post.label}</span><span>{post.instrument}</span></div>
-        <h3>{post.title}</h3>
-        <p><CommunityIcon name="pin" />São Paulo, SP <span aria-hidden="true">·</span> {post.style}</p>
-        <div className="community-post-tags"><span>{post.level}</span><span>{post.goal}</span></div>
+/** Prévia do mural com anúncios REAIS. Antes esta vitrine era composta por
+ * dois anúncios inventados no próprio arquivo, com a cidade fixa em
+ * "São Paulo, SP" para os dois — quem lesse a seção não tinha como saber que
+ * nada daquilo vinha do mural. Agora busca os anúncios ativos de verdade e,
+ * sem nenhum, diz que está vazio em vez de fabricar exemplo.
+ *
+ * `uniformPostHeight` (usado por /monte-sua-banda) só estica os cards pra
+ * manter as duas alturas iguais lado a lado no hero daquela página. */
+export function CommunityPreview({ uniformPostHeight = false }: { uniformPostHeight?: boolean }) {
+  const { data: posts, isLoading, isError } = useQuery({
+    queryKey: ["band-board"],
+    queryFn: () => api.get("/band-board").then((r) => r.data),
+  });
+
+  const preview: BoardPost[] = (posts ?? []).slice(0, 2);
+
+  return <figure className={`community-preview${uniformPostHeight ? " community-preview-interactive" : ""}`}>
+    <div className="community-preview-bar"><span><CommunityIcon name="people" />Monte sua banda</span><span className="community-preview-label">MURAL</span></div>
+    <div className="community-preview-location"><CommunityIcon name="pin" /><span>Conexões na mesma cidade</span></div>
+    <div className="community-preview-posts" aria-live="polite">
+      {isLoading && <p className="community-preview-post" role="status">Carregando anúncios do mural…</p>}
+      {isError && <p className="community-preview-post" role="status">Não foi possível carregar o mural agora.</p>}
+      {!isLoading && !isError && preview.length === 0 && <p className="community-preview-post" role="status">Ainda não há anúncios ativos. O mural abre assim que a primeira banda publicar.</p>}
+      {preview.map(post => <article className="community-preview-post" key={post.id}>
+        <div className="community-post-type">
+          <span>{post.goal || "Anúncio no mural"}</span>
+          <span>{post.instruments_needed?.length ? post.instruments_needed.join(" · ") : (post.genero || post.style_freeform || "Formação aberta")}</span>
+        </div>
+        <h3>{post.band_name || "Banda no mural"}</h3>
+        <p><CommunityIcon name="pin" />{post.city || "Cidade não informada"} {post.genero && <><span aria-hidden="true">·</span> {post.genero}</>}</p>
+        {(post.skill_level || post.rehearsal_days?.length || post.vocal_languages) && <div className="community-post-tags">
+          {post.skill_level && <span>{post.skill_level}</span>}
+          {post.rehearsal_days?.length > 0 && <span>{post.rehearsal_days.join(", ")}</span>}
+          {post.vocal_languages && <span>{post.vocal_languages}</span>}
+        </div>}
       </article>)}
     </div>
     <div className="community-preview-alert"><span className="community-bell"><CommunityIcon name="bell" /></span><div><strong>Uma vaga combina com você</strong><p>Sua cidade. Seu instrumento.</p></div><span className="community-alert-check"><CheckIcon /></span></div>
-    <figcaption>Exemplo ilustrativo de anúncios e aviso no aplicativo.</figcaption>
+    <figcaption>Os anúncios acima são reais e vêm do mural. O aviso de vaga é uma ilustração do alerta no aplicativo.</figcaption>
   </figure>;
 }
-
