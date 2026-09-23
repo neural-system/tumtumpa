@@ -9,6 +9,10 @@ import PublicSongView from './pages/PublicSongView'
 import PublicFeedback from './pages/PublicFeedback'
 import About from './pages/About'
 import Sobre2 from './pages/Sobre2'
+import Palco from './pages/Palco'
+import PalcoFluxo from './pages/PalcoFluxo'
+import PalcoComunidade from './pages/PalcoComunidade'
+import PalcoClassificados from './pages/PalcoClassificados'
 import BandBoard from './pages/BandBoard'
 import BandBoardManage from './pages/BandBoardManage'
 import Login from './pages/Login'
@@ -41,6 +45,10 @@ export default function App() {
       <Routes>
         <Route path="/" element={<About />} />
         <Route path="/sobre" element={<Sobre2 />} />
+        <Route path="/palco" element={<Palco />} />
+        <Route path="/palco/fluxo" element={<PalcoFluxo />} />
+        <Route path="/palco/comunidade" element={<PalcoComunidade />} />
+        <Route path="/palco/classificados" element={<PalcoClassificados />} />
         <Route path="/cifra/:slug" element={<PublicSongView />} />
         <Route path="/feedback/:token" element={<PublicFeedback />} />
         <Route path="/login" element={<Login />} />
