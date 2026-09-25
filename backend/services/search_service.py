@@ -20,6 +20,15 @@ from services.songs_service import _row_to_dict
 
 MAX_PAGE_SIZE = 500
 _SORTABLE = {"titulo", "autor", "interprete", "genero", "tom", "ritmo", "velocidade", "nota", "slug", "created_at"}
+# colunas ordenáveis que não são colunas simples de `songs` (tela Minhas Músicas):
+# favorita vem de user_song_prefs, bpm mora no header jsonb (só se for número) e
+# setlists é a contagem de setlists do usuário em que a música está, passada
+# pela rota como JSON {slug: n} (`sl_counts`).
+_SORT_EXPR = {
+    "favorita": "coalesce(p.favorita, false)",
+    "bpm": "case when songs.header->>'bpm' ~ '^[0-9]+$' then (songs.header->>'bpm')::int end",
+    "setlists": "coalesce((%(sl_counts)s::jsonb ->> songs.slug)::int, 0)",
+}
 _SIMILARITY_THRESHOLD = 0.25
 
 # Sem header/body — a listagem não usa (_row_to_dict só lê estas colunas),
@@ -29,7 +38,8 @@ _SIMILARITY_THRESHOLD = 0.25
 # LEFT JOIN com user_song_prefs, que também tem uma coluna user_id.
 _LIST_COLUMNS = (
     "songs.slug, songs.titulo, songs.autor, songs.interprete, songs.genero, songs.tom, "
-    "songs.ritmo, songs.tags, songs.velocidade, songs.normalizada, songs.user_id, songs.shared"
+    "songs.ritmo, songs.tags, songs.velocidade, songs.normalizada, songs.user_id, songs.shared, "
+    "songs.header->>'bpm' as bpm_raw"
 )
 _PREFS_JOIN = "left join user_song_prefs p on p.song_id = songs.id and p.user_id = %(user_id)s"
 _PREFS_SELECT = "coalesce(p.favorita, false) as favorita, coalesce(p.nota, '') as nota"
@@ -47,7 +57,13 @@ def _visible_sql(is_admin: bool) -> str:
 
 
 def _rows_to_dicts(rows: list[dict]) -> list[dict]:
-    return [_row_to_dict(r) for r in rows]
+    out = []
+    for r in rows:
+        d = _row_to_dict(r)
+        bpm = (r.get("bpm_raw") or "").strip()
+        d["bpm"] = int(bpm) if bpm.isdigit() else None
+        out.append(d)
+    return out
 
 
 class SearchService:
@@ -66,22 +82,52 @@ class SearchService:
         only_mine: bool = False,
         page: int = 1,
         page_size: int = 50,
-        sort: str = "titulo",
+        sort: str = "",
         is_admin: bool = False,
         mine_slugs: list[str] | None = None,
+        mine_fav_interpretes: list[str] | None = None,
+        mine_fav_generos: list[str] | None = None,
+        only_slugs: list[str] | None = None,
+        exclude_slugs: list[str] | None = None,
+        origin: str = "",
+        only_favorite: bool = False,
+        sl_counts: dict | None = None,
     ) -> dict:
         """`mine_slugs` (não None) liga o modo "Minhas Músicas": criadas/
         importadas/clonadas pelo usuário (`songs.user_id`), favoritadas por ele
         ou dentro de um setlist dele (as slugs vêm de SetlistService.song_slugs)
         — em vez da regra de visibilidade da biblioteca compartilhada, porque
         uma música de outra pessoa que está num setlist dele já é "dele"."""
-        if mine_slugs is not None:
-            where = ["(songs.user_id = %(user_id)s OR coalesce(p.favorita, false) = true OR songs.slug = ANY(%(mine_slugs)s))"]
-        else:
-            where = [_visible_sql(is_admin)]
         params: dict = {"user_id": user_id}
         if mine_slugs is not None:
+            # Minhas Músicas = criadas/clonadas/importadas + favoritadas + nos
+            # setlists + de artista/gênero favorito (só as que o usuário pode ver)
+            mine_clauses = ["songs.user_id = %(user_id)s", "coalesce(p.favorita, false) = true", "songs.slug = ANY(%(mine_slugs)s)"]
             params["mine_slugs"] = mine_slugs
+            fav_parts = []
+            if mine_fav_interpretes:
+                fav_parts.append("songs.interprete = ANY(%(mine_fav_i)s)")
+                params["mine_fav_i"] = mine_fav_interpretes
+            if mine_fav_generos:
+                fav_parts.append("lower(songs.genero) = ANY(%(mine_fav_g)s)")
+                params["mine_fav_g"] = [g.lower() for g in mine_fav_generos]
+            if fav_parts:
+                mine_clauses.append(f"(({' OR '.join(fav_parts)}) AND {_visible_sql(is_admin)})")
+            where = ["(" + " OR ".join(mine_clauses) + ")"]
+        else:
+            where = [_visible_sql(is_admin)]
+        if only_slugs is not None:
+            where.append("songs.slug = ANY(%(only_slugs)s)")
+            params["only_slugs"] = only_slugs
+        if exclude_slugs:
+            where.append("NOT (songs.slug = ANY(%(exclude_slugs)s))")
+            params["exclude_slugs"] = exclude_slugs
+        if only_favorite:
+            where.append("coalesce(p.favorita, false) = true")
+        if origin == "mine":
+            where.append("songs.user_id = %(user_id)s")
+        elif origin == "others":
+            where.append("songs.user_id IS DISTINCT FROM %(user_id)s")
 
         if only_mine:
             where.append("songs.user_id = %(user_id)s")
@@ -129,6 +175,19 @@ class SearchService:
         # trazer a tabela inteira pra paginar em Python — com um acervo
         # grande (`body` é o texto completo da cifra), buscar tudo a cada
         # busca/dashboard não escala.
+        # ordenação explícita (clique no cabeçalho) vale mesmo com busca; sem
+        # ela, busca ordena por relevância e a lista pura por título.
+        sort_key = sort.lstrip("-")
+        direction = "DESC" if sort.startswith("-") else "ASC"
+        order_sql = None
+        if sort_key in _SORT_EXPR and (sort_key != "setlists" or sl_counts is not None):
+            order_sql = f"{_SORT_EXPR[sort_key]} {direction} NULLS LAST, songs.titulo ASC"
+            if sort_key == "setlists":
+                import json as _json
+                params["sl_counts"] = _json.dumps(sl_counts)
+        elif sort_key in _SORTABLE and sort:
+            col = f"nullif(songs.{sort_key}, '')" if sort_key in ("genero", "tom", "ritmo", "autor") else f"songs.{sort_key}"
+            order_sql = f"{col} {direction} NULLS LAST, songs.titulo ASC"
         if q:
             params["q"] = q
             params["qlike"] = f"%{q}%"
@@ -150,18 +209,14 @@ class SearchService:
                     OR similarity(songs.autor, %(q)s) > {_SIMILARITY_THRESHOLD}
                     OR similarity(songs.interprete, %(q)s) > {_SIMILARITY_THRESHOLD}
                 )
-                ORDER BY score DESC, songs.titulo ASC
+                ORDER BY {order_sql or "score DESC, songs.titulo ASC"}
                 LIMIT %(limit)s OFFSET %(offset)s
             """
         else:
-            sort_key = sort.lstrip("-")
-            if sort_key not in _SORTABLE:
-                sort_key = "titulo"
-            direction = "DESC" if sort.startswith("-") else "ASC"
             sql = f"""SELECT {_LIST_COLUMNS}, {_PREFS_SELECT}, count(*) OVER() AS total_count
                       FROM songs {_PREFS_JOIN}
                       WHERE {where_sql}
-                      ORDER BY songs.{sort_key} {direction} LIMIT %(limit)s OFFSET %(offset)s"""
+                      ORDER BY {order_sql or "songs.titulo ASC"} LIMIT %(limit)s OFFSET %(offset)s"""
 
         with db.get_pool().connection() as conn:
             rows = conn.execute(sql, params).fetchall()

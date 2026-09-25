@@ -36,7 +36,7 @@ function FavoriteArtistsGenresCard() {
         <div className="empty">
           {t('noFavoritesHint')}
           <div style={{ marginTop: 10 }}>
-            <Link to="/favoritas" className="btn">{t('goToFavorites')}</Link>
+            <Link to="/minhas-musicas?fav=1" className="btn">{t('goToFavorites')}</Link>
           </div>
         </div>
       ) : (

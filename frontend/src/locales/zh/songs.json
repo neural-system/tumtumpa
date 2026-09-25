@@ -47,5 +47,37 @@
   },
   "titleMine": "我的歌曲",
   "mineHint": " · 已创建、已收藏或在你的歌单中",
-  "emptyMine": "你还没有歌曲。创建一首、收藏一首，或把歌曲加入歌单。"
+  "emptyMine": "你还没有歌曲。创建一首、收藏一首，或把歌曲加入歌单。",
+  "mySongs": {
+    "favPanel": "喜爱的艺人和曲风",
+    "allRhythms": "所有节奏",
+    "allSetlists": "所有歌单",
+    "noSetlist": "不在任何歌单",
+    "allOrigins": "所有来源",
+    "originMine": "我创建的",
+    "originOthers": "其他用户的",
+    "onlyFav": "仅收藏",
+    "includeFavGroups": "包含喜爱的艺人/曲风",
+    "includeFavGroupsHint": "把你标记为喜爱的艺人和曲风的歌曲加入列表",
+    "clear": "清除筛选",
+    "sortBy": "按{{col}}排序",
+    "emptyFiltered": "没有符合这些筛选的歌曲。",
+    "fav": "加入收藏",
+    "unfav": "取消收藏",
+    "moreSetlists": "+{{count}}",
+    "favVia": {
+      "artist": "喜爱的艺人",
+      "genre": "喜爱的曲风"
+    },
+    "col": {
+      "fav": "收藏",
+      "favTitle": "收藏",
+      "title": "歌曲",
+      "genre": "曲风",
+      "rhythm": "节奏",
+      "key": "调",
+      "bpm": "BPM",
+      "setlists": "歌单"
+    }
+  }
 }

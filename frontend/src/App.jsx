@@ -17,6 +17,7 @@ import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import Dashboard from './pages/Dashboard'
 import Songs from './pages/Songs'
+import MySongs from './pages/MySongs'
 import SongEditor from './pages/SongEditor'
 import Setlists from './pages/Setlists'
 import SetlistDetail from './pages/SetlistDetail'
@@ -57,10 +58,10 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/painel" element={<Dashboard />} />
           <Route path="/mural/meus-anuncios" element={<BandBoardManage />} />
-          <Route path="/musicas" element={<Songs key="library" />} />
-          <Route path="/minhas-musicas" element={<Songs key="mine" mineOnly />} />
+          <Route path="/musicas" element={<Songs />} />
+          <Route path="/minhas-musicas" element={<MySongs />} />
           <Route path="/musicas/:slug" element={<SongEditor />} />
-          <Route path="/favoritas" element={<Songs key="favorites" favoritesOnly />} />
+          <Route path="/favoritas" element={<Navigate to="/minhas-musicas?fav=1" replace />} />
           <Route path="/setlists" element={<Setlists />} />
           <Route path="/setlists/:id" element={<SetlistDetail />} />
           <Route path="/karaoke" element={<KaraokeHome />} />

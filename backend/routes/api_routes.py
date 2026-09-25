@@ -527,24 +527,53 @@ def build_blueprint(ctx) -> Blueprint:
     def list_songs():
         a = request.args
         favoritas = a.get("favoritas") == "1"
+        mine = a.get("mine") == "1"
         # "favoritas" inclui, além da música marcada como favorita, as de
         # artista/gênero favorito (Fase 6) — busca os dois só quando precisa,
-        # não em toda navegação normal da biblioteca.
-        favs = ctx.favorites.list_favorites(g.user_id) if favoritas else {"artists": [], "genres": []}
-        return jsonify(ctx.search.search(
+        # não em toda navegação normal da biblioteca. Em "Minhas Músicas"
+        # (mine=1) as favoritas de artista/gênero também entram na lista base.
+        favs = ctx.favorites.list_favorites(g.user_id) if (favoritas or mine) else {"artists": [], "genres": []}
+        kwargs = {}
+        membership = None
+        if mine:
+            membership = ctx.setlists.song_membership(g.user_id)
+            kwargs["mine_slugs"] = sorted(membership)
+            # artistas/gêneros favoritos puxariam o acervo quase inteiro pra
+            # lista (ex.: gênero "Rock"), então só entram se o usuário pedir
+            if a.get("include_fav") == "1":
+                kwargs["mine_fav_interpretes"] = favs["artists"]
+                kwargs["mine_fav_generos"] = favs["genres"]
+            kwargs["only_favorite"] = a.get("fav_only") == "1"
+            kwargs["origin"] = a.get("origin", "")
+            kwargs["sl_counts"] = {slug: len(lists) for slug, lists in membership.items()}
+            setlist_filter = a.get("setlist", "")
+            if setlist_filter == "none":
+                kwargs["exclude_slugs"] = sorted(membership)
+            elif setlist_filter:
+                kwargs["only_slugs"] = sorted(slug for slug, lists in membership.items()
+                                              if any(l["id"] == setlist_filter for l in lists))
+        result = ctx.search.search(
             g.user_id,
             q=a.get("q", ""), genero=a.get("genero", ""),
             interprete=a.get("interprete", ""), tom=a.get("tom", ""),
             ritmo=a.get("ritmo", ""), tag=a.get("tag", ""),
             favoritas=favoritas,
-            favorite_interpretes=favs["artists"], favorite_generos=favs["genres"],
+            favorite_interpretes=favs["artists"] if favoritas else [],
+            favorite_generos=favs["genres"] if favoritas else [],
             only_mine=a.get("only_mine") == "1",
             page=a.get("page", 1, type=int),
             page_size=a.get("page_size", 50, type=int),
-            sort=a.get("sort", "titulo"),
+            sort=a.get("sort", ""),
             is_admin=g.is_admin,
-            mine_slugs=ctx.setlists.song_slugs(g.user_id) if a.get("mine") == "1" else None,
-        ))
+            **kwargs,
+        )
+        if mine:
+            fav_artists, fav_genres = set(favs["artists"]), {x.lower() for x in favs["genres"]}
+            for item in result["items"]:
+                item["setlists"] = membership.get(item["slug"], [])
+                item["fav_via"] = ("artist" if item["interprete"] in fav_artists
+                                   else "genre" if (item["genero"] or "").lower() in fav_genres else None)
+        return jsonify(result)
 
     @api.get("/songs/facets")
     @protected

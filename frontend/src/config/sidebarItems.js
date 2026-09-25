@@ -1,5 +1,5 @@
 import {
-  IconHome, IconMusic, IconSearch, IconDrum, IconList, IconStar, IconClock,
+  IconHome, IconMusic, IconSearch, IconDrum, IconList, IconClock,
   IconMic, IconBook, IconUsers, IconMetronome, IconTuner, IconPedal, IconShield, IconChart,
   IconSettings, IconUser,
 } from '../components/icons'
@@ -11,7 +11,6 @@ export const ITEMS = [
   { to: '/musicas', labelKey: 'nav.songs', icon: IconSearch },
   { to: '/minhas-musicas', labelKey: 'nav.mySongs', icon: IconMusic },
   { to: '/setlists', labelKey: 'nav.setlists', icon: IconList },
-  { to: '/favoritas', labelKey: 'nav.favorites', icon: IconStar },
   { to: '/historico', labelKey: 'nav.history', icon: IconClock },
   { to: '/karaoke', labelKey: 'nav.karaoke', icon: IconMic },
   { to: '/dicionario-acordes', labelKey: 'nav.chordDictionary', icon: IconBook },

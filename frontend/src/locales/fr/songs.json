@@ -47,5 +47,37 @@
   },
   "titleMine": "Mes chansons",
   "mineHint": " · créées, favorites ou dans vos setlists",
-  "emptyMine": "Vous n'avez pas encore de chansons. Créez-en une, mettez-en une en favori ou ajoutez-en à une setlist."
+  "emptyMine": "Vous n'avez pas encore de chansons. Créez-en une, mettez-en une en favori ou ajoutez-en à une setlist.",
+  "mySongs": {
+    "favPanel": "Artistes et genres favoris",
+    "allRhythms": "Tous les rythmes",
+    "allSetlists": "Toutes les setlists",
+    "noSetlist": "Sans setlist",
+    "allOrigins": "Toutes les origines",
+    "originMine": "Créées par moi",
+    "originOthers": "D'autres utilisateurs",
+    "onlyFav": "Favoris uniquement",
+    "includeFavGroups": "Inclure artistes/genres favoris",
+    "includeFavGroupsHint": "Ajoute les chansons des artistes et genres que vous avez mis en favoris",
+    "clear": "Effacer les filtres",
+    "sortBy": "Trier par {{col}}",
+    "emptyFiltered": "Aucune chanson avec ces filtres.",
+    "fav": "Ajouter aux favoris",
+    "unfav": "Retirer des favoris",
+    "moreSetlists": "+{{count}}",
+    "favVia": {
+      "artist": "Artiste favori",
+      "genre": "Genre favori"
+    },
+    "col": {
+      "fav": "Favori",
+      "favTitle": "Favori",
+      "title": "Chanson",
+      "genre": "Genre",
+      "rhythm": "Rythme",
+      "key": "Tonalité",
+      "bpm": "BPM",
+      "setlists": "Setlists"
+    }
+  }
 }

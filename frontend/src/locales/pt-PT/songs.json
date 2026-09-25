@@ -47,5 +47,37 @@
   },
   "titleMine": "As Minhas Músicas",
   "mineHint": " · criadas, favoritas ou nas suas setlists",
-  "emptyMine": "Ainda não tem músicas. Crie uma, adicione aos favoritos ou a uma setlist."
+  "emptyMine": "Ainda não tem músicas. Crie uma, adicione aos favoritos ou a uma setlist.",
+  "mySongs": {
+    "favPanel": "Artistas e géneros favoritos",
+    "allRhythms": "Todos os ritmos",
+    "allSetlists": "Todos os setlists",
+    "noSetlist": "Sem setlist",
+    "allOrigins": "Todas as origens",
+    "originMine": "Criadas por mim",
+    "originOthers": "De outros utilizadores",
+    "onlyFav": "Só favoritas",
+    "includeFavGroups": "Incluir artistas/géneros favoritos",
+    "includeFavGroupsHint": "Adiciona à lista as músicas dos artistas e géneros que marcou como favoritos",
+    "clear": "Limpar filtros",
+    "sortBy": "Ordenar por {{col}}",
+    "emptyFiltered": "Nenhuma música com estes filtros.",
+    "fav": "Adicionar aos favoritos",
+    "unfav": "Remover dos favoritos",
+    "moreSetlists": "+{{count}}",
+    "favVia": {
+      "artist": "Artista favorito",
+      "genre": "Género favorito"
+    },
+    "col": {
+      "fav": "Favorita",
+      "favTitle": "Favorita",
+      "title": "Música",
+      "genre": "Género",
+      "rhythm": "Ritmo",
+      "key": "Tom",
+      "bpm": "BPM",
+      "setlists": "Setlists"
+    }
+  }
 }

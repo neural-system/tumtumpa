@@ -47,5 +47,37 @@
   },
   "titleMine": "My Songs",
   "mineHint": " · created, favorited or in your setlists",
-  "emptyMine": "You don't have any songs yet. Create one, favorite one or add one to a setlist."
+  "emptyMine": "You don't have any songs yet. Create one, favorite one or add one to a setlist.",
+  "mySongs": {
+    "favPanel": "Favorite artists and genres",
+    "allRhythms": "All rhythms",
+    "allSetlists": "All setlists",
+    "noSetlist": "No setlist",
+    "allOrigins": "All origins",
+    "originMine": "Created by me",
+    "originOthers": "From other users",
+    "onlyFav": "Favorites only",
+    "includeFavGroups": "Include favorite artists/genres",
+    "includeFavGroupsHint": "Adds songs by the artists and genres you marked as favorites",
+    "clear": "Clear filters",
+    "sortBy": "Sort by {{col}}",
+    "emptyFiltered": "No songs match these filters.",
+    "fav": "Add to favorites",
+    "unfav": "Remove from favorites",
+    "moreSetlists": "+{{count}}",
+    "favVia": {
+      "artist": "Favorite artist",
+      "genre": "Favorite genre"
+    },
+    "col": {
+      "fav": "Favorite",
+      "favTitle": "Favorite",
+      "title": "Song",
+      "genre": "Genre",
+      "rhythm": "Rhythm",
+      "key": "Key",
+      "bpm": "BPM",
+      "setlists": "Setlists"
+    }
+  }
 }

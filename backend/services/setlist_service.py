@@ -135,18 +135,30 @@ class SetlistService:
             by_key.setdefault(key, dict(c))
         return {ref: by_key[key] for ref, key in targets.items() if key in by_key}
 
-    def song_slugs(self, user_id: str) -> list[str]:
-        """Slugs das músicas presentes nos setlists PRÓPRIOS do usuário (dono,
-        não apagados) — alimenta "Minhas Músicas" (SearchService, `mine_slugs`).
-        Setlists seguidos não contam; clonar um setlist alheio cria um setlist
-        próprio, e é assim que as músicas dele passam a ser "do" usuário."""
+    def song_membership(self, user_id: str) -> dict[str, list[dict]]:
+        """{slug da música: [{id, nome} dos setlists PRÓPRIOS que a contêm]} —
+        dono, não apagados. Alimenta "Minhas Músicas" (SearchService,
+        `mine_slugs`) e a coluna/filtro de setlists da tela. Setlists seguidos
+        não contam; clonar um setlist alheio cria um setlist próprio, e é
+        assim que as músicas dele passam a ser "do" usuário."""
         with db.get_pool().connection() as conn:
             rows = conn.execute(
-                """select distinct i.ref from setlist_items i join setlists s on s.id = i.setlist_id
-                   where s.user_id = %s and not s.deleted""", (user_id,),
+                """select s.slug as sid, s.nome, i.ref from setlist_items i join setlists s on s.id = i.setlist_id
+                   where s.user_id = %s and not s.deleted order by s.created_at, i.position""", (user_id,),
             ).fetchall()
         resolved = self.resolve_refs_batch([r["ref"] for r in rows])
-        return sorted({v["slug"] for v in resolved.values()})
+        out: dict[str, list[dict]] = {}
+        for r in rows:
+            song = resolved.get(r["ref"])
+            if not song:
+                continue
+            lists = out.setdefault(song["slug"], [])
+            if not any(l["id"] == r["sid"] for l in lists):
+                lists.append({"id": r["sid"], "nome": r["nome"]})
+        return out
+
+    def song_slugs(self, user_id: str) -> list[str]:
+        return sorted(self.song_membership(user_id))
 
     # ---------- API ----------
     def list(self, user_id: str) -> list[dict]:

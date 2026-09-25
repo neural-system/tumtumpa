@@ -954,6 +954,41 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
   .landing-header { padding: 12px 20px; }
 }
 
+/* ---------- Minhas Músicas (pages/MySongs.jsx) ---------- */
+.ms-filters { margin-bottom: 16px; padding: 14px 16px; }
+.ms-check { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; }
+.ms-check input { accent-color: var(--accent); }
+.ms-row {
+  display: grid; align-items: center; gap: 12px; padding: 0 16px;
+  grid-template-columns: 44px minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) 64px 64px minmax(0, 1.6fr) 56px;
+}
+.ms-head { position: sticky; top: 0; z-index: 2; height: 42px; border-bottom: 1px solid var(--stroke); background: var(--bg-raise); border-radius: var(--radius) var(--radius) 0 0; }
+.ms-th {
+  display: flex; align-items: center; gap: 4px; min-width: 0; padding: 0; background: none; border: none; cursor: pointer; text-align: left;
+  font: 700 10.5px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); transition: color 120ms;
+}
+.ms-th:hover, .ms-th.sorted { color: var(--text); }
+.ms-th.sorted { color: var(--accent); }
+.ms-sort { font-size: 9px; }
+.ms-body { border-bottom: 1px solid var(--stroke); cursor: pointer; transition: background 100ms; }
+.ms-body:hover { background: var(--glass); }
+.ms-title-cell { min-width: 0; }
+.ms-title-cell .title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.ms-origin { color: var(--accent); }
+.ms-title-cell .meta, .ms-body > .meta { color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ms-col-narrow { text-align: left; }
+.ms-col-play { justify-self: end; }
+.ms-star { background: none; border: none; cursor: pointer; font-size: 19px; line-height: 1; color: var(--muted); padding: 4px; transition: transform 120ms, color 120ms; }
+.ms-star:hover { transform: scale(1.2); color: var(--accent); }
+.ms-star.on { color: var(--accent); }
+.ms-star.via { color: color-mix(in srgb, var(--accent) 60%, var(--muted)); }
+.ms-setlists { display: flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; }
+.ms-sl-chip { max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-transform: none; letter-spacing: 0; font: 600 12px var(--font-body); padding: 3px 8px; }
+@media (max-width: 900px) {
+  .ms-row { grid-template-columns: 44px minmax(0, 1fr) 60px 56px; }
+  .ms-row .hide-sm { display: none; }
+}
+
 /* ---------- gerador de acompanhamento (pages/Accompaniment.jsx) ---------- */
 .acc-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 18px; align-items: start; }
 .acc-main, .acc-side { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
