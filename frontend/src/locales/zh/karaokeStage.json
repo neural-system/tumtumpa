@@ -33,7 +33,9 @@
     "playWithYoutubeTitle": "同时播放歌曲和 YouTube 视频",
     "pauseWithYoutube": "暂停 + YT",
     "edit": "✎ 编辑",
-    "editTitle": "编辑这首歌的和弦谱"
+    "editTitle": "编辑这首歌的和弦谱",
+    "speedLabel": "速度",
+    "speedTitle": "当前速度"
   },
   "countdown": {
     "hint": "准备…（点击或按空格跳过）"

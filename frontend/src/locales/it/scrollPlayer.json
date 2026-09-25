@@ -30,7 +30,8 @@
     "edit": "✎ Modifica",
     "editTitle": "Modifica lo spartito di questa canzone",
     "skipCountdown": "Salta ({{count}})",
-    "speedTitle": "Velocità di scorrimento attuale"
+    "speedTitle": "Velocità di scorrimento attuale",
+    "speedLabel": "Vel."
   },
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {

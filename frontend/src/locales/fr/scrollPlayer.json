@@ -30,7 +30,8 @@
     "edit": "✎ Modifier",
     "editTitle": "Modifier la grille d'accords de ce morceau",
     "skipCountdown": "Passer ({{count}})",
-    "speedTitle": "Vitesse de défilement actuelle"
+    "speedTitle": "Vitesse de défilement actuelle",
+    "speedLabel": "Vit."
   },
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {

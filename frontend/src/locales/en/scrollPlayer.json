@@ -30,7 +30,8 @@
     "edit": "✎ Edit",
     "editTitle": "Edit this song's chord sheet",
     "skipCountdown": "Skip ({{count}})",
-    "speedTitle": "Current scroll speed"
+    "speedTitle": "Current scroll speed",
+    "speedLabel": "Speed"
   },
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {

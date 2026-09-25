@@ -30,7 +30,8 @@
     "edit": "✎ Editar",
     "editTitle": "Editar la cifra de esta canción",
     "skipCountdown": "Saltar ({{count}})",
-    "speedTitle": "Velocidad actual de desplazamiento"
+    "speedTitle": "Velocidad actual de desplazamiento",
+    "speedLabel": "Vel."
   },
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {

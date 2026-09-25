@@ -30,7 +30,8 @@
     "edit": "✎ Editar",
     "editTitle": "Editar a cifra desta música",
     "skipCountdown": "Pular ({{count}})",
-    "speedTitle": "Velocidade atual da rolagem"
+    "speedTitle": "Velocidade atual da rolagem",
+    "speedLabel": "Vel."
   },
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {

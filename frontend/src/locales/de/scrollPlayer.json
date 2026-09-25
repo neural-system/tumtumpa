@@ -29,7 +29,8 @@
     "edit": "✎ Bearbeiten",
     "editTitle": "Akkordblatt dieses Songs bearbeiten",
     "skipCountdown": "Überspringen ({{count}})",
-    "speedTitle": "Aktuelle Scrollgeschwindigkeit"
+    "speedTitle": "Aktuelle Scrollgeschwindigkeit",
+    "speedLabel": "Tempo"
   },
   "countdown": {
     "hint": "Mach dich bereit… (Klick oder Leertaste zum Überspringen)"

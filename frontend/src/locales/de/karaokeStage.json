@@ -33,7 +33,9 @@
     "playWithYoutubeTitle": "Spielt den Song und das YouTube-Video gemeinsam ab",
     "pauseWithYoutube": "Pause + YT",
     "edit": "✎ Bearbeiten",
-    "editTitle": "Akkordblatt dieses Songs bearbeiten"
+    "editTitle": "Akkordblatt dieses Songs bearbeiten",
+    "speedLabel": "Tempo",
+    "speedTitle": "Aktuelle Geschwindigkeit"
   },
   "countdown": {
     "hint": "Mach dich bereit… (Klick oder Leertaste zum Überspringen)"

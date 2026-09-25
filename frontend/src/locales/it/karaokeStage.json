@@ -33,7 +33,9 @@
     "playWithYoutubeTitle": "Riproduce la canzone e il video di YouTube insieme",
     "pauseWithYoutube": "Pausa + YT",
     "edit": "✎ Modifica",
-    "editTitle": "Modifica lo spartito di questa canzone"
+    "editTitle": "Modifica lo spartito di questa canzone",
+    "speedLabel": "Vel.",
+    "speedTitle": "Velocità attuale"
   },
   "countdown": {
     "hint": "Preparati… (clicca o Spazio per saltare)"

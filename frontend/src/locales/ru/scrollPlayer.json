@@ -30,7 +30,8 @@
     "edit": "✎ Редактировать",
     "editTitle": "Редактировать аккорды этой песни",
     "skipCountdown": "Пропустить ({{count}})",
-    "speedTitle": "Текущая скорость прокрутки"
+    "speedTitle": "Текущая скорость прокрутки",
+    "speedLabel": "Скор."
   },
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {

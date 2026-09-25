@@ -33,7 +33,9 @@
     "playWithYoutubeTitle": "Play the song and the YouTube video together",
     "pauseWithYoutube": "Pause + YT",
     "edit": "✎ Edit",
-    "editTitle": "Edit this song's chord sheet"
+    "editTitle": "Edit this song's chord sheet",
+    "speedLabel": "Speed",
+    "speedTitle": "Current scroll speed"
   },
   "countdown": {
     "hint": "Get ready… (click or Space to skip)"

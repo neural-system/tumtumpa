@@ -33,7 +33,9 @@
     "playWithYoutubeTitle": "Toca a música e o vídeo do YouTube juntos",
     "pauseWithYoutube": "Pausar + YT",
     "edit": "✎ Editar",
-    "editTitle": "Editar a cifra desta música"
+    "editTitle": "Editar a cifra desta música",
+    "speedLabel": "Vel.",
+    "speedTitle": "Velocidade atual da rolagem"
   },
   "countdown": {
     "hint": "Prepare-se… (clique ou Espaço pra pular)"

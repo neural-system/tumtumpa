@@ -500,6 +500,8 @@ export default function KaraokeStage() {
       {pedal.modoPedal === 'fila_clipes' && <audio ref={pedal.clipAudioRef} preload="auto" />}
       {youtubeVideoId && <YoutubeMiniPlayer ref={ytRef} videoId={youtubeVideoId} title={data.titulo} />}
 
+      {/* sempre visível (a barra de controles some sozinha enquanto toca) */}
+      <div className="scroll-rate-hud" title={t('controls.speedTitle')}>{`${rate.toFixed(1).replace('.', ',')}x`}</div>
       <div className="k-header">
         <div>
           {inPlaylist && <>{t('header.playlistPrefix', { name: playlist.setlistNome, current: playlist.index + 1, total: playlist.queue.length })}</>}
@@ -588,6 +590,9 @@ export default function KaraokeStage() {
         )}
         <button className="btn" onClick={goNext} title={t('controls.nextLine')}>→</button>
         <button className="btn" onClick={() => adjustRate(-0.1)} title={t('controls.slower')}>−</button>
+        <span className="scroll-rate-indicator" title={t('controls.speedTitle')} aria-live="polite">
+          <b>{`${rate.toFixed(1).replace('.', ',')}x`}</b><small>{t('controls.speedLabel')}</small>
+        </span>
         <button className="btn" onClick={() => adjustRate(0.1)} title={t('controls.faster')}>+</button>
         <button className="btn" onClick={zoomOut} title={t('controls.zoomOut')}>A−</button>
         <button className="btn" onClick={zoomIn} title={t('controls.zoomIn')}>A+</button>
