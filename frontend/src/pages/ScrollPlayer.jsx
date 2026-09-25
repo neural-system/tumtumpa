@@ -25,6 +25,22 @@ const MAX_RATE = 4
 // com folga à frente — sem isso a linha em execução ia do topo (início) até o
 // rodapé (fim) e o músico nunca via o que vinha depois, parecendo atrasada.
 const LOOKAHEAD = 0.3
+// a folga sobe de 0 até LOOKAHEAD nos primeiros 1/RAMP da música (em vez de
+// começar já no valor final): senão a cifra ficava parada por vários segundos
+// no início, até a linha atual "descer" até a posição de leitura
+const RAMP = 4
+const lead = (frac) => Math.min(LOOKAHEAD, frac * RAMP)
+/** rolagem (px) pra um ponto da música; sheetH/viewH = alturas da cifra e da tela */
+const offsetForFrac = (frac, sheetH, viewH) => Math.min(Math.max(0, sheetH - viewH), Math.max(0, frac * sheetH - lead(frac) * viewH))
+/** inverso de offsetForFrac (ponto da música pra uma rolagem em px) */
+function fracForOffset(offset, sheetH, viewH) {
+  const maxOffset = Math.max(0, sheetH - viewH)
+  if (maxOffset > 0 && offset >= maxOffset - 1) return 1
+  const rampEnd = LOOKAHEAD / RAMP
+  const slope = sheetH - RAMP * viewH // derivada de offsetForFrac dentro da rampa
+  if (slope > 0 && offset < rampEnd * slope) return offset / slope
+  return (offset + LOOKAHEAD * viewH) / Math.max(1, sheetH)
+}
 // passo do −/+: fino abaixo de 1x, largo acima (chegar em 4x com 0,1 seriam 30 cliques)
 const rateStep = (r, dir) => (dir > 0 ? (r < 1 ? 0.1 : 0.25) : (r > 1 ? 0.25 : 0.1))
 const formatRate = (r) => `${(+r.toFixed(2)).toString().replace('.', ',')}x`
@@ -277,7 +293,7 @@ export default function ScrollPlayer({ data }) {
     if (!viewport || !sheet) return
     const maxOffset = Math.max(0, sheet.scrollHeight - viewport.clientHeight)
     const frac = totalMs > 0 ? Math.min(1, getElapsedMs() / totalMs) : 0
-    const targetTop = Math.min(maxOffset, Math.max(0, frac * sheet.scrollHeight - LOOKAHEAD * viewport.clientHeight))
+    const targetTop = offsetForFrac(frac, sheet.scrollHeight, viewport.clientHeight)
     if (Math.abs(viewport.scrollTop - targetTop) > 0.5) {
       programmaticScroll.current = true
       viewport.scrollTop = targetTop
@@ -314,11 +330,7 @@ export default function ScrollPlayer({ data }) {
     const sheet = sheetRef.current
     if (!viewport || !sheet || !totalMs) return
     const maxOffset = Math.max(0, sheet.scrollHeight - viewport.clientHeight)
-    // inverso de applyOffset (com a mesma folga à frente); no rodapé (fim da
-    // rolagem) a música está no fim, não em (H − folga)/H
-    const frac = maxOffset > 0 && viewport.scrollTop >= maxOffset - 1
-      ? 1
-      : (viewport.scrollTop + LOOKAHEAD * viewport.clientHeight) / Math.max(1, sheet.scrollHeight)
+    const frac = fracForOffset(viewport.scrollTop, sheet.scrollHeight, viewport.clientHeight)
     seekToMs(Math.max(0, Math.min(1, frac)) * totalMs)
   }
 
