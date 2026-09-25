@@ -29,7 +29,8 @@
     "pauseWithYoutube": "Pausa + YT",
     "edit": "✎ Modifica",
     "editTitle": "Modifica lo spartito di questa canzone",
-    "skipCountdown": "Salta ({{count}})"
+    "skipCountdown": "Salta ({{count}})",
+    "speedTitle": "Velocità di scorrimento attuale"
   },
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {

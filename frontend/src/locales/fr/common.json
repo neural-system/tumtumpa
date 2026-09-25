@@ -63,5 +63,57 @@
     "free": "Forfait gratuit",
     "freeGuest": "Forfait gratuit - Invité",
     "freeAdmin": "Forfait gratuit - ADMIN"
+  },
+  "accompaniment": {
+    "title": "Générateur d'accompagnement",
+    "subtitle": "Choisissez un rythme et des accords : batterie, basse, guitare et clavier jouent en boucle, comme sur un clavier arrangeur.",
+    "noChords": "Saisissez au moins un accord valide.",
+    "stop": "Arrêter",
+    "play": "Jouer",
+    "styleTitle": "Rythme",
+    "harmonyTitle": "Harmonie",
+    "key": "Tonalité",
+    "progression": "Progression",
+    "barsPerChord": "Mesures par accord",
+    "chords": "Accords (séparés par des espaces)",
+    "chordsHint": "Ex. : C G Am F, Dm7 G7 Cmaj7. Vous pouvez changer les accords pendant la lecture.",
+    "invalidChords": "Accords non reconnus : {{list}}",
+    "tempoTitle": "Tempo",
+    "slower": "Plus lent",
+    "faster": "Plus rapide",
+    "fills": "Breaks à la fin de chaque cycle",
+    "mixerTitle": "Mixage",
+    "master": "Général",
+    "hint": "Utilisez un casque ou des enceintes. Le son est synthétisé dans votre navigateur — rien n'est téléchargé.",
+    "tracks": {
+      "drums": "Batterie",
+      "bass": "Basse",
+      "guitar": "Guitare",
+      "keys": "Clavier"
+    },
+    "progressions": {
+      "pop": "Pop (I–V–vi–IV)",
+      "classic": "Classique (I–IV–V–I)",
+      "fifties": "Années 50 (I–vi–IV–V)",
+      "ballad": "Ballade (vi–IV–I–V)",
+      "jazz": "Jazz (ii–V–I)",
+      "blues12": "Blues en 12 mesures",
+      "minor": "Mineur (i–VI–III–VII)",
+      "minorClassic": "Mineur (i–iv–V–i)"
+    },
+    "styles": {
+      "poprock": "Pop Rock",
+      "balada": "Ballade",
+      "samba": "Samba",
+      "bossa": "Bossa Nova",
+      "baiao": "Baião",
+      "forro": "Forró",
+      "sertanejo": "Sertanejo",
+      "reggae": "Reggae",
+      "funk": "Funk",
+      "valsa": "Valse",
+      "blues": "Blues Shuffle",
+      "disco": "Disco"
+    }
   }
 }

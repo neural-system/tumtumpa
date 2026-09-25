@@ -63,5 +63,57 @@
     "free": "Бесплатный тариф",
     "freeGuest": "Бесплатный тариф - Гость",
     "freeAdmin": "Бесплатный тариф - АДМИН"
+  },
+  "accompaniment": {
+    "title": "Генератор аккомпанемента",
+    "subtitle": "Выберите ритм и аккорды: ударные, бас, гитара и клавиши играют по кругу, как автоаккомпанемент синтезатора.",
+    "noChords": "Введите хотя бы один допустимый аккорд.",
+    "stop": "Стоп",
+    "play": "Играть",
+    "styleTitle": "Ритм",
+    "harmonyTitle": "Гармония",
+    "key": "Тональность",
+    "progression": "Последовательность",
+    "barsPerChord": "Тактов на аккорд",
+    "chords": "Аккорды (через пробел)",
+    "chordsHint": "Например: C G Am F, Dm7 G7 Cmaj7. Аккорды можно менять во время игры.",
+    "invalidChords": "Не распознаны аккорды: {{list}}",
+    "tempoTitle": "Темп",
+    "slower": "Медленнее",
+    "faster": "Быстрее",
+    "fills": "Переходы в конце каждого цикла",
+    "mixerTitle": "Микшер",
+    "master": "Общая",
+    "hint": "Используйте наушники или колонки. Звук синтезируется в браузере — ничего не скачивается.",
+    "tracks": {
+      "drums": "Ударные",
+      "bass": "Бас",
+      "guitar": "Гитара",
+      "keys": "Клавиши"
+    },
+    "progressions": {
+      "pop": "Поп (I–V–vi–IV)",
+      "classic": "Классика (I–IV–V–I)",
+      "fifties": "50-е (I–vi–IV–V)",
+      "ballad": "Баллада (vi–IV–I–V)",
+      "jazz": "Джаз (ii–V–I)",
+      "blues12": "12-тактовый блюз",
+      "minor": "Минор (i–VI–III–VII)",
+      "minorClassic": "Минор (i–iv–V–i)"
+    },
+    "styles": {
+      "poprock": "Pop Rock",
+      "balada": "Баллада",
+      "samba": "Samba",
+      "bossa": "Bossa Nova",
+      "baiao": "Baião",
+      "forro": "Forró",
+      "sertanejo": "Sertanejo",
+      "reggae": "Reggae",
+      "funk": "Funk",
+      "valsa": "Вальс",
+      "blues": "Blues Shuffle",
+      "disco": "Disco"
+    }
   }
 }

@@ -298,7 +298,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
    a largura natural de cada botão — em grid "auto" cada linha calculava as
    colunas por conta própria e os botões ficavam desalinhados entre linhas. */
 .song-row.setlist-row { display: flex; flex-wrap: wrap; align-items: center; }
-.song-row.setlist-row > a, .song-row.setlist-row > div:first-child { flex: 1 1 220px; min-width: 0; }
+.song-row.setlist-row > :first-child { flex: 1 1 220px; min-width: 0; }
 .song-row .title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .song-row .meta { color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chip { display: inline-block; padding: 2px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); font: 700 10.5px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
@@ -627,6 +627,8 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
   opacity: 0; transition: opacity 200ms;
 }
 .karaoke-stage.controls-visible .k-controls { opacity: 1; }
+/* indicador de velocidade entre − e + (ScrollPlayer.jsx) */
+.scroll-rate-indicator { min-width: 56px; text-align: center; font: 700 13px var(--font-mono); color: var(--amber); font-variant-numeric: tabular-nums; }
 .k-header {
   /* faixa translúcida atrás das infos da música (título/tom/relógio) — sem
      ela o texto se confundia com a cifra rolando por baixo. 10% de
@@ -891,6 +893,41 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
   .landing-page section { padding: 64px 20px; }
   .landing-header { padding: 12px 20px; }
 }
+
+/* ---------- gerador de acompanhamento (pages/Accompaniment.jsx) ---------- */
+.acc-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 18px; align-items: start; }
+.acc-main, .acc-side { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.acc-stage { padding: 22px; }
+.acc-chord-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.acc-chord {
+  min-width: 56px; padding: 8px 14px; text-align: center; border: 1px solid var(--stroke); border-radius: 3px;
+  font: 800 20px var(--font-display); letter-spacing: -0.03em; color: var(--muted); transition: 80ms;
+}
+.acc-chord.active { color: var(--accent-ink); background: var(--accent); border-color: transparent; }
+.acc-empty { color: var(--muted); font-size: 13px; }
+.acc-play { padding: 14px 24px; font-size: 14px; }
+.acc-beats { display: flex; gap: 8px; margin-top: 18px; }
+.acc-beat { flex: 1; height: 6px; border-radius: 2px; background: var(--glass-strong); transition: background 60ms; }
+.acc-beat.down { background: var(--stroke); }
+.acc-beat.on { background: var(--accent); }
+.acc-style-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 8px; }
+.acc-style {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px; cursor: pointer;
+  background: var(--glass); color: var(--text); border: 1px solid var(--stroke); border-radius: var(--radius-sm); text-align: left; transition: 100ms;
+}
+.acc-style:hover { border-color: var(--btn-hover-border); }
+.acc-style.active { border-color: var(--accent); box-shadow: inset 2px 0 0 var(--accent); background: var(--accent-soft); }
+.acc-style-name { font-weight: 800; letter-spacing: -0.02em; }
+.acc-style-meta { font: 700 10.5px var(--font-mono); letter-spacing: 0.08em; color: var(--muted); }
+.acc-bpm { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.acc-bpm-value { font: 800 40px var(--font-display); letter-spacing: -0.04em; color: var(--accent); line-height: 1; text-align: center; }
+.acc-bpm-value span { display: block; font: 700 10px var(--font-mono); letter-spacing: 0.14em; color: var(--muted); margin-top: 4px; }
+.acc-range { width: 100%; accent-color: var(--accent); }
+.acc-check { display: flex; align-items: center; gap: 8px; margin-top: 14px; cursor: pointer; }
+.acc-track { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.acc-track-btn { width: 84px; justify-content: center; padding: 7px 4px; font-size: 12px; flex-shrink: 0; }
+.acc-hint { color: var(--muted); font-size: 12.5px; margin-top: 8px; line-height: 1.5; }
+@media (max-width: 1100px) { .acc-layout { grid-template-columns: 1fr; } }
 
 /* ---------- impressão ---------- */
 @media print {

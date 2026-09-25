@@ -20,7 +20,14 @@ import { semitonesBetween } from '../utils/musicalKey'
 
 const CHORD_LIKE = new Set(['acorde', 'solo', 'riff', 'tab'])
 const MIN_RATE = 0.5
-const MAX_RATE = 2
+const MAX_RATE = 4
+// posição da linha "atual" na tela (fração da altura visível): a cifra rola
+// com folga à frente — sem isso a linha em execução ia do topo (início) até o
+// rodapé (fim) e o músico nunca via o que vinha depois, parecendo atrasada.
+const LOOKAHEAD = 0.3
+// passo do −/+: fino abaixo de 1x, largo acima (chegar em 4x com 0,1 seriam 30 cliques)
+const rateStep = (r, dir) => (dir > 0 ? (r < 1 ? 0.1 : 0.25) : (r > 1 ? 0.25 : 0.1))
+const formatRate = (r) => `${(+r.toFixed(2)).toString().replace('.', ',')}x`
 const MIN_DURATION_MS = 3000
 const COUNTDOWN_SECONDS = 3
 
@@ -270,7 +277,7 @@ export default function ScrollPlayer({ data }) {
     if (!viewport || !sheet) return
     const maxOffset = Math.max(0, sheet.scrollHeight - viewport.clientHeight)
     const frac = totalMs > 0 ? Math.min(1, getElapsedMs() / totalMs) : 0
-    const targetTop = frac * maxOffset
+    const targetTop = Math.min(maxOffset, Math.max(0, frac * sheet.scrollHeight - LOOKAHEAD * viewport.clientHeight))
     if (Math.abs(viewport.scrollTop - targetTop) > 0.5) {
       programmaticScroll.current = true
       viewport.scrollTop = targetTop
@@ -307,7 +314,11 @@ export default function ScrollPlayer({ data }) {
     const sheet = sheetRef.current
     if (!viewport || !sheet || !totalMs) return
     const maxOffset = Math.max(0, sheet.scrollHeight - viewport.clientHeight)
-    const frac = maxOffset > 0 ? viewport.scrollTop / maxOffset : 0
+    // inverso de applyOffset (com a mesma folga à frente); no rodapé (fim da
+    // rolagem) a música está no fim, não em (H − folga)/H
+    const frac = maxOffset > 0 && viewport.scrollTop >= maxOffset - 1
+      ? 1
+      : (viewport.scrollTop + LOOKAHEAD * viewport.clientHeight) / Math.max(1, sheet.scrollHeight)
     seekToMs(Math.max(0, Math.min(1, frac)) * totalMs)
   }
 
@@ -368,7 +379,7 @@ export default function ScrollPlayer({ data }) {
         clearInterval(intervalRef.current)
         onSongEnd()
       }
-    }, 100)
+    }, 50)
     return () => clearInterval(intervalRef.current)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing, effectiveHasAudio, rate, totalMs])
@@ -386,6 +397,19 @@ export default function ScrollPlayer({ data }) {
     return () => audio.removeEventListener('timeupdate', onTimeUpdate)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [effectiveHasAudio, totalMs])
+
+  // `timeupdate` só dispara ~4x/s: a rolagem andava aos "soquinhos" e ficava
+  // atrás do áudio. Enquanto toca, também reposiciona a cada frame (rAF); o
+  // `timeupdate` continua como reserva pra aba em segundo plano (rAF pausa).
+  useEffect(() => {
+    if (!effectiveHasAudio || !playing) return undefined
+    let raf = requestAnimationFrame(function tick() {
+      applyOffset()
+      raf = requestAnimationFrame(tick)
+    })
+    return () => cancelAnimationFrame(raf)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [effectiveHasAudio, playing, totalMs])
 
   // play/pause da store (via `playing`) controla o elemento <audio> de verdade
   useEffect(() => {
@@ -478,7 +502,7 @@ export default function ScrollPlayer({ data }) {
     else playWithYoutube()
   }
   const restart = () => seekToMs(0)
-  const adjustRate = (delta) => setRate((r) => Math.min(MAX_RATE, Math.max(MIN_RATE, +(r + delta).toFixed(2))))
+  const adjustRate = (dir) => setRate((r) => Math.min(MAX_RATE, Math.max(MIN_RATE, +(r + Math.sign(dir) * rateStep(r, dir)).toFixed(2))))
   const seekToFraction = (frac) => seekToMs(Math.max(0, Math.min(1, frac)) * totalMs)
 
   // veio de uma setlist: sair volta pra ela com foco nesta música (ver
@@ -498,8 +522,8 @@ export default function ScrollPlayer({ data }) {
     toggle_fullscreen: toggleFullscreen,
     zoom_in: zoomIn,
     zoom_out: zoomOut,
-    rate_up: () => adjustRate(0.1),
-    rate_down: () => adjustRate(-0.1),
+    rate_up: () => adjustRate(1),
+    rate_down: () => adjustRate(-1),
     toggle_full_track: togglePlay,
     toggle_with_youtube: toggleWithYoutube,
     ...(inPlaylist ? { next_song: goNextSong, prev_song: goPrevSong, stop_playlist: stopPlaylist } : {}),
@@ -555,7 +579,7 @@ export default function ScrollPlayer({ data }) {
           )}
         </div>
         <div>
-          {formatTime(elapsedDisplay)} / {formatTime(totalMs / 1000)} · {rate.toFixed(1)}x · {t('status.zoom', { percent: Math.round(zoom * 100) })}
+          {formatTime(elapsedDisplay)} / {formatTime(totalMs / 1000)} · {formatRate(rate)} · {t('status.zoom', { percent: Math.round(zoom * 100) })}
           {effectiveHasAudio && !audioReady && <> · {t('status.loadingAudio')}</>}
           {isMedleyAnchor && !medleyReady && <> · {t('status.loadingMedley')}</>}
           {' '}<PedalStatusBadge />
@@ -602,8 +626,9 @@ export default function ScrollPlayer({ data }) {
               : playing ? t('controls.pauseWithYoutube') : t('controls.playWithYoutube')}
           </button>
         )}
-        <button className="btn" onClick={() => adjustRate(-0.1)} title={t('controls.slower')}>−</button>
-        <button className="btn" onClick={() => adjustRate(0.1)} title={t('controls.faster')}>+</button>
+        <button className="btn" onClick={() => adjustRate(-1)} title={t('controls.slower')}>−</button>
+        <span className="scroll-rate-indicator" title={t('controls.speedTitle')} aria-live="polite">{formatRate(rate)}</span>
+        <button className="btn" onClick={() => adjustRate(1)} title={t('controls.faster')}>+</button>
         <button className="btn" onClick={zoomOut} title={t('controls.zoomOut')}>A−</button>
         <button className="btn" onClick={zoomIn} title={t('controls.zoomIn')}>A+</button>
         {inPlaylist && <>

@@ -63,5 +63,57 @@
     "free": "免费方案",
     "freeGuest": "免费方案 - 访客",
     "freeAdmin": "免费方案 - 管理员"
+  },
+  "accompaniment": {
+    "title": "伴奏生成器",
+    "subtitle": "选择节奏和和弦：鼓、贝斯、吉他和键盘循环演奏，就像编曲键盘的自动伴奏。",
+    "noChords": "请至少输入一个有效和弦。",
+    "stop": "停止",
+    "play": "播放",
+    "styleTitle": "节奏",
+    "harmonyTitle": "和声",
+    "key": "调",
+    "progression": "和弦进行",
+    "barsPerChord": "每个和弦的小节数",
+    "chords": "和弦（用空格分隔）",
+    "chordsHint": "例如：C G Am F，Dm7 G7 Cmaj7。播放时也可以更改和弦。",
+    "invalidChords": "无法识别的和弦：{{list}}",
+    "tempoTitle": "速度",
+    "slower": "更慢",
+    "faster": "更快",
+    "fills": "每个循环结尾加过门",
+    "mixerTitle": "混音",
+    "master": "总音量",
+    "hint": "请使用耳机或音箱。声音在浏览器中合成——不会下载任何文件。",
+    "tracks": {
+      "drums": "鼓",
+      "bass": "贝斯",
+      "guitar": "吉他",
+      "keys": "键盘"
+    },
+    "progressions": {
+      "pop": "流行 (I–V–vi–IV)",
+      "classic": "经典 (I–IV–V–I)",
+      "fifties": "50年代 (I–vi–IV–V)",
+      "ballad": "抒情 (vi–IV–I–V)",
+      "jazz": "爵士 (ii–V–I)",
+      "blues12": "12小节布鲁斯",
+      "minor": "小调 (i–VI–III–VII)",
+      "minorClassic": "小调 (i–iv–V–i)"
+    },
+    "styles": {
+      "poprock": "Pop Rock",
+      "balada": "抒情慢歌",
+      "samba": "Samba",
+      "bossa": "Bossa Nova",
+      "baiao": "Baião",
+      "forro": "Forró",
+      "sertanejo": "Sertanejo",
+      "reggae": "Reggae",
+      "funk": "Funk",
+      "valsa": "华尔兹",
+      "blues": "Blues Shuffle",
+      "disco": "Disco"
+    }
   }
 }

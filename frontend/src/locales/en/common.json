@@ -63,5 +63,57 @@
     "free": "Free Plan",
     "freeGuest": "Free Plan - Guest",
     "freeAdmin": "Free Plan - ADMIN"
+  },
+  "accompaniment": {
+    "title": "Accompaniment Generator",
+    "subtitle": "Pick a rhythm and chords: drums, bass, guitar and keys loop along, like the auto-accompaniment on an arranger keyboard.",
+    "noChords": "Type at least one valid chord.",
+    "stop": "Stop",
+    "play": "Play",
+    "styleTitle": "Rhythm",
+    "harmonyTitle": "Harmony",
+    "key": "Key",
+    "progression": "Progression",
+    "barsPerChord": "Bars per chord",
+    "chords": "Chords (separated by spaces)",
+    "chordsHint": "E.g. C G Am F, Dm7 G7 Cmaj7. You can change the chords while it plays.",
+    "invalidChords": "Unrecognized chords: {{list}}",
+    "tempoTitle": "Tempo",
+    "slower": "Slower",
+    "faster": "Faster",
+    "fills": "Drum fills at the end of each cycle",
+    "mixerTitle": "Mixer",
+    "master": "Master",
+    "hint": "Use headphones or speakers. The sound is synthesized in your browser — nothing is downloaded.",
+    "tracks": {
+      "drums": "Drums",
+      "bass": "Bass",
+      "guitar": "Guitar",
+      "keys": "Keys"
+    },
+    "progressions": {
+      "pop": "Pop (I–V–vi–IV)",
+      "classic": "Classic (I–IV–V–I)",
+      "fifties": "50s (I–vi–IV–V)",
+      "ballad": "Ballad (vi–IV–I–V)",
+      "jazz": "Jazz (ii–V–I)",
+      "blues12": "12-bar blues",
+      "minor": "Minor (i–VI–III–VII)",
+      "minorClassic": "Minor (i–iv–V–i)"
+    },
+    "styles": {
+      "poprock": "Pop Rock",
+      "balada": "Ballad",
+      "samba": "Samba",
+      "bossa": "Bossa Nova",
+      "baiao": "Baião",
+      "forro": "Forró",
+      "sertanejo": "Sertanejo",
+      "reggae": "Reggae",
+      "funk": "Funk",
+      "valsa": "Waltz",
+      "blues": "Blues Shuffle",
+      "disco": "Disco"
+    }
   }
 }

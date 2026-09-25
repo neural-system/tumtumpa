@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import api from '../services/api'
 import { useAuthStore } from '../store/authStore'
 import InstrumentPicker from '../components/InstrumentPicker'
-import logo from '../assets/logo-tumtumpa-wide.png'
+import AppLogo from '../components/AppLogo'
 
 /**
  * Cadastro público (Fase 5) — deliberadamente separado da criação de
@@ -38,7 +38,7 @@ export default function SignUp() {
   return (
     <div className="login-wrap">
       <div className="card login-card">
-        <img src={logo} alt="TumTumPa" className="login-logo" />
+        <AppLogo />
         <div className="tag">{t('signup.tagline')}</div>
         <div className="field">
           <label>{t('signup.name')}</label>

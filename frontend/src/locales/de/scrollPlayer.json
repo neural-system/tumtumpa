@@ -28,7 +28,8 @@
     "pauseWithYoutube": "Pause + YT",
     "edit": "✎ Bearbeiten",
     "editTitle": "Akkordblatt dieses Songs bearbeiten",
-    "skipCountdown": "Überspringen ({{count}})"
+    "skipCountdown": "Überspringen ({{count}})",
+    "speedTitle": "Aktuelle Scrollgeschwindigkeit"
   },
   "countdown": {
     "hint": "Mach dich bereit… (Klick oder Leertaste zum Überspringen)"

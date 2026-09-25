@@ -29,7 +29,8 @@
     "pauseWithYoutube": "Pausar + YT",
     "edit": "✎ Editar",
     "editTitle": "Editar a cifra desta música",
-    "skipCountdown": "Pular ({{count}})"
+    "skipCountdown": "Pular ({{count}})",
+    "speedTitle": "Velocidade atual da rolagem"
   },
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {

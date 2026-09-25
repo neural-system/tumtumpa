@@ -29,7 +29,8 @@
     "pauseWithYoutube": "Пауза + YT",
     "edit": "✎ Редактировать",
     "editTitle": "Редактировать аккорды этой песни",
-    "skipCountdown": "Пропустить ({{count}})"
+    "skipCountdown": "Пропустить ({{count}})",
+    "speedTitle": "Текущая скорость прокрутки"
   },
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {

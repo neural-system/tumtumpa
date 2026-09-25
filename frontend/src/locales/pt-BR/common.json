@@ -63,5 +63,57 @@
     "free": "Plano Gratuito",
     "freeGuest": "Plano Gratuito - Convidado",
     "freeAdmin": "Plano Gratuito - ADMIN"
+  },
+  "accompaniment": {
+    "title": "Gerador de acompanhamento",
+    "subtitle": "Escolha um ritmo e os acordes: bateria, baixo, violão e teclado tocam em loop, como no estilo de um teclado arranjador.",
+    "noChords": "Digite ao menos um acorde válido.",
+    "stop": "Parar",
+    "play": "Tocar",
+    "styleTitle": "Ritmo",
+    "harmonyTitle": "Harmonia",
+    "key": "Tom",
+    "progression": "Progressão",
+    "barsPerChord": "Compassos por acorde",
+    "chords": "Acordes (separe por espaço)",
+    "chordsHint": "Ex.: C G Am F, Dm7 G7 Cmaj7. Você pode trocar os acordes com a música tocando.",
+    "invalidChords": "Acordes não reconhecidos: {{list}}",
+    "tempoTitle": "Andamento",
+    "slower": "Mais lento",
+    "faster": "Mais rápido",
+    "fills": "Viradas no fim de cada ciclo",
+    "mixerTitle": "Mixer",
+    "master": "Geral",
+    "hint": "Use fones ou caixas de som. O som é sintetizado no seu navegador — nenhum arquivo é baixado.",
+    "tracks": {
+      "drums": "Bateria",
+      "bass": "Baixo",
+      "guitar": "Violão",
+      "keys": "Teclado"
+    },
+    "progressions": {
+      "pop": "Pop (I–V–vi–IV)",
+      "classic": "Clássica (I–IV–V–I)",
+      "fifties": "Anos 50 (I–vi–IV–V)",
+      "ballad": "Balada (vi–IV–I–V)",
+      "jazz": "Jazz (ii–V–I)",
+      "blues12": "Blues de 12 compassos",
+      "minor": "Menor (i–VI–III–VII)",
+      "minorClassic": "Menor (i–iv–V–i)"
+    },
+    "styles": {
+      "poprock": "Pop Rock",
+      "balada": "Balada",
+      "samba": "Samba",
+      "bossa": "Bossa Nova",
+      "baiao": "Baião",
+      "forro": "Forró",
+      "sertanejo": "Sertanejo",
+      "reggae": "Reggae",
+      "funk": "Funk",
+      "valsa": "Valsa",
+      "blues": "Blues Shuffle",
+      "disco": "Disco"
+    }
   }
 }

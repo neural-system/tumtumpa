@@ -29,7 +29,8 @@
     "pauseWithYoutube": "Pause + YT",
     "edit": "✎ Edit",
     "editTitle": "Edit this song's chord sheet",
-    "skipCountdown": "Skip ({{count}})"
+    "skipCountdown": "Skip ({{count}})",
+    "speedTitle": "Current scroll speed"
   },
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {

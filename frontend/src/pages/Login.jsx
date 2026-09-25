@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import api from '../services/api'
 import { useAuthStore } from '../store/authStore'
-import logo from '../assets/logo-tumtumpa-wide.png'
+import AppLogo from '../components/AppLogo'
 
 export default function Login() {
   const { t } = useTranslation()
@@ -29,7 +29,7 @@ export default function Login() {
   return (
     <div className="login-wrap">
       <div className="card login-card">
-        <img src={logo} alt="TumTumPa" className="login-logo" />
+        <AppLogo />
         <div className="tag">{t('login.tagline')}</div>
         <div className="field">
           <label>{t('login.username')}</label>

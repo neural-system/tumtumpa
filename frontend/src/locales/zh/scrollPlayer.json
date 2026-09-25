@@ -29,7 +29,8 @@
     "pauseWithYoutube": "暂停 + YT",
     "edit": "✎ 编辑",
     "editTitle": "编辑这首歌的和弦谱",
-    "skipCountdown": "跳过 ({{count}})"
+    "skipCountdown": "跳过 ({{count}})",
+    "speedTitle": "当前滚动速度"
   },
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {

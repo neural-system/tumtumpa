@@ -29,7 +29,8 @@
     "pauseWithYoutube": "Pause + YT",
     "edit": "✎ Modifier",
     "editTitle": "Modifier la grille d'accords de ce morceau",
-    "skipCountdown": "Passer ({{count}})"
+    "skipCountdown": "Passer ({{count}})",
+    "speedTitle": "Vitesse de défilement actuelle"
   },
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {

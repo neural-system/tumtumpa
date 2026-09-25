@@ -63,5 +63,57 @@
     "free": "Kostenloser Tarif",
     "freeGuest": "Kostenloser Tarif - Gast",
     "freeAdmin": "Kostenloser Tarif - ADMIN"
+  },
+  "accompaniment": {
+    "title": "Begleitungsgenerator",
+    "subtitle": "Wähle einen Rhythmus und Akkorde: Schlagzeug, Bass, Gitarre und Keys spielen in Schleife, wie die Begleitautomatik eines Arranger-Keyboards.",
+    "noChords": "Gib mindestens einen gültigen Akkord ein.",
+    "stop": "Stopp",
+    "play": "Abspielen",
+    "styleTitle": "Rhythmus",
+    "harmonyTitle": "Harmonie",
+    "key": "Tonart",
+    "progression": "Verlauf",
+    "barsPerChord": "Takte pro Akkord",
+    "chords": "Akkorde (durch Leerzeichen getrennt)",
+    "chordsHint": "Z. B. C G Am F, Dm7 G7 Cmaj7. Du kannst die Akkorde während des Spielens ändern.",
+    "invalidChords": "Nicht erkannte Akkorde: {{list}}",
+    "tempoTitle": "Tempo",
+    "slower": "Langsamer",
+    "faster": "Schneller",
+    "fills": "Fills am Ende jedes Durchlaufs",
+    "mixerTitle": "Mixer",
+    "master": "Gesamt",
+    "hint": "Nutze Kopfhörer oder Lautsprecher. Der Klang wird im Browser erzeugt — es wird nichts heruntergeladen.",
+    "tracks": {
+      "drums": "Schlagzeug",
+      "bass": "Bass",
+      "guitar": "Gitarre",
+      "keys": "Keys"
+    },
+    "progressions": {
+      "pop": "Pop (I–V–vi–IV)",
+      "classic": "Klassisch (I–IV–V–I)",
+      "fifties": "50er (I–vi–IV–V)",
+      "ballad": "Ballade (vi–IV–I–V)",
+      "jazz": "Jazz (ii–V–I)",
+      "blues12": "12-Takt-Blues",
+      "minor": "Moll (i–VI–III–VII)",
+      "minorClassic": "Moll (i–iv–V–i)"
+    },
+    "styles": {
+      "poprock": "Pop Rock",
+      "balada": "Ballade",
+      "samba": "Samba",
+      "bossa": "Bossa Nova",
+      "baiao": "Baião",
+      "forro": "Forró",
+      "sertanejo": "Sertanejo",
+      "reggae": "Reggae",
+      "funk": "Funk",
+      "valsa": "Walzer",
+      "blues": "Blues Shuffle",
+      "disco": "Disco"
+    }
   }
 }
