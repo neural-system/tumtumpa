@@ -6,7 +6,6 @@ import api from '../services/api'
 import { useAuthStore } from '../store/authStore'
 import ThemeToggle from '../components/ThemeToggle'
 import { PostCard } from '../components/bandBoardShared'
-import '../styles/landing.css'
 
 /** Vitrine PÚBLICA do mural — qualquer visitante navega, sem login e sem
  * a sidebar do app (rota fora do <Layout>, ver App.jsx). Criar/editar/

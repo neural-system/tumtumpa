@@ -13,13 +13,11 @@ import PalcoPricing from '../components/landingPalco/PalcoPricing'
 import '../styles/landingPalco.css'
 
 /**
- * Terceira variante de landing ("Palco vivo"), em /palco — não substitui
- * "/" (About.jsx) nem "/sobre" (Sobre2.jsx), mesmo padrão de página
- * experimental paralela que o projeto já tem. Clonada e adaptada de um
- * template "Landing Editorial de Marca" gerado externamente (ver plano),
- * trocando todo dado fictício por consultas reais já usadas em About.jsx
+ * Home pública ("Palco vivo"), em "/" ("/palco" redireciona pra cá). Clonada
+ * e adaptada de um template "Landing Editorial de Marca", com dados reais
  * (ChordSheet de verdade em TransformationSection, planos reais em
- * PalcoPricing).
+ * PalcoPricing). É a origem do design system "Palco" usado em todo o app
+ * (ver styles/global.css).
  */
 export default function Palco() {
   const { t } = useTranslation('landingPalco')

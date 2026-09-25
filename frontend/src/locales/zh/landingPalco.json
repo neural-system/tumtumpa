@@ -21,8 +21,7 @@
   },
   "footer": {
     "tagline": "谱子、曲目单与乐队，同一节奏。",
-    "rights": "© {{year}} · TumTumPa",
-    "backToMain": "返回主页"
+    "rights": "© {{year}} · TumTumPa"
   },
   "hero": {
     "eyebrow": "舞台模式 · 现场",

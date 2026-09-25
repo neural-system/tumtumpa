@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import './i18n'
 import { useColorSettings } from './hooks/useColorSettings'
 import { useLocale } from './hooks/useLocale'
@@ -7,8 +7,6 @@ import { useActivityPing } from './hooks/useActivityPing'
 import Layout from './components/Layout'
 import PublicSongView from './pages/PublicSongView'
 import PublicFeedback from './pages/PublicFeedback'
-import About from './pages/About'
-import Sobre2 from './pages/Sobre2'
 import Palco from './pages/Palco'
 import PalcoFluxo from './pages/PalcoFluxo'
 import PalcoComunidade from './pages/PalcoComunidade'
@@ -43,9 +41,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<About />} />
-        <Route path="/sobre" element={<Sobre2 />} />
-        <Route path="/palco" element={<Palco />} />
+        <Route path="/" element={<Palco />} />
+        <Route path="/palco" element={<Navigate to="/" replace />} />
+        <Route path="/sobre" element={<Navigate to="/" replace />} />
         <Route path="/palco/fluxo" element={<PalcoFluxo />} />
         <Route path="/palco/comunidade" element={<PalcoComunidade />} />
         <Route path="/palco/classificados" element={<PalcoClassificados />} />

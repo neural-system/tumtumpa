@@ -21,8 +21,7 @@
   },
   "footer": {
     "tagline": "Liedblätter, Setlist und Band im selben Tempo.",
-    "rights": "© {{year}} · TumTumPa",
-    "backToMain": "Zurück zur Hauptseite"
+    "rights": "© {{year}} · TumTumPa"
   },
   "hero": {
     "eyebrow": "BÜHNENMODUS · LIVE",

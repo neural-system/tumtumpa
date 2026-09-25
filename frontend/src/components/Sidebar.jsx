@@ -1,6 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import logoWide from '../assets/logo-tumtumpa-wide.png'
 import logoIcone from '../assets/logo-icone.png'
 import { useAuthStore } from '../store/authStore'
 import { IconExit } from './icons'
@@ -15,7 +14,7 @@ export default function Sidebar() {
   return (
     <aside className="sidebar no-print">
       <div className="brand">
-        <img src={logoWide} alt="TumTumPa" className="brand-logo-full" />
+        <span className="brand-logo-full brand-word" aria-label="TumTumPa">TUM TUM <b>PÁ</b></span>
         {/* Mantém o ícone antigo aqui (e no favicon): a arte nova do TumTumPa
             é traço fino demais e vira mancha ilegível em 34px. */}
         <img src={logoIcone} alt="TumTumPa" className="brand-logo-icon" />
@@ -29,7 +28,7 @@ export default function Sidebar() {
         </NavLink>
       ))}
       <div className="spacer" />
-      <button className="nav-item" style={{ border: 'none', background: 'none', cursor: 'pointer', width: '100%' }}
+      <button className="nav-item"
         onClick={() => { logout(); navigate('/login') }}>
         <IconExit /><span>{t('nav.logout')}</span>
       </button>

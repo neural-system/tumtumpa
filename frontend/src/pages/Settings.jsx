@@ -207,7 +207,7 @@ const ACCENT_SWATCHES = {
   preto: '#d9d6cc',
   branco: '#f2f0e9',
   cinza: '#a39d8f',
-  amarelo: '#ffb000',
+  amarelo: '#f2b544',
 }
 
 function ThemeSettingsCard() {

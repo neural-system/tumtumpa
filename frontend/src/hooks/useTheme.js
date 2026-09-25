@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/authStore'
 export const THEMES = ['dark', 'light']
 export const ACCENTS = ['azul', 'vermelho', 'verde', 'rosa', 'lilas', 'preto', 'branco', 'cinza', 'amarelo']
 export const DEFAULT_THEME = 'dark'
-export const DEFAULT_ACCENT = 'azul'
+export const DEFAULT_ACCENT = 'amarelo'
 
 const THEME_KEY = 'ck-theme'
 const ACCENT_KEY = 'ck-accent'

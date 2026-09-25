@@ -5,7 +5,6 @@ import ChordSheet from '../components/ChordSheet'
 import PublicHeader from '../components/PublicHeader'
 import { useAuthGate } from '../components/AuthGate'
 import { usePublicSong, exportPublicSongTxt } from '../hooks/usePublicSong'
-import '../styles/landing.css'
 
 const KEYS = ['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B']
 

@@ -127,7 +127,7 @@ def build_blueprint(ctx) -> Blueprint:
         ctx.alerts.dismiss(g.user_id, post_id)
         return "", 204
 
-    # Públicas (sem auth) — consumidas pela landing page (Landing.jsx).
+    # Públicas (sem auth) — consumidas pela home pública (Palco.jsx).
     @api.post("/telemetry/landing-view")
     def telemetry_landing_view():
         ctx.telemetry.record_landing_view()

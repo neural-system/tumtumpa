@@ -18,7 +18,6 @@ import ptBRKaraokeStage from './locales/pt-BR/karaokeStage.json'
 import ptBRScrollPlayer from './locales/pt-BR/scrollPlayer.json'
 import ptBRChordDictionary from './locales/pt-BR/chordDictionary.json'
 import ptBRSyncWorkspace from './locales/pt-BR/syncWorkspace.json'
-import ptBRLanding from './locales/pt-BR/landing.json'
 import ptBRBandBoard from './locales/pt-BR/bandBoard.json'
 import ptBRMetronome from './locales/pt-BR/metronome.json'
 import ptBRTuner from './locales/pt-BR/tuner.json'
@@ -28,7 +27,6 @@ import ptBRProfileModal from './locales/pt-BR/profileModal.json'
 import ptBRInstruments from './locales/pt-BR/instruments.json'
 import ptBRAlerts from './locales/pt-BR/alerts.json'
 import ptBRPublicHome from './locales/pt-BR/publicHome.json'
-import ptBRLanding2 from './locales/pt-BR/landing2.json'
 import ptBRPedalSetup from './locales/pt-BR/pedalSetup.json'
 import ptBRPublicFeedback from './locales/pt-BR/publicFeedback.json'
 import ptBRLandingPalco from './locales/pt-BR/landingPalco.json'
@@ -49,7 +47,6 @@ import ptPTKaraokeStage from './locales/pt-PT/karaokeStage.json'
 import ptPTScrollPlayer from './locales/pt-PT/scrollPlayer.json'
 import ptPTChordDictionary from './locales/pt-PT/chordDictionary.json'
 import ptPTSyncWorkspace from './locales/pt-PT/syncWorkspace.json'
-import ptPTLanding from './locales/pt-PT/landing.json'
 import ptPTBandBoard from './locales/pt-PT/bandBoard.json'
 import ptPTMetronome from './locales/pt-PT/metronome.json'
 import ptPTTuner from './locales/pt-PT/tuner.json'
@@ -59,7 +56,6 @@ import ptPTProfileModal from './locales/pt-PT/profileModal.json'
 import ptPTInstruments from './locales/pt-PT/instruments.json'
 import ptPTAlerts from './locales/pt-PT/alerts.json'
 import ptPTPublicHome from './locales/pt-PT/publicHome.json'
-import ptPTLanding2 from './locales/pt-PT/landing2.json'
 import ptPTPedalSetup from './locales/pt-PT/pedalSetup.json'
 import ptPTPublicFeedback from './locales/pt-PT/publicFeedback.json'
 import ptPTLandingPalco from './locales/pt-PT/landingPalco.json'
@@ -80,7 +76,6 @@ import enKaraokeStage from './locales/en/karaokeStage.json'
 import enScrollPlayer from './locales/en/scrollPlayer.json'
 import enChordDictionary from './locales/en/chordDictionary.json'
 import enSyncWorkspace from './locales/en/syncWorkspace.json'
-import enLanding from './locales/en/landing.json'
 import enBandBoard from './locales/en/bandBoard.json'
 import enMetronome from './locales/en/metronome.json'
 import enTuner from './locales/en/tuner.json'
@@ -90,7 +85,6 @@ import enProfileModal from './locales/en/profileModal.json'
 import enInstruments from './locales/en/instruments.json'
 import enAlerts from './locales/en/alerts.json'
 import enPublicHome from './locales/en/publicHome.json'
-import enLanding2 from './locales/en/landing2.json'
 import enPedalSetup from './locales/en/pedalSetup.json'
 import enPublicFeedback from './locales/en/publicFeedback.json'
 import enLandingPalco from './locales/en/landingPalco.json'
@@ -111,7 +105,6 @@ import esKaraokeStage from './locales/es/karaokeStage.json'
 import esScrollPlayer from './locales/es/scrollPlayer.json'
 import esChordDictionary from './locales/es/chordDictionary.json'
 import esSyncWorkspace from './locales/es/syncWorkspace.json'
-import esLanding from './locales/es/landing.json'
 import esBandBoard from './locales/es/bandBoard.json'
 import esMetronome from './locales/es/metronome.json'
 import esTuner from './locales/es/tuner.json'
@@ -121,7 +114,6 @@ import esProfileModal from './locales/es/profileModal.json'
 import esInstruments from './locales/es/instruments.json'
 import esAlerts from './locales/es/alerts.json'
 import esPublicHome from './locales/es/publicHome.json'
-import esLanding2 from './locales/es/landing2.json'
 import esPedalSetup from './locales/es/pedalSetup.json'
 import esPublicFeedback from './locales/es/publicFeedback.json'
 import esLandingPalco from './locales/es/landingPalco.json'
@@ -142,7 +134,6 @@ import frKaraokeStage from './locales/fr/karaokeStage.json'
 import frScrollPlayer from './locales/fr/scrollPlayer.json'
 import frChordDictionary from './locales/fr/chordDictionary.json'
 import frSyncWorkspace from './locales/fr/syncWorkspace.json'
-import frLanding from './locales/fr/landing.json'
 import frBandBoard from './locales/fr/bandBoard.json'
 import frMetronome from './locales/fr/metronome.json'
 import frTuner from './locales/fr/tuner.json'
@@ -152,7 +143,6 @@ import frProfileModal from './locales/fr/profileModal.json'
 import frInstruments from './locales/fr/instruments.json'
 import frAlerts from './locales/fr/alerts.json'
 import frPublicHome from './locales/fr/publicHome.json'
-import frLanding2 from './locales/fr/landing2.json'
 import frPedalSetup from './locales/fr/pedalSetup.json'
 import frPublicFeedback from './locales/fr/publicFeedback.json'
 import frLandingPalco from './locales/fr/landingPalco.json'
@@ -173,7 +163,6 @@ import deKaraokeStage from './locales/de/karaokeStage.json'
 import deScrollPlayer from './locales/de/scrollPlayer.json'
 import deChordDictionary from './locales/de/chordDictionary.json'
 import deSyncWorkspace from './locales/de/syncWorkspace.json'
-import deLanding from './locales/de/landing.json'
 import deBandBoard from './locales/de/bandBoard.json'
 import deMetronome from './locales/de/metronome.json'
 import deTuner from './locales/de/tuner.json'
@@ -183,7 +172,6 @@ import deProfileModal from './locales/de/profileModal.json'
 import deInstruments from './locales/de/instruments.json'
 import deAlerts from './locales/de/alerts.json'
 import dePublicHome from './locales/de/publicHome.json'
-import deLanding2 from './locales/de/landing2.json'
 import dePedalSetup from './locales/de/pedalSetup.json'
 import dePublicFeedback from './locales/de/publicFeedback.json'
 import deLandingPalco from './locales/de/landingPalco.json'
@@ -204,7 +192,6 @@ import ruKaraokeStage from './locales/ru/karaokeStage.json'
 import ruScrollPlayer from './locales/ru/scrollPlayer.json'
 import ruChordDictionary from './locales/ru/chordDictionary.json'
 import ruSyncWorkspace from './locales/ru/syncWorkspace.json'
-import ruLanding from './locales/ru/landing.json'
 import ruBandBoard from './locales/ru/bandBoard.json'
 import ruMetronome from './locales/ru/metronome.json'
 import ruTuner from './locales/ru/tuner.json'
@@ -214,7 +201,6 @@ import ruProfileModal from './locales/ru/profileModal.json'
 import ruInstruments from './locales/ru/instruments.json'
 import ruAlerts from './locales/ru/alerts.json'
 import ruPublicHome from './locales/ru/publicHome.json'
-import ruLanding2 from './locales/ru/landing2.json'
 import ruPedalSetup from './locales/ru/pedalSetup.json'
 import ruPublicFeedback from './locales/ru/publicFeedback.json'
 import ruLandingPalco from './locales/ru/landingPalco.json'
@@ -235,7 +221,6 @@ import zhKaraokeStage from './locales/zh/karaokeStage.json'
 import zhScrollPlayer from './locales/zh/scrollPlayer.json'
 import zhChordDictionary from './locales/zh/chordDictionary.json'
 import zhSyncWorkspace from './locales/zh/syncWorkspace.json'
-import zhLanding from './locales/zh/landing.json'
 import zhBandBoard from './locales/zh/bandBoard.json'
 import zhMetronome from './locales/zh/metronome.json'
 import zhTuner from './locales/zh/tuner.json'
@@ -245,7 +230,6 @@ import zhProfileModal from './locales/zh/profileModal.json'
 import zhInstruments from './locales/zh/instruments.json'
 import zhAlerts from './locales/zh/alerts.json'
 import zhPublicHome from './locales/zh/publicHome.json'
-import zhLanding2 from './locales/zh/landing2.json'
 import zhPedalSetup from './locales/zh/pedalSetup.json'
 import zhPublicFeedback from './locales/zh/publicFeedback.json'
 import zhLandingPalco from './locales/zh/landingPalco.json'
@@ -266,7 +250,6 @@ import itKaraokeStage from './locales/it/karaokeStage.json'
 import itScrollPlayer from './locales/it/scrollPlayer.json'
 import itChordDictionary from './locales/it/chordDictionary.json'
 import itSyncWorkspace from './locales/it/syncWorkspace.json'
-import itLanding from './locales/it/landing.json'
 import itBandBoard from './locales/it/bandBoard.json'
 import itMetronome from './locales/it/metronome.json'
 import itTuner from './locales/it/tuner.json'
@@ -276,7 +259,6 @@ import itProfileModal from './locales/it/profileModal.json'
 import itInstruments from './locales/it/instruments.json'
 import itAlerts from './locales/it/alerts.json'
 import itPublicHome from './locales/it/publicHome.json'
-import itLanding2 from './locales/it/landing2.json'
 import itPedalSetup from './locales/it/pedalSetup.json'
 import itPublicFeedback from './locales/it/publicFeedback.json'
 import itLandingPalco from './locales/it/landingPalco.json'
@@ -302,8 +284,8 @@ export const LOCALE_LABELS = {
 const NS = [
   'common', 'errors', 'dashboard', 'songs', 'setlists', 'setlistDetail', 'profile',
   'karaokeHome', 'history', 'pricing', 'settings', 'songEditor', 'karaokeStage',
-  'scrollPlayer', 'chordDictionary', 'syncWorkspace', 'landing', 'bandBoard', 'metronome', 'tuner',
-  'adminTools', 'adminSales', 'profileModal', 'instruments', 'alerts', 'publicHome', 'landing2',
+  'scrollPlayer', 'chordDictionary', 'syncWorkspace', 'bandBoard', 'metronome', 'tuner',
+  'adminTools', 'adminSales', 'profileModal', 'instruments', 'alerts', 'publicHome', 
   'pedalSetup', 'publicFeedback', 'landingPalco',
 ]
 
@@ -317,10 +299,10 @@ i18n
         setlists: ptBRSetlists, setlistDetail: ptBRSetlistDetail, profile: ptBRProfile,
         karaokeHome: ptBRKaraokeHome, history: ptBRHistory, pricing: ptBRPricing, settings: ptBRSettings,
         songEditor: ptBRSongEditor, karaokeStage: ptBRKaraokeStage, scrollPlayer: ptBRScrollPlayer,
-        chordDictionary: ptBRChordDictionary, syncWorkspace: ptBRSyncWorkspace, landing: ptBRLanding,
+        chordDictionary: ptBRChordDictionary, syncWorkspace: ptBRSyncWorkspace,
         bandBoard: ptBRBandBoard, metronome: ptBRMetronome, tuner: ptBRTuner, adminTools: ptBRAdminTools,
         adminSales: ptBRAdminSales, profileModal: ptBRProfileModal, instruments: ptBRInstruments,
-        alerts: ptBRAlerts, publicHome: ptBRPublicHome, landing2: ptBRLanding2, pedalSetup: ptBRPedalSetup, publicFeedback: ptBRPublicFeedback,
+        alerts: ptBRAlerts, publicHome: ptBRPublicHome, pedalSetup: ptBRPedalSetup, publicFeedback: ptBRPublicFeedback,
         landingPalco: ptBRLandingPalco,
       },
       'pt-PT': {
@@ -328,10 +310,10 @@ i18n
         setlists: ptPTSetlists, setlistDetail: ptPTSetlistDetail, profile: ptPTProfile,
         karaokeHome: ptPTKaraokeHome, history: ptPTHistory, pricing: ptPTPricing, settings: ptPTSettings,
         songEditor: ptPTSongEditor, karaokeStage: ptPTKaraokeStage, scrollPlayer: ptPTScrollPlayer,
-        chordDictionary: ptPTChordDictionary, syncWorkspace: ptPTSyncWorkspace, landing: ptPTLanding,
+        chordDictionary: ptPTChordDictionary, syncWorkspace: ptPTSyncWorkspace,
         bandBoard: ptPTBandBoard, metronome: ptPTMetronome, tuner: ptPTTuner, adminTools: ptPTAdminTools,
         adminSales: ptPTAdminSales, profileModal: ptPTProfileModal, instruments: ptPTInstruments,
-        alerts: ptPTAlerts, publicHome: ptPTPublicHome, landing2: ptPTLanding2, pedalSetup: ptPTPedalSetup, publicFeedback: ptPTPublicFeedback,
+        alerts: ptPTAlerts, publicHome: ptPTPublicHome, pedalSetup: ptPTPedalSetup, publicFeedback: ptPTPublicFeedback,
         landingPalco: ptPTLandingPalco,
       },
       en: {
@@ -339,10 +321,10 @@ i18n
         setlists: enSetlists, setlistDetail: enSetlistDetail, profile: enProfile,
         karaokeHome: enKaraokeHome, history: enHistory, pricing: enPricing, settings: enSettings,
         songEditor: enSongEditor, karaokeStage: enKaraokeStage, scrollPlayer: enScrollPlayer,
-        chordDictionary: enChordDictionary, syncWorkspace: enSyncWorkspace, landing: enLanding,
+        chordDictionary: enChordDictionary, syncWorkspace: enSyncWorkspace,
         bandBoard: enBandBoard, metronome: enMetronome, tuner: enTuner, adminTools: enAdminTools,
         adminSales: enAdminSales, profileModal: enProfileModal, instruments: enInstruments,
-        alerts: enAlerts, publicHome: enPublicHome, landing2: enLanding2, pedalSetup: enPedalSetup, publicFeedback: enPublicFeedback,
+        alerts: enAlerts, publicHome: enPublicHome, pedalSetup: enPedalSetup, publicFeedback: enPublicFeedback,
         landingPalco: enLandingPalco,
       },
       es: {
@@ -350,10 +332,10 @@ i18n
         setlists: esSetlists, setlistDetail: esSetlistDetail, profile: esProfile,
         karaokeHome: esKaraokeHome, history: esHistory, pricing: esPricing, settings: esSettings,
         songEditor: esSongEditor, karaokeStage: esKaraokeStage, scrollPlayer: esScrollPlayer,
-        chordDictionary: esChordDictionary, syncWorkspace: esSyncWorkspace, landing: esLanding,
+        chordDictionary: esChordDictionary, syncWorkspace: esSyncWorkspace,
         bandBoard: esBandBoard, metronome: esMetronome, tuner: esTuner, adminTools: esAdminTools,
         adminSales: esAdminSales, profileModal: esProfileModal, instruments: esInstruments,
-        alerts: esAlerts, publicHome: esPublicHome, landing2: esLanding2, pedalSetup: esPedalSetup, publicFeedback: esPublicFeedback,
+        alerts: esAlerts, publicHome: esPublicHome, pedalSetup: esPedalSetup, publicFeedback: esPublicFeedback,
         landingPalco: esLandingPalco,
       },
       fr: {
@@ -361,10 +343,10 @@ i18n
         setlists: frSetlists, setlistDetail: frSetlistDetail, profile: frProfile,
         karaokeHome: frKaraokeHome, history: frHistory, pricing: frPricing, settings: frSettings,
         songEditor: frSongEditor, karaokeStage: frKaraokeStage, scrollPlayer: frScrollPlayer,
-        chordDictionary: frChordDictionary, syncWorkspace: frSyncWorkspace, landing: frLanding,
+        chordDictionary: frChordDictionary, syncWorkspace: frSyncWorkspace,
         bandBoard: frBandBoard, metronome: frMetronome, tuner: frTuner, adminTools: frAdminTools,
         adminSales: frAdminSales, profileModal: frProfileModal, instruments: frInstruments,
-        alerts: frAlerts, publicHome: frPublicHome, landing2: frLanding2, pedalSetup: frPedalSetup, publicFeedback: frPublicFeedback,
+        alerts: frAlerts, publicHome: frPublicHome, pedalSetup: frPedalSetup, publicFeedback: frPublicFeedback,
         landingPalco: frLandingPalco,
       },
       de: {
@@ -372,10 +354,10 @@ i18n
         setlists: deSetlists, setlistDetail: deSetlistDetail, profile: deProfile,
         karaokeHome: deKaraokeHome, history: deHistory, pricing: dePricing, settings: deSettings,
         songEditor: deSongEditor, karaokeStage: deKaraokeStage, scrollPlayer: deScrollPlayer,
-        chordDictionary: deChordDictionary, syncWorkspace: deSyncWorkspace, landing: deLanding,
+        chordDictionary: deChordDictionary, syncWorkspace: deSyncWorkspace,
         bandBoard: deBandBoard, metronome: deMetronome, tuner: deTuner, adminTools: deAdminTools,
         adminSales: deAdminSales, profileModal: deProfileModal, instruments: deInstruments,
-        alerts: deAlerts, publicHome: dePublicHome, landing2: deLanding2, pedalSetup: dePedalSetup, publicFeedback: dePublicFeedback,
+        alerts: deAlerts, publicHome: dePublicHome, pedalSetup: dePedalSetup, publicFeedback: dePublicFeedback,
         landingPalco: deLandingPalco,
       },
       ru: {
@@ -383,10 +365,10 @@ i18n
         setlists: ruSetlists, setlistDetail: ruSetlistDetail, profile: ruProfile,
         karaokeHome: ruKaraokeHome, history: ruHistory, pricing: ruPricing, settings: ruSettings,
         songEditor: ruSongEditor, karaokeStage: ruKaraokeStage, scrollPlayer: ruScrollPlayer,
-        chordDictionary: ruChordDictionary, syncWorkspace: ruSyncWorkspace, landing: ruLanding,
+        chordDictionary: ruChordDictionary, syncWorkspace: ruSyncWorkspace,
         bandBoard: ruBandBoard, metronome: ruMetronome, tuner: ruTuner, adminTools: ruAdminTools,
         adminSales: ruAdminSales, profileModal: ruProfileModal, instruments: ruInstruments,
-        alerts: ruAlerts, publicHome: ruPublicHome, landing2: ruLanding2, pedalSetup: ruPedalSetup, publicFeedback: ruPublicFeedback,
+        alerts: ruAlerts, publicHome: ruPublicHome, pedalSetup: ruPedalSetup, publicFeedback: ruPublicFeedback,
         landingPalco: ruLandingPalco,
       },
       zh: {
@@ -394,10 +376,10 @@ i18n
         setlists: zhSetlists, setlistDetail: zhSetlistDetail, profile: zhProfile,
         karaokeHome: zhKaraokeHome, history: zhHistory, pricing: zhPricing, settings: zhSettings,
         songEditor: zhSongEditor, karaokeStage: zhKaraokeStage, scrollPlayer: zhScrollPlayer,
-        chordDictionary: zhChordDictionary, syncWorkspace: zhSyncWorkspace, landing: zhLanding,
+        chordDictionary: zhChordDictionary, syncWorkspace: zhSyncWorkspace,
         bandBoard: zhBandBoard, metronome: zhMetronome, tuner: zhTuner, adminTools: zhAdminTools,
         adminSales: zhAdminSales, profileModal: zhProfileModal, instruments: zhInstruments,
-        alerts: zhAlerts, publicHome: zhPublicHome, landing2: zhLanding2, pedalSetup: zhPedalSetup, publicFeedback: zhPublicFeedback,
+        alerts: zhAlerts, publicHome: zhPublicHome, pedalSetup: zhPedalSetup, publicFeedback: zhPublicFeedback,
         landingPalco: zhLandingPalco,
       },
       it: {
@@ -405,10 +387,10 @@ i18n
         setlists: itSetlists, setlistDetail: itSetlistDetail, profile: itProfile,
         karaokeHome: itKaraokeHome, history: itHistory, pricing: itPricing, settings: itSettings,
         songEditor: itSongEditor, karaokeStage: itKaraokeStage, scrollPlayer: itScrollPlayer,
-        chordDictionary: itChordDictionary, syncWorkspace: itSyncWorkspace, landing: itLanding,
+        chordDictionary: itChordDictionary, syncWorkspace: itSyncWorkspace,
         bandBoard: itBandBoard, metronome: itMetronome, tuner: itTuner, adminTools: itAdminTools,
         adminSales: itAdminSales, profileModal: itProfileModal, instruments: itInstruments,
-        alerts: itAlerts, publicHome: itPublicHome, landing2: itLanding2, pedalSetup: itPedalSetup, publicFeedback: itPublicFeedback,
+        alerts: itAlerts, publicHome: itPublicHome, pedalSetup: itPedalSetup, publicFeedback: itPublicFeedback,
         landingPalco: itLandingPalco,
       },
     },

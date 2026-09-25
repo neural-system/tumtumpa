@@ -1,6 +1,8 @@
 /* =============================================================
-   TUMTUMPA — design system
-   Palco escuro + vidro + luz âmbar. Cifras sempre em monoespaçada
+   TUMTUMPA — design system "Palco"
+   Preto + papel + luz âmbar, bordas de 1px, cantos pequenos, rótulos
+   em mono caixa alta (mesma linguagem da home, landingPalco.css), com
+   tema claro e escuro. Cifras sempre em monoespaçada
    (alinhamento de acordes depende disso).
 
    Dois sistemas de cor ortogonais entre si, aplicados via atributos
@@ -8,8 +10,8 @@
    - data-theme ("dark"/"light"): cromia geral do app (fundo, texto,
      vidro, bordas) — NÃO afeta o palco de karaokê/rolagem, que é
      sempre escuro por design (tela de performance, ver .karaoke-stage).
-   - data-accent (8 cores): cor de destaque da interface (botões
-     primários, foco, badges, item de menu ativo) — independente da
+   - data-accent (9 cores, padrão âmbar): cor de destaque da interface
+     (foco, chips, badges, item de menu ativo) — independente da
      paleta "Cores do karaokê" (--amber, --sweep-sung, --sweep-upcoming,
      --sample; editável em Configuracoes, ColorSettingsCard), que
      continua fixa e só controla a cor das letras/acordes na folha
@@ -27,7 +29,10 @@
   --font-display: 'Geist Variable', sans-serif;
   --font-body: 'Geist Variable', sans-serif;
   --font-mono: 'Geist Mono Variable', monospace;
-  --radius: 14px;
+  /* design system "Palco" (mesma linguagem de landingPalco.css): cantos
+     pequenos, bordas de 1px, rótulos em mono caixa alta */
+  --radius: 8px;
+  --radius-sm: 5px;
   --sidebar-w: 232px;
 }
 
@@ -43,6 +48,7 @@
   --sidebar-bg: rgba(10, 10, 9, 0.72);
   --input-bg: rgba(0, 0, 0, 0.3);
   --btn-hover-border: rgba(242, 240, 233, 0.22);
+  --overlay: rgba(4, 4, 3, 0.66);
 }
 :root[data-theme="light"] {
   --bg: #f2f0e9;
@@ -55,12 +61,19 @@
   --sidebar-bg: rgba(242, 240, 233, 0.75);
   --input-bg: rgba(8, 8, 8, 0.045);
   --btn-hover-border: rgba(8, 8, 8, 0.22);
+  --overlay: rgba(20, 19, 17, 0.42);
 }
 
 /* ---------- cor de destaque (8 opções × 2 temas) ----------
    --accent-ink é a cor de texto usada sobre um fundo sólido --accent
    (ex.: .btn.primary) — escolhida por contraste, não por regra fixa. */
-:root, :root[data-accent="azul"] {
+:root, :root[data-accent="amarelo"] {
+  --accent: #f2b544; --accent-soft: rgba(242, 181, 68, 0.16); --accent-ink: #0a0a09;
+}
+:root[data-theme="light"], :root[data-theme="light"][data-accent="amarelo"] {
+  --accent: #b7791a; --accent-soft: rgba(183, 121, 26, 0.13); --accent-ink: #ffffff;
+}
+:root[data-accent="azul"] {
   --accent: #5b87ff; --accent-soft: rgba(91, 135, 255, 0.16); --accent-ink: #07091a;
 }
 :root[data-theme="light"][data-accent="azul"] {
@@ -108,20 +121,11 @@
 :root[data-theme="light"][data-accent="cinza"] {
   --accent: #726c5f; --accent-soft: rgba(114, 108, 95, 0.12); --accent-ink: #ffffff;
 }
-:root[data-accent="amarelo"] {
-  --accent: #ffb000; --accent-soft: rgba(255, 176, 0, 0.16); --accent-ink: #241a02;
-}
-:root[data-theme="light"][data-accent="amarelo"] {
-  --accent: #b87800; --accent-soft: rgba(184, 120, 0, 0.12); --accent-ink: #ffffff;
-}
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body, #root { height: 100%; }
 body {
-  background:
-    radial-gradient(900px 500px at 85% -10%, rgba(242,181,68,0.07), transparent 60%),
-    radial-gradient(700px 500px at -10% 100%, rgba(90,120,255,0.06), transparent 60%),
-    var(--bg);
+  background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
   font-size: 14.5px;
@@ -139,9 +143,11 @@ button { font-family: inherit; }
    em y:56px) — qualquer página com um botão de ação alinhado à direita no
    topo (ex.: "+ Nova música" em Songs.jsx) senão sobrepõe os ícones. */
 .main { flex: 1; padding: 76px 34px 28px; min-width: 0; }
-.page-title { font-family: var(--font-display); font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
-.page-sub { color: var(--muted); margin-top: 4px; margin-bottom: 24px; }
-.section-heading { font-size: 15px; font-weight: 700; color: var(--text); margin: 0 0 10px; }
+.page-title { font-family: var(--font-display); font-size: 30px; font-weight: 800; letter-spacing: -0.045em; line-height: 1.05; }
+.page-sub { color: var(--muted); margin-top: 6px; margin-bottom: 26px; }
+.section-heading { font: 700 11px var(--font-mono); text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin: 0 0 12px; }
+/* rótulo editorial (mesmo .palco-section-kicker do /) */
+.kicker { font: 700 11px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
 
 /* ---------- sidebar ---------- */
 .sidebar {
@@ -161,10 +167,14 @@ button { font-family: inherit; }
    sidebar. */
 .brand-logo-full { display: block; width: 100%; height: auto; }
 .brand-logo-icon { display: none; height: 34px; width: auto; }
+/* marca em texto, igual .palco-brand da home */
+.brand-word { font-weight: 900; font-size: 19px; letter-spacing: -1px; white-space: nowrap; transform: rotate(-2deg); transform-origin: left center; }
+.brand-word b { color: var(--accent); }
+button.nav-item { border: none; background: none; cursor: pointer; width: 100%; text-align: left; }
 .nav-item {
   display: flex; align-items: center; gap: 10px;
-  padding: 9px 12px; border-radius: 10px;
-  color: var(--muted); font-weight: 500;
+  padding: 9px 12px; border-radius: var(--radius-sm);
+  color: var(--muted); font: 600 11.5px var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase;
   transition: background 200ms ease, color 200ms ease, box-shadow 200ms ease,
     padding-left 260ms cubic-bezier(0.16, 1, 0.3, 1), padding-right 260ms cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
@@ -174,8 +184,8 @@ button { font-family: inherit; }
 .nav-item svg { width: 24px; height: 24px; flex-shrink: 0; transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1); }
 .nav-item span { opacity: 1; transition: opacity 220ms ease 60ms; }
 .nav-section-label {
-  padding: 14px 12px 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
-  text-transform: uppercase; color: var(--muted);
+  padding: 16px 12px 4px; font: 700 10px var(--font-mono); letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--muted); opacity: 0.75;
 }
 .sidebar .spacer { flex: 1; }
 
@@ -184,36 +194,38 @@ button { font-family: inherit; }
   background: var(--glass);
   border: 1px solid var(--stroke);
   border-radius: var(--radius);
-  backdrop-filter: blur(14px);
   padding: 18px 20px;
 }
 .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 22px; }
-.stat .big { font-family: var(--font-display); font-size: 30px; font-weight: 700; color: var(--accent); }
-.stat .label { color: var(--muted); font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+.stat .big { font-family: var(--font-display); font-size: 34px; font-weight: 800; letter-spacing: -0.04em; color: var(--accent); }
+.stat .label { color: var(--muted); font: 700 10.5px var(--font-mono); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 4px; }
 
 /* ---------- controles ---------- */
 .btn {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 9px 16px; border-radius: 10px; border: 1px solid var(--stroke);
+  padding: 9px 16px; border-radius: 3px; border: 1px solid var(--stroke);
   background: var(--glass-strong); color: var(--text);
-  font-weight: 600; font-size: 13.5px; cursor: pointer; transition: 120ms;
+  font-weight: 700; font-size: 13px; cursor: pointer; transition: 120ms;
 }
 .btn:hover { border-color: var(--btn-hover-border); }
-.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
-.btn.primary:hover { filter: brightness(1.08); }
+.btn > svg:not([width]) { width: 16px; height: 16px; flex-shrink: 0; }
+/* primário = papel sobre tinta, como .palco-primary-button (invertido no
+   tema claro); o destaque colorido fica pra chips, foco e estados ativos */
+.btn.primary { background: var(--text); color: var(--bg); border-color: transparent; }
+.btn.primary:hover { filter: brightness(0.92); }
 .btn.danger { color: var(--danger); }
 .btn.ghost { background: transparent; }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .input, select.input, textarea.input {
-  width: 100%; padding: 10px 13px; border-radius: 10px;
+  width: 100%; padding: 10px 12px; border-radius: var(--radius-sm);
   border: 1px solid var(--stroke); background: var(--input-bg);
   color: var(--text); font-size: 14px;
 }
 .input:focus { border-color: var(--accent); outline: none; }
 textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: vertical; }
 .field { margin-bottom: 14px; }
-.field label { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+.field label { display: block; font: 700 10.5px var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 7px; }
 .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 
 /* ---------- pedal (foot switch) — pages/PedalSetup.jsx ---------- */
@@ -281,15 +293,18 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .song-row.medley-member { padding-left: 26px; }
 .song-row .title { font-weight: 600; }
 .song-row .meta { color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.chip { display: inline-block; padding: 2px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 11.5px; font-weight: 600; }
+.chip { display: inline-block; padding: 2px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); font: 700 10.5px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .fav-star { color: var(--accent); }
-.plan-badge { text-decoration: none; padding: 5px 12px; font-size: 12.5px; transition: 120ms; }
+.plan-badge { text-decoration: none; padding: 5px 12px; font: 700 11px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; transition: 120ms; }
 .plan-badge:hover { background: var(--accent); color: var(--bg, #fff); }
 
 /* ---------- cifra (folha) ---------- */
 .chord-sheet { font-family: var(--font-mono); font-size: 14.5px; line-height: 1.6; white-space: pre; overflow-x: auto; }
 .chord-sheet .acorde { color: var(--amber); font-weight: 600; }
 .chord-sheet .observacao { color: var(--muted); font-style: italic; }
+/* âmbar puro some no papel claro — escurece a cor escolhida (mantém o matiz) */
+:root[data-theme="light"] .main .chord-sheet .acorde,
+:root[data-theme="light"] .landing-page .chord-sheet .acorde { color: color-mix(in srgb, var(--amber) 60%, #000); }
 .chord-sheet .secao {
   color: var(--amber); font-weight: 700; text-transform: uppercase;
   letter-spacing: 0.06em; font-size: 12.5px;
@@ -334,7 +349,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .chord-dict-list { max-height: 640px; overflow-y: auto; padding: 6px; }
 .chord-dict-row {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: 100ms;
+  padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: 100ms;
 }
 .chord-dict-row:hover { background: var(--glass); }
 .chord-dict-row.active { background: var(--glass-strong); box-shadow: inset 2px 0 0 var(--accent); }
@@ -346,7 +361,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .chord-dict-title { font-family: var(--font-display); font-size: 26px; font-weight: 700; display: flex; align-items: center; }
 .chord-dict-diagram-wrap { width: 100%; max-width: 320px; height: 260px; margin: 0 auto; }
 .chord-dict-formulas { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; margin-top: 12px; }
-.chord-dict-formula-row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 11px; background: var(--glass); border-radius: 8px; font-size: 13px; }
+.chord-dict-formula-row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 11px; background: var(--glass); border-radius: var(--radius-sm); font-size: 13px; }
 .chord-dict-formula-row .title { font-weight: 600; }
 .chord-dict-formula-row .meta { color: var(--muted); }
 
@@ -356,7 +371,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 }
 .sync-step {
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  padding: 7px 10px; border-radius: 8px; cursor: pointer; border-left: 3px solid transparent;
+  padding: 7px 10px; border-radius: var(--radius-sm); cursor: pointer; border-left: 3px solid transparent;
   transition: background 120ms, border-color 120ms;
 }
 .sync-step:hover { background: var(--glass); }
@@ -391,7 +406,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 }
 .sync-step-block-line > span:first-child { flex: 1; white-space: pre; overflow-x: auto; }
 .sync-step-chip {
-  display: inline-block; flex-shrink: 0; padding: 2px 8px; border-radius: 999px;
+  display: inline-block; flex-shrink: 0; padding: 2px 8px; border-radius: 3px;
   background: var(--glass); color: var(--muted); font-size: 11px; font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
@@ -717,7 +732,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 /* ---------- cluster fixo (alternar tema + menu do usuário) ---------- */
 .top-right-fixed { position: fixed; top: 18px; right: 24px; z-index: 40; display: flex; align-items: center; gap: 10px; }
 .theme-toggle {
-  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  width: 38px; height: 38px; border-radius: var(--radius-sm); flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   background: var(--glass-strong); border: 1px solid var(--stroke);
   color: var(--text); cursor: pointer;
@@ -728,25 +743,25 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .user-menu { position: relative; }
 .user-menu-trigger {
   display: flex; align-items: center; gap: 6px; height: 38px; padding: 0 10px 0 0;
-  border-radius: 999px; background: var(--glass-strong); border: 1px solid var(--stroke);
+  border-radius: var(--radius-sm); background: var(--glass-strong); border: 1px solid var(--stroke);
   color: var(--text); cursor: pointer;
 }
 .user-menu-trigger:hover { border-color: var(--btn-hover-border); }
 .user-menu-trigger svg { width: 14px; height: 14px; color: var(--muted); }
 .user-menu-avatar {
-  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  width: 30px; height: 30px; border-radius: 3px; flex-shrink: 0; margin-left: 3px;
   display: flex; align-items: center; justify-content: center;
-  background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 13px;
+  background: var(--accent); color: var(--accent-ink); font: 800 13px var(--font-mono);
 }
 .user-menu-panel {
   position: absolute; top: calc(100% + 8px); right: 0; min-width: 190px;
   background: var(--bg-raise); border: 1px solid var(--stroke); border-radius: var(--radius);
-  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.35); backdrop-filter: blur(18px);
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.35);
   padding: 6px; display: flex; flex-direction: column; gap: 2px;
 }
 .user-menu-item {
-  display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px;
-  background: none; border: none; color: var(--text); font-weight: 500; font-size: 13.5px;
+  display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--radius-sm);
+  background: none; border: none; color: var(--text); font-weight: 600; font-size: 13px;
   text-align: left; cursor: pointer; width: 100%;
 }
 .user-menu-item:hover { background: var(--glass); }
@@ -776,7 +791,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 
 /* ---------- modal ---------- */
 .modal-overlay {
-  position: fixed; inset: 0; z-index: 100; background: rgba(6, 8, 14, 0.55);
+  position: fixed; inset: 0; z-index: 100; background: var(--overlay, rgba(6, 8, 14, 0.6));
   display: flex; align-items: center; justify-content: center; padding: 20px;
 }
 .modal-panel {
@@ -788,9 +803,9 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
   position: sticky; top: 0; display: flex; align-items: center; justify-content: space-between;
   padding: 18px 20px; border-bottom: 1px solid var(--stroke); background: var(--bg-raise);
 }
-.modal-header h3 { font-size: 17px; }
+.modal-header h3 { font-size: 17px; font-weight: 800; letter-spacing: -0.03em; }
 .modal-close {
-  width: 30px; height: 30px; border-radius: 8px; background: none; border: none;
+  width: 30px; height: 30px; border-radius: var(--radius-sm); background: none; border: none;
   color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer;
 }
 .modal-close:hover { background: var(--glass); color: var(--text); }
@@ -840,6 +855,28 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .metronome-beat-dot.active { background: var(--accent); box-shadow: 0 0 10px var(--accent-soft); transform: scale(1.2); }
 .metronome-bar-btn { min-width: 42px; padding: 8px 0; text-align: center; font-weight: 600; }
 .metronome-bar-btn.active { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+
+/* ---------- casca das páginas públicas (mural, cifra pública, planos) ----------
+   Herdado de landing.css (removido junto com as landings antigas). Usado por
+   BandBoard, PublicSongView, PublicHeader e AuthGate. */
+.landing-page { min-height: 100vh; overflow-x: hidden; position: relative; }
+.landing-page section { padding: 88px 6vw; }
+.landing-container { max-width: 1160px; margin: 0 auto; }
+.landing-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 6vw;
+  background: var(--sidebar-bg);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--stroke);
+}
+.landing-logo { display: block; font-size: 22px; }
+.landing-header-actions { display: flex; align-items: center; gap: 10px; }
+.landing-pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+@media (max-width: 900px) {
+  .landing-page section { padding: 64px 20px; }
+  .landing-header { padding: 12px 20px; }
+}
 
 /* ---------- impressão ---------- */
 @media print {

@@ -2,14 +2,14 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 /** Atalhos de recursos, ao lado do workspace — só linka pra âncoras que
- * existem de verdade (setlist/planos na home /palco); os demais itens
+ * existem de verdade (setlist/planos na home /); os demais itens
  * (pedal, transposição) são só descritivos, sem link — não fabrica uma
  * página de recurso isolada que o app não tem. */
 const ITEMS = [
-  { key: 'setlist', href: '/palco#setlist' },
+  { key: 'setlist', href: '/#setlist' },
   { key: 'transpose', href: null },
   { key: 'pedal', href: null },
-  { key: 'sync', href: '/palco#transformacao' },
+  { key: 'sync', href: '/#transformacao' },
 ]
 
 export default function FeatureDock() {
