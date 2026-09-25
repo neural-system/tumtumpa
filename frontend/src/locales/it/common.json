@@ -1,7 +1,7 @@
 {
   "nav": {
     "dashboard": "Dashboard",
-    "songs": "I miei brani",
+    "songs": "Trova un brano",
     "setlists": "Scalette",
     "favorites": "Preferiti",
     "history": "Cronologia",
@@ -16,7 +16,9 @@
     "adminSales": "Pannello vendite",
     "settings": "Impostazioni",
     "profile": "Profilo",
-    "logout": "Esci"
+    "logout": "Esci",
+    "mySongs": "I miei brani",
+    "accompaniment": "Generatore di accompagnamento"
   },
   "login": {
     "tagline": "I tuoi testi sincronizzati con il palco.",

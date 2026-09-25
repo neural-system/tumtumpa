@@ -22,18 +22,20 @@ class AdminStatsService:
         self.telemetry = telemetry
 
     def _most_setlisted_songs(self, limit: int) -> list[dict]:
+        # uma consulta só por ref DISTINTA (não uma por linha de setlist_items)
         with db.get_pool().connection() as conn:
-            rows = conn.execute("select ref from setlist_items").fetchall()
-        resolved = self.setlists._resolve_many(None, [r["ref"] for r in rows])
+            rows = conn.execute("select ref, count(*) as n from setlist_items group by ref").fetchall()
+        resolved = self.setlists.resolve_refs_batch([r["ref"] for r in rows])
 
         counts: dict[str, dict] = {}
-        for song in resolved:
+        for r in rows:
+            song = resolved.get(r["ref"])
             if not song:
                 continue
             entry = counts.setdefault(
                 song["slug"], {"slug": song["slug"], "titulo": song["titulo"], "interprete": song["interprete"], "count": 0},
             )
-            entry["count"] += 1
+            entry["count"] += r["n"]
         return sorted(counts.values(), key=lambda c: c["count"], reverse=True)[:limit]
 
     def tools_stats(self, limit: int = 10) -> dict:

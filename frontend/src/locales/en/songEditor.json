@@ -151,5 +151,6 @@
     "restore": "Restore this version",
     "confirmRestore": "Restore this version? The current one will move to the history.",
     "noDiff": "No differences in the chord sheet body."
-  }
+  },
+  "transposeTempTitle": "Someone else's song: the new key only applies while you're on this screen and isn't saved."
 }

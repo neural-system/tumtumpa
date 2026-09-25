@@ -1,7 +1,7 @@
 {
   "nav": {
     "dashboard": "Tableau de bord",
-    "songs": "Mes chansons",
+    "songs": "Trouver une chanson",
     "setlists": "Setlists",
     "favorites": "Favoris",
     "history": "Historique",
@@ -16,7 +16,9 @@
     "adminSales": "Panneau des ventes",
     "settings": "Paramètres",
     "profile": "Profil",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "mySongs": "Mes chansons",
+    "accompaniment": "Générateur d'accompagnement"
   },
   "login": {
     "tagline": "Vos partitions synchronisées avec la scène.",

@@ -49,6 +49,7 @@
   --input-bg: rgba(0, 0, 0, 0.3);
   --btn-hover-border: rgba(242, 240, 233, 0.22);
   --overlay: rgba(4, 4, 3, 0.66);
+  color-scheme: dark; /* barras de rolagem e controles nativos escuros */
 }
 :root[data-theme="light"] {
   --bg: #f2f0e9;
@@ -62,6 +63,7 @@
   --input-bg: rgba(8, 8, 8, 0.045);
   --btn-hover-border: rgba(8, 8, 8, 0.22);
   --overlay: rgba(20, 19, 17, 0.42);
+  color-scheme: light;
 }
 
 /* ---------- cor de destaque (8 opções × 2 temas) ----------
@@ -139,8 +141,8 @@ button { font-family: inherit; }
 /* ---------- layout ---------- */
 .app-shell { display: flex; min-height: 100vh; }
 /* padding-top folgado o bastante pra nunca colidir com .top-right-fixed
-   (sino/usuário/tema, position:fixed, top:18px, 38px de altura — termina
-   em y:56px) — qualquer página com um botão de ação alinhado à direita no
+   (sino/usuário/tema, position:fixed, top:12px, 50px de altura com o
+   padding — termina em y:62px) — qualquer página com um botão de ação alinhado à direita no
    topo (ex.: "+ Nova música" em Songs.jsx) senão sobrepõe os ícones. */
 .main { flex: 1; padding: 76px 34px 28px; min-width: 0; }
 .page-title { font-family: var(--font-display); font-size: 30px; font-weight: 800; letter-spacing: -0.045em; line-height: 1.05; }
@@ -291,7 +293,13 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 /* membro de medley (SetlistDetail.jsx::buildMedleyItems) — leve indentação
    pra sinalizar que a linha faz parte de um bloco, além do ícone no título. */
 .song-row.medley-member { padding-left: 26px; }
-.song-row .title { font-weight: 600; }
+.song-row > div:first-child { min-width: 0; }
+/* linha de setlist (Setlists.jsx): nome cresce, ações alinhadas à direita com
+   a largura natural de cada botão — em grid "auto" cada linha calculava as
+   colunas por conta própria e os botões ficavam desalinhados entre linhas. */
+.song-row.setlist-row { display: flex; flex-wrap: wrap; align-items: center; }
+.song-row.setlist-row > a, .song-row.setlist-row > div:first-child { flex: 1 1 220px; min-width: 0; }
+.song-row .title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .song-row .meta { color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chip { display: inline-block; padding: 2px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); font: 700 10.5px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .fav-star { color: var(--accent); }
@@ -730,7 +738,13 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .empty { color: var(--muted); text-align: center; padding: 46px 0; }
 
 /* ---------- cluster fixo (alternar tema + menu do usuário) ---------- */
-.top-right-fixed { position: fixed; top: 18px; right: 24px; z-index: 40; display: flex; align-items: center; gap: 10px; }
+/* faixa com fundo translúcido: ao rolar, o conteúdo passa por baixo sem
+   ficar misturado com os ícones */
+.top-right-fixed {
+  position: fixed; top: 12px; right: 18px; z-index: 40; display: flex; align-items: center; gap: 10px;
+  padding: 6px; background: var(--sidebar-bg); backdrop-filter: blur(14px);
+  border: 1px solid var(--stroke); border-radius: var(--radius);
+}
 .theme-toggle {
   width: 38px; height: 38px; border-radius: var(--radius-sm); flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;

@@ -88,7 +88,7 @@ export default function Setlists() {
         {!mine.length && <div className="empty">{t('emptyMine')}</div>}
         {mine.map((s) => (
           <div key={s.id}>
-            <div className="song-row" style={{ gridTemplateColumns: '1fr auto auto auto auto auto auto' }}>
+            <div className="song-row setlist-row">
               {renamingId === s.id ? (
                 <RenameField setlist={s} onDone={() => setRenamingId(null)} />
               ) : (
@@ -126,7 +126,7 @@ export default function Setlists() {
       <div className="card" style={{ padding: 0 }}>
         {!following.length && <div className="empty">{t('emptyFollowing')}</div>}
         {following.map((s) => (
-          <div key={s.id} className="song-row" style={{ gridTemplateColumns: '1fr auto auto auto' }}>
+          <div key={s.id} className="song-row setlist-row">
             <Link to={`/setlists/${s.id}`}>
               <div className="title">{s.nome}</div>
               <div className="meta">{t('itemCount', { count: s.count })}</div>

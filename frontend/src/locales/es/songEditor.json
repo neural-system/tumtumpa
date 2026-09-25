@@ -151,5 +151,6 @@
     "restore": "Restaurar esta versión",
     "confirmRestore": "¿Restaurar esta versión? La actual pasará al historial.",
     "noDiff": "Sin diferencias en el cuerpo del cifrado."
-  }
+  },
+  "transposeTempTitle": "Canción de otro usuario: el nuevo tono solo vale mientras estés en esta pantalla y no se guarda."
 }

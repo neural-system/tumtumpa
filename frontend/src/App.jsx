@@ -56,9 +56,10 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/painel" element={<Dashboard />} />
           <Route path="/mural/meus-anuncios" element={<BandBoardManage />} />
-          <Route path="/musicas" element={<Songs />} />
+          <Route path="/musicas" element={<Songs key="library" />} />
+          <Route path="/minhas-musicas" element={<Songs key="mine" mineOnly />} />
           <Route path="/musicas/:slug" element={<SongEditor />} />
-          <Route path="/favoritas" element={<Songs favoritesOnly />} />
+          <Route path="/favoritas" element={<Songs key="favorites" favoritesOnly />} />
           <Route path="/setlists" element={<Setlists />} />
           <Route path="/setlists/:id" element={<SetlistDetail />} />
           <Route path="/karaoke" element={<KaraokeHome />} />

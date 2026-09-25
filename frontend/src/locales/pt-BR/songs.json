@@ -1,5 +1,5 @@
 {
-  "titleLibrary": "Biblioteca",
+  "titleLibrary": "Encontre uma Música",
   "titleFavorites": "Favoritas",
   "allUsersHint": " · de todos os usuários",
   "loadingCount": "…",
@@ -44,5 +44,8 @@
     "artist": "Intérprete",
     "submit": "Criar",
     "error": "Não foi possível criar a música."
-  }
+  },
+  "titleMine": "Minhas Músicas",
+  "mineHint": " · criadas, favoritas ou nas suas setlists",
+  "emptyMine": "Você ainda não tem músicas. Crie uma, favorite ou adicione a uma setlist."
 }

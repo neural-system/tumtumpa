@@ -8,7 +8,7 @@ import { useDebounce } from '../hooks/useDebounce'
 import VirtualList from '../components/VirtualList'
 import FavoriteArtistsGenres from '../components/FavoriteArtistsGenres'
 
-export default function Songs({ favoritesOnly = false }) {
+export default function Songs({ favoritesOnly = false, mineOnly = false }) {
   const { t } = useTranslation('songs')
   const [q, setQ] = useState('')
   const [filters, setFilters] = useState({ genero: '', interprete: '', tom: '' })
@@ -21,11 +21,11 @@ export default function Songs({ favoritesOnly = false }) {
   const user = useAuthStore((s) => s.user)
 
   const { data } = useQuery({
-    queryKey: ['songs', debouncedQ, filters, onlyMine, page, favoritesOnly],
+    queryKey: ['songs', debouncedQ, filters, onlyMine, page, favoritesOnly, mineOnly],
     queryFn: () => api.get('/songs', {
       params: {
         q: debouncedQ, ...filters, page, page_size: 200,
-        favoritas: favoritesOnly ? 1 : 0, only_mine: onlyMine ? 1 : 0,
+        favoritas: favoritesOnly ? 1 : 0, only_mine: onlyMine ? 1 : 0, mine: mineOnly ? 1 : 0,
       },
     }).then((r) => r.data),
     keepPreviousData: true,
@@ -38,10 +38,10 @@ export default function Songs({ favoritesOnly = false }) {
     <>
       <div className="row no-print" style={{ justifyContent: 'space-between' }}>
         <div>
-          <h1 className="page-title">{favoritesOnly ? t('titleFavorites') : t('titleLibrary')}</h1>
+          <h1 className="page-title">{favoritesOnly ? t('titleFavorites') : mineOnly ? t('titleMine') : t('titleLibrary')}</h1>
           <div className="page-sub">
             {data ? t('songCount', { count: data.total }) : t('loadingCount')}
-            {!favoritesOnly && t('allUsersHint')}
+            {mineOnly ? t('mineHint') : !favoritesOnly && t('allUsersHint')}
           </div>
         </div>
         {!favoritesOnly && (
@@ -78,7 +78,7 @@ export default function Songs({ favoritesOnly = false }) {
           <option value="">{t('key')}</option>
           {facets?.tons.map((g) => <option key={g}>{g}</option>)}
         </select>
-        {!favoritesOnly && (
+        {!favoritesOnly && !mineOnly && (
           <label className="row" style={{ gap: 6, alignItems: 'center', cursor: 'pointer' }}>
             <input type="checkbox" checked={onlyMine}
               onChange={(e) => { setOnlyMine(e.target.checked); setPage(1) }} />
@@ -88,7 +88,7 @@ export default function Songs({ favoritesOnly = false }) {
       </div>
 
       <div className="card" style={{ padding: 0 }}>
-        {items.length === 0 && <div className="empty">{t('empty')}</div>}
+        {items.length === 0 && <div className="empty">{mineOnly ? t('emptyMine') : t('empty')}</div>}
         {items.length > 0 && (
           <VirtualList items={items} rowHeight={58} height={Math.min(640, items.length * 58)}
             renderRow={(s) => (

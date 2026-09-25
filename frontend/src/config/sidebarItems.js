@@ -1,5 +1,5 @@
 import {
-  IconHome, IconMusic, IconList, IconStar, IconClock,
+  IconHome, IconMusic, IconSearch, IconList, IconStar, IconClock,
   IconMic, IconBook, IconUsers, IconMetronome, IconTuner, IconPedal, IconShield, IconChart,
   IconSettings, IconUser,
 } from '../components/icons'
@@ -8,7 +8,8 @@ import {
  * o único dono do array, agora importado daqui. */
 export const ITEMS = [
   { to: '/painel', labelKey: 'nav.dashboard', icon: IconHome, end: true },
-  { to: '/musicas', labelKey: 'nav.songs', icon: IconMusic },
+  { to: '/musicas', labelKey: 'nav.songs', icon: IconSearch },
+  { to: '/minhas-musicas', labelKey: 'nav.mySongs', icon: IconMusic },
   { to: '/setlists', labelKey: 'nav.setlists', icon: IconList },
   { to: '/favoritas', labelKey: 'nav.favorites', icon: IconStar },
   { to: '/historico', labelKey: 'nav.history', icon: IconClock },

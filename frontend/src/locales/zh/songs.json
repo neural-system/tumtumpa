@@ -1,5 +1,5 @@
 {
-  "titleLibrary": "曲库",
+  "titleLibrary": "查找歌曲",
   "titleFavorites": "收藏",
   "allUsersHint": " · 来自所有用户",
   "loadingCount": "…",
@@ -44,5 +44,8 @@
     "artist": "艺人",
     "submit": "创建",
     "error": "无法创建歌曲。"
-  }
+  },
+  "titleMine": "我的歌曲",
+  "mineHint": " · 已创建、已收藏或在你的歌单中",
+  "emptyMine": "你还没有歌曲。创建一首、收藏一首，或把歌曲加入歌单。"
 }

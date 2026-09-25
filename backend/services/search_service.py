@@ -68,9 +68,20 @@ class SearchService:
         page_size: int = 50,
         sort: str = "titulo",
         is_admin: bool = False,
+        mine_slugs: list[str] | None = None,
     ) -> dict:
-        where = [_visible_sql(is_admin)]
+        """`mine_slugs` (não None) liga o modo "Minhas Músicas": criadas/
+        importadas/clonadas pelo usuário (`songs.user_id`), favoritadas por ele
+        ou dentro de um setlist dele (as slugs vêm de SetlistService.song_slugs)
+        — em vez da regra de visibilidade da biblioteca compartilhada, porque
+        uma música de outra pessoa que está num setlist dele já é "dele"."""
+        if mine_slugs is not None:
+            where = ["(songs.user_id = %(user_id)s OR coalesce(p.favorita, false) = true OR songs.slug = ANY(%(mine_slugs)s))"]
+        else:
+            where = [_visible_sql(is_admin)]
         params: dict = {"user_id": user_id}
+        if mine_slugs is not None:
+            params["mine_slugs"] = mine_slugs
 
         if only_mine:
             where.append("songs.user_id = %(user_id)s")

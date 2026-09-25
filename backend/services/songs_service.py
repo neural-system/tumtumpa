@@ -649,8 +649,16 @@ class SongsService:
     # ---------- transposição ----------
     def transpose(self, user_id: str, slug: str, *, semitones: int | None = None,
                   to_key: str | None = None, save: bool = False, editor_name: str = "",
-                  is_admin: bool = False) -> dict:
+                  is_admin: bool = False, body_override: str | None = None,
+                  key_override: str | None = None) -> dict:
+        """`body_override`/`key_override` só valem sem `save`: quem não é dono
+        transpõe só na tela (nada é gravado) e, pra transposições sucessivas
+        acumularem, o frontend manda de volta o corpo/tom já transposto em vez
+        de partir sempre da versão salva."""
         data = self.get(user_id, slug)
+        if body_override is not None and not save:
+            data = {**data, "body": body_override,
+                    "header": {**data["header"], "tom": key_override or data["header"].get("tom", "")}}
         current_key = data["header"].get("tom", "")
         if semitones is None:
             if not to_key:

@@ -109,6 +109,45 @@ class SetlistService:
                 out.append(match)
         return out
 
+    def resolve_refs_batch(self, refs: list[str]) -> dict[str, dict]:
+        """Resolve VÁRIAS refs 'Artista/Título' com uma única consulta de
+        candidatos (em vez de uma por ref, como _resolve_many — que num acervo
+        grande, chamada pra todas as linhas de setlist_items, levava minutos e
+        derrubava /admin/stats/tools por timeout). Devolve
+        {ref: {slug, titulo, interprete}} só das refs que casaram; o match
+        exato por slugify(intérprete, título) é o mesmo de _resolve_many."""
+        targets: dict[str, tuple[str, str]] = {}
+        for ref in set(refs):
+            if "/" not in ref:
+                continue
+            artist, title = ref.split("/", 1)
+            targets[ref] = (slugify(artist), slugify(strip_title_suffix(title, artist)))
+        if not targets:
+            return {}
+        likes = list({f"%{strip_title_suffix(r.split('/', 1)[1], r.split('/', 1)[0])}%" for r in targets})
+        with db.get_pool().connection() as conn:
+            candidates = conn.execute(
+                "select slug, titulo, interprete from songs where titulo ILIKE ANY(%s)", (likes,),
+            ).fetchall()
+        by_key: dict[tuple[str, str], dict] = {}
+        for c in candidates:
+            key = (slugify(c["interprete"]), slugify(strip_title_suffix(c["titulo"], c["interprete"])))
+            by_key.setdefault(key, dict(c))
+        return {ref: by_key[key] for ref, key in targets.items() if key in by_key}
+
+    def song_slugs(self, user_id: str) -> list[str]:
+        """Slugs das músicas presentes nos setlists PRÓPRIOS do usuário (dono,
+        não apagados) — alimenta "Minhas Músicas" (SearchService, `mine_slugs`).
+        Setlists seguidos não contam; clonar um setlist alheio cria um setlist
+        próprio, e é assim que as músicas dele passam a ser "do" usuário."""
+        with db.get_pool().connection() as conn:
+            rows = conn.execute(
+                """select distinct i.ref from setlist_items i join setlists s on s.id = i.setlist_id
+                   where s.user_id = %s and not s.deleted""", (user_id,),
+            ).fetchall()
+        resolved = self.resolve_refs_batch([r["ref"] for r in rows])
+        return sorted({v["slug"] for v in resolved.values()})
+
     # ---------- API ----------
     def list(self, user_id: str) -> list[dict]:
         """Setlists do usuário (`is_owner=true` — vira "Minhas setlists" no

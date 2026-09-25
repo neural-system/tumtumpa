@@ -543,6 +543,7 @@ def build_blueprint(ctx) -> Blueprint:
             page_size=a.get("page_size", 50, type=int),
             sort=a.get("sort", "titulo"),
             is_admin=g.is_admin,
+            mine_slugs=ctx.setlists.song_slugs(g.user_id) if a.get("mine") == "1" else None,
         ))
 
     @api.get("/songs/facets")
@@ -668,6 +669,8 @@ def build_blueprint(ctx) -> Blueprint:
                 save=bool(d.get("save")),
                 editor_name=g.name,
                 is_admin=g.is_admin,
+                body_override=d.get("body") if isinstance(d.get("body"), str) else None,
+                key_override=d.get("tom") if isinstance(d.get("tom"), str) else None,
             ))
         except ValueError as e:
             return jsonify({"error": str(e), "error_code": "TRANSPOSE_INVALID"}), 400

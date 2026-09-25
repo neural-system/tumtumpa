@@ -1,7 +1,7 @@
 {
   "nav": {
     "dashboard": "Dashboard",
-    "songs": "My songs",
+    "songs": "Find a Song",
     "setlists": "Setlists",
     "favorites": "Favorites",
     "history": "History",
@@ -16,7 +16,9 @@
     "adminSales": "Sales panel",
     "settings": "Settings",
     "profile": "Profile",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "mySongs": "My Songs",
+    "accompaniment": "Accompaniment Generator"
   },
   "login": {
     "tagline": "Your chord sheets, synced to the stage.",

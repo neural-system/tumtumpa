@@ -1,7 +1,7 @@
 {
   "nav": {
     "dashboard": "Panel",
-    "songs": "Mis canciones",
+    "songs": "Encuentra una canción",
     "setlists": "Listas de repertorio",
     "favorites": "Favoritas",
     "history": "Historial",
@@ -16,7 +16,9 @@
     "adminSales": "Panel de ventas",
     "settings": "Configuración",
     "profile": "Perfil",
-    "logout": "Salir"
+    "logout": "Salir",
+    "mySongs": "Mis canciones",
+    "accompaniment": "Generador de acompañamiento"
   },
   "login": {
     "tagline": "Tus cifrados sincronizados con el escenario.",

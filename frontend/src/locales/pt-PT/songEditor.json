@@ -151,5 +151,6 @@
     "restore": "Restaurar esta versão",
     "confirmRestore": "Restaurar esta versão? A atual irá para o histórico.",
     "noDiff": "Sem diferenças no corpo da cifra."
-  }
+  },
+  "transposeTempTitle": "Música de outro utilizador: o novo tom vale só enquanto estiver neste ecrã e não é guardado."
 }

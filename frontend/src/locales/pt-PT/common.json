@@ -1,7 +1,7 @@
 {
   "nav": {
     "dashboard": "Painel",
-    "songs": "As minhas músicas",
+    "songs": "Encontrar uma Música",
     "setlists": "Alinhamentos",
     "favorites": "Favoritas",
     "history": "Histórico",
@@ -16,7 +16,9 @@
     "adminSales": "Painel de vendas",
     "settings": "Definições",
     "profile": "Perfil",
-    "logout": "Sair"
+    "logout": "Sair",
+    "mySongs": "As Minhas Músicas",
+    "accompaniment": "Gerador de acompanhamento"
   },
   "login": {
     "tagline": "As suas cifras sincronizadas para o palco.",

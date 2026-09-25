@@ -151,5 +151,6 @@
     "restore": "Restaurer cette version",
     "confirmRestore": "Restaurer cette version ? La version actuelle sera déplacée vers l'historique.",
     "noDiff": "Aucune différence dans le corps de la partition."
-  }
+  },
+  "transposeTempTitle": "Chanson d'un autre utilisateur : la nouvelle tonalité ne vaut que sur cet écran et n'est pas enregistrée."
 }

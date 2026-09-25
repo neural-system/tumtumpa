@@ -151,5 +151,6 @@
     "restore": "Diese Version wiederherstellen",
     "confirmRestore": "Diese Version wiederherstellen? Die aktuelle wandert in den Verlauf.",
     "noDiff": "Keine Unterschiede im Text des Akkordblatts."
-  }
+  },
+  "transposeTempTitle": "Song eines anderen Nutzers: Die neue Tonart gilt nur auf diesem Bildschirm und wird nicht gespeichert."
 }

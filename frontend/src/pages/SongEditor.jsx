@@ -166,13 +166,14 @@ export default function SongEditor() {
       setDirty(false)
       commitHistory({ stack: [{ header: data.header, body: data.body }], index: 0 })
       loadedSlug.current = slug
+      tempTransposed.current = false
       // "Editar música" no setlist (ver SetlistDetail.jsx) pede pra abrir
       // direto na aba Editar — só aplica se o usuário realmente pode editar
       // esta música in-place (mesma regra de canEditInPlace, calculada de
       // novo aqui porque `data`/`user` só ficam prontos depois do fetch).
       const canEditNow = !data.user_id || data.user_id === user?.id || user?.is_admin
       if (location.state?.initialTab === 'edit' && canEditNow) setTab('edit')
-    } else if (!dirty) {
+    } else if (!dirty && !tempTransposed.current) {
       // sem edição local pendente: reflete o que veio do servidor (autosave
       // concluído, transposição, favoritar, avaliar) e registra no histórico
       setHeader(data.header)
@@ -211,21 +212,31 @@ export default function SongEditor() {
     return () => clearTimeout(autosave.current)
   }, [header, body, dirty]) // eslint-disable-line
 
+  // Transposição vale pra qualquer música: se é do usuário, grava o novo tom e
+  // os acordes; se é de outra pessoa, só muda a tela (manda o corpo/tom já
+  // transpostos de volta pra as mudanças acumularem) e some ao sair da música.
+  const ownsSong = !data?.user_id || data.user_id === user?.id
+  const tempTransposed = useRef(false)
   const transpose = useMutation({
-    mutationFn: (payload) => api.post(`/songs/${slug}/transpose`, { ...payload, save: true }),
+    mutationFn: (payload) => api.post(`/songs/${slug}/transpose`, ownsSong
+      ? { ...payload, save: true }
+      : { ...payload, save: false, body, tom: header?.tom }),
     onSuccess: (r) => {
       flushPendingHistory()
       setHeader(r.data.header)
       setBody(r.data.body)
       setDirty(false)
       pushHistorySnapshot(r.data.header, r.data.body)
-      qc.invalidateQueries(['song', slug])
-      qc.invalidateQueries(['songs'])
+      if (ownsSong) {
+        qc.invalidateQueries(['song', slug])
+        qc.invalidateQueries(['songs'])
+      } else {
+        tempTransposed.current = true
+      }
     },
   })
-  // botão fica visível mesmo pra quem não é dono (só clonando dá pra editar,
-  // ver isOwner/canEditInPlace abaixo) — sem isso o clique silenciosamente
-  // não fazia nada (403 sem tratamento nenhum na tela, bug relatado).
+  // (erro de transposição continua tratado abaixo — antes, o clique de quem
+  // não era dono falhava em silêncio com um 403.)
   const transposeErrorText = transpose.isError
     ? (transpose.error?.response?.data?.error || t('tabs.transposeError'))
     : null
@@ -518,14 +529,14 @@ export default function SongEditor() {
         ))}
         <div className="spacer" style={{ flex: 1 }} />
         <span style={{ color: 'var(--muted)', fontSize: 13 }}>{t('tabs.transpose')}</span>
-        <button className="btn" disabled={!canEditInPlace}
-          title={canEditInPlace ? undefined : t('notOwnerBanner')}
+        <button className="btn" disabled={transpose.isPending}
+          title={ownsSong ? undefined : t('transposeTempTitle')}
           onClick={() => transpose.mutate({ semitones: -1 })}>{t('tabs.downHalf')}</button>
-        <button className="btn" disabled={!canEditInPlace}
-          title={canEditInPlace ? undefined : t('notOwnerBanner')}
+        <button className="btn" disabled={transpose.isPending}
+          title={ownsSong ? undefined : t('transposeTempTitle')}
           onClick={() => transpose.mutate({ semitones: 1 })}>{t('tabs.upHalf')}</button>
-        <select className="input" style={{ width: 120 }} value="" disabled={!canEditInPlace}
-          title={canEditInPlace ? undefined : t('notOwnerBanner')}
+        <select className="input" style={{ width: 120 }} value="" disabled={transpose.isPending}
+          title={ownsSong ? undefined : t('transposeTempTitle')}
           onChange={(e) => e.target.value && transpose.mutate({ to_key: e.target.value })}>
           <option value="">{t('tabs.toKey')}</option>
           {KEYS.map((k) => <option key={k}>{k}</option>)}

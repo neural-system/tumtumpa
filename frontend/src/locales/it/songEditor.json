@@ -151,5 +151,6 @@
     "restore": "Ripristina questa versione",
     "confirmRestore": "Ripristinare questa versione? Quella attuale verrà spostata nella cronologia.",
     "noDiff": "Nessuna differenza nel corpo del foglio accordi."
-  }
+  },
+  "transposeTempTitle": "Brano di un altro utente: la nuova tonalità vale solo su questa schermata e non viene salvata."
 }
