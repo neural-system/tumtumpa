@@ -18,6 +18,7 @@ from pathlib import Path
 import db
 from services import blob_client
 from utils.instruments import INSTRUMENTS
+from utils.media_types import is_image, is_video
 
 _FIELDS = (
     "band_name", "genero", "style_freeform", "skill_level", "goal", "bio", "contact_info",
@@ -232,9 +233,9 @@ class BandBoardService:
         if kind not in FILE_KINDS:
             raise ValueError(f"Tipo de mídia inválido: {kind}")
         content_type = file_storage.mimetype or ""
-        expected_prefix = "image/" if kind == "photo" else "video/"
-        if content_type and not content_type.startswith(expected_prefix):
-            raise ValueError(f"Arquivo não parece ser um(a) {'imagem' if kind == 'photo' else 'vídeo'} válido(a).")
+        valid = is_image(content_type) if kind == "photo" else is_video(content_type)
+        if not valid:
+            raise ValueError(f"Arquivo não parece ser um(a) {'imagem' if kind == 'photo' else 'vídeo'} válido(a) (formatos aceitos: {'PNG, JPEG, WebP, GIF' if kind == 'photo' else 'MP4, WebM, OGG, MOV'}).")
         data = file_storage.read()
         if len(data) > MAX_MEDIA_FILE_BYTES:
             raise ValueError(f"Arquivo maior que o limite de {MAX_MEDIA_FILE_BYTES // (1024 * 1024)} MB.")

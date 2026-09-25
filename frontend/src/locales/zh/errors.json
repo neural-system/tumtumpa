@@ -2,7 +2,7 @@
   "AUTH_REQUIRED": "需要登录验证。",
   "AUTH_ERROR": "无法完成操作。",
   "AUTH_CREDENTIALS_REQUIRED": "用户名和密码为必填项。",
-  "AUTH_PASSWORD_TOO_SHORT": "密码至少需要6个字符。",
+  "AUTH_PASSWORD_TOO_SHORT": "密码至少需要8个字符。",
   "AUTH_EMAIL_INVALID": "电子邮箱无效。",
   "AUTH_USERNAME_TAKEN": "该用户名已存在。",
   "AUTH_EMAIL_TAKEN": "该邮箱已被注册。",

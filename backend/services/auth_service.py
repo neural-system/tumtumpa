@@ -67,8 +67,8 @@ class AuthService:
         city = (city or "").strip()
         if not username or not password:
             raise AuthError("Usuário e senha são obrigatórios.")
-        if len(password) < 6:
-            raise AuthError("A senha deve ter pelo menos 6 caracteres.")
+        if len(password) < 8:
+            raise AuthError("A senha deve ter pelo menos 8 caracteres.")
         if email and not _EMAIL_RE.match(email):
             raise AuthError("E-mail inválido.")
         instruments = _validate_instruments(instruments or [])
@@ -187,8 +187,8 @@ class AuthService:
             )
 
     def reset_password(self, user_id: str, new_password: str) -> None:
-        if len(new_password) < 6:
-            raise AuthError("A senha deve ter pelo menos 6 caracteres.")
+        if len(new_password) < 8:
+            raise AuthError("A senha deve ter pelo menos 8 caracteres.")
         with db.get_pool().connection() as conn:
             row = conn.execute("select 1 from users where id=%s", (user_id,)).fetchone()
             if not row:
@@ -248,8 +248,8 @@ class AuthService:
         ATUAL precisa bater com o hash salvo antes de aceitar a nova —
         senão qualquer sessão já aberta (ex.: token roubado) poderia trocar
         a senha sem nunca ter sabido a original."""
-        if len(new_password) < 6:
-            raise AuthError("A senha deve ter pelo menos 6 caracteres.")
+        if len(new_password) < 8:
+            raise AuthError("A senha deve ter pelo menos 8 caracteres.")
         with db.get_pool().connection() as conn:
             row = conn.execute("select password_hash from users where id=%s", (user_id,)).fetchone()
             if not row:

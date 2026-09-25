@@ -73,11 +73,11 @@ export default function AdminSales() {
       </div>
 
       <div className="row" style={{ alignItems: 'flex-start' }}>
-        <div className="card" style={{ flex: 1, minWidth: 280 }}>
+        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
           <h3 style={{ marginBottom: 10 }}>{t('sections.byPlan')}</h3>
           <PlanBreakdown items={data.by_plan} suffix={t('subscribersSuffix')} emptyLabel={t('empty')} />
         </div>
-        <div className="card" style={{ flex: 1, minWidth: 280 }}>
+        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
           <h3 style={{ marginBottom: 6 }}>{t('sections.cancellationTrend')}</h3>
           <p style={{ color: 'var(--muted)', fontSize: 12, marginBottom: 12 }}>{t('trendHint')}</p>
           <CancellationTrend data={data.cancellations_by_day} emptyLabel={t('empty')} />

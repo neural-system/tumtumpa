@@ -17,7 +17,7 @@ if __name__ == "__main__":
     db.init_schema()  # idempotente — garante as tabelas mesmo rodando antes de app.py
     ctx = Services()
     try:
-        user = ctx.auth.register("demo", "demo123", "Usuário Demo")
+        user = ctx.auth.register("demo", "demo1234", "Usuário Demo")
         print("Usuário criado:", user)
     except Exception as e:
         print("Usuário demo já existe?", e)
@@ -32,4 +32,4 @@ if __name__ == "__main__":
     ctx.setlists.save(user["id"], "Ensaio de Quinta", [
         "Legião Urbana/Tempo Perdido", "Coldplay/Yellow", "Queen/Bohemian Rhapsody",
     ])
-    print("Setlist criado. Login: demo / demo123")
+    print("Setlist criado. Login: demo / demo1234")

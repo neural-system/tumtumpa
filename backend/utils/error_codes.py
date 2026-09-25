@@ -16,7 +16,7 @@ from __future__ import annotations
 
 _AUTH_EXACT = {
     "Usuário e senha são obrigatórios.": "AUTH_CREDENTIALS_REQUIRED",
-    "A senha deve ter pelo menos 6 caracteres.": "AUTH_PASSWORD_TOO_SHORT",
+    "A senha deve ter pelo menos 8 caracteres.": "AUTH_PASSWORD_TOO_SHORT",
     "E-mail inválido.": "AUTH_EMAIL_INVALID",
     "Este usuário já existe.": "AUTH_USERNAME_TAKEN",
     "Este e-mail já está cadastrado.": "AUTH_EMAIL_TAKEN",

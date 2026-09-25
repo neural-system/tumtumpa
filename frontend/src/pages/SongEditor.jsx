@@ -565,7 +565,7 @@ export default function SongEditor() {
 
       {tab === 'edit' && (
         <div className="row" style={{ alignItems: 'flex-start' }} onKeyDown={handleEditorKeyDown}>
-          <div className="card" style={{ width: 300, flexShrink: 0 }}>
+          <div className="card" style={{ width: 'min(100%, 300px)', flexShrink: 0 }}>
             <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
               <h3>{t('edit.header')}</h3>
               <button className="btn" disabled={aiSuggest.isPending}
@@ -1166,7 +1166,7 @@ function Versions({ slug }) {
 
   return (
     <div className="row" style={{ alignItems: 'flex-start' }}>
-      <div className="card" style={{ width: 300, flexShrink: 0, padding: 8 }}>
+      <div className="card" style={{ width: 'min(100%, 300px)', flexShrink: 0, padding: 8 }}>
         {versions.map((v) => (
           <div key={v.id} className="song-row" style={{ gridTemplateColumns: '1fr' }}
             onClick={() => setSelected(v.id)}>

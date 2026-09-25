@@ -115,5 +115,11 @@
       "blues": "Blues Shuffle",
       "disco": "Disco"
     }
-  }
+  },
+  "a11y": {
+    "close": "关闭"
+  },
+  "karaokeLoadError": "无法加载歌曲。请检查网络后重试。",
+  "retryAction": "重试",
+  "backAction": "返回"
 }

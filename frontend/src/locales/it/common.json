@@ -115,5 +115,11 @@
       "blues": "Blues Shuffle",
       "disco": "Disco"
     }
-  }
+  },
+  "a11y": {
+    "close": "Chiudi"
+  },
+  "karaokeLoadError": "Impossibile caricare il brano. Controlla la connessione e riprova.",
+  "retryAction": "Riprova",
+  "backAction": "Indietro"
 }

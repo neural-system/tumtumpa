@@ -124,6 +124,8 @@ def fake_blob_store(monkeypatch):
         # na URL e usa o segundo como chave, nunca decodifica nenhum dos dois.
         return {"delegationToken": f"fake-delegation:{pathname}", "clientSigningToken": "fake-signing-key", "validUntil": valid_until_ms}
 
+    # o host falso dos testes precisa passar pela trava de domínio confiável
+    monkeypatch.setattr(blob_client, "_TRUSTED_SUFFIXES", ("blob.vercel-storage.com", "fake-blob.test"))
     monkeypatch.setattr(blob_client, "put", fake_put)
     monkeypatch.setattr(blob_client, "get", fake_get)
     monkeypatch.setattr(blob_client, "delete", fake_delete)

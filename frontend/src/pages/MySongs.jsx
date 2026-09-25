@@ -166,7 +166,9 @@ export default function MySongs() {
         {items.length > 0 && (
           <VirtualList items={items} rowHeight={ROW_H} height={Math.min(640, items.length * ROW_H)}
             renderRow={(s) => (
-              <div key={s.slug} className="ms-row ms-body" style={{ height: ROW_H }} onClick={() => navigate(`/musicas/${s.slug}`)}>
+              <div key={s.slug} className="ms-row ms-body" style={{ height: ROW_H }} role="link" tabIndex={0}
+                onClick={() => navigate(`/musicas/${s.slug}`)}
+                onKeyDown={(e) => { if (e.key === 'Enter' && e.target === e.currentTarget) navigate(`/musicas/${s.slug}`) }}>
                 <div className="ms-col-fav">
                   <button type="button" className={`ms-star${s.favorita ? ' on' : s.fav_via ? ' via' : ''}`}
                     aria-pressed={!!s.favorita}
@@ -192,7 +194,7 @@ export default function MySongs() {
                   {(s.setlists || []).slice(0, 2).map((l) => <span key={l.id} className="chip ms-sl-chip">{l.nome}</span>)}
                   {(s.setlists || []).length > 2 && <span className="meta">{t('mySongs.moreSetlists', { count: s.setlists.length - 2 })}</span>}
                 </div>
-                <button className="btn sm ms-col-play" onClick={(e) => { e.stopPropagation(); navigate(`/karaoke/${s.slug}`) }}>▶</button>
+                <button className="btn sm ms-col-play" aria-label={`▶ ${s.titulo}`} onClick={(e) => { e.stopPropagation(); navigate(`/karaoke/${s.slug}`) }}>▶</button>
               </div>
             )} />
         )}

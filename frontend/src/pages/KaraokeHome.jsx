@@ -13,7 +13,7 @@ export default function KaraokeHome() {
       <h1 className="page-title">{t('title')}</h1>
       <div className="page-sub">{t('subtitle')}</div>
       <div className="row" style={{ alignItems: 'flex-start' }}>
-        <div className="card" style={{ flex: 1, minWidth: 300 }}>
+        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 300px)' }}>
           <h3 style={{ marginBottom: 10 }}>{t('continueSection')}</h3>
           {!data?.recent.length && <div className="empty">{t('emptyRecent')}</div>}
           {data?.recent.map((s) => (
@@ -23,7 +23,7 @@ export default function KaraokeHome() {
             </Link>
           ))}
         </div>
-        <div className="card" style={{ flex: 1, minWidth: 300 }}>
+        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 300px)' }}>
           <h3 style={{ marginBottom: 10 }}>{t('setlistsSection')}</h3>
           {!setlists?.length && <div className="empty">{t('emptySetlists')}</div>}
           {setlists?.map((s) => (

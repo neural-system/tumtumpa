@@ -14,6 +14,8 @@ webhook, que é a única fonte confiável desse estado (o frontend nunca sabe
 por conta própria se um pagamento passou)."""
 from __future__ import annotations
 
+import urllib.parse
+
 import stripe
 
 import db
@@ -21,6 +23,22 @@ from config import Config
 
 TRIAL_DAYS = 14
 _CREATION_BLOCKED_STATUSES = {"past_due", "canceled"}
+
+
+def is_safe_redirect_url(url: str, host: str) -> bool:
+    """URL de retorno do checkout/portal só pode voltar pro próprio site (o host
+    da requisição) ou pra localhost em desenvolvimento — senão a Stripe viraria
+    um redirecionamento aberto pra qualquer endereço escolhido pelo cliente."""
+    try:
+        parsed = urllib.parse.urlparse(url or "")
+        hostname = (parsed.hostname or "").lower()
+    except ValueError:
+        return False
+    if parsed.scheme not in ("http", "https") or not hostname or parsed.username or parsed.password:
+        return False
+    if hostname in ("localhost", "127.0.0.1"):
+        return True
+    return parsed.netloc.lower() == (host or "").lower()
 
 
 class BillingError(Exception):
@@ -128,6 +146,9 @@ class BillingService:
     # ---------- webhook ----------
     def handle_webhook_event(self, payload: bytes, sig_header: str) -> None:
         _require_stripe()
+        if not Config.STRIPE_WEBHOOK_SECRET:
+            # com segredo vazio a "assinatura" seria trivialmente forjável
+            raise BillingError("Webhook da Stripe não configurado.")
         try:
             event = stripe.Webhook.construct_event(payload, sig_header, Config.STRIPE_WEBHOOK_SECRET)
         except (ValueError, stripe.error.SignatureVerificationError) as e:

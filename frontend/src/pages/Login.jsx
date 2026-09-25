@@ -31,24 +31,26 @@ export default function Login() {
       <div className="card login-card">
         <AppLogo />
         <div className="tag">{t('login.tagline')}</div>
-        <div className="field">
-          <label>{t('login.username')}</label>
-          <input className="input" value={form.username} autoFocus
-            onChange={(e) => setForm({ ...form, username: e.target.value })}
-            onKeyDown={(e) => e.key === 'Enter' && submit()} />
-        </div>
-        <div className="field">
-          <label>{t('login.password')}</label>
-          <input className="input" type="password" value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-            onKeyDown={(e) => e.key === 'Enter' && submit()} />
-        </div>
-        {error && <div className="error-text">{error}</div>}
-        <div className="row" style={{ marginTop: 18 }}>
-          <button className="btn primary" disabled={busy} onClick={submit}>
-            {t('login.submit')}
-          </button>
-        </div>
+        <form onSubmit={(e) => { e.preventDefault(); submit() }}>
+          <div className="field">
+            <label htmlFor="login-username">{t('login.username')}</label>
+            <input id="login-username" className="input" value={form.username} autoFocus
+              autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false}
+              onChange={(e) => setForm({ ...form, username: e.target.value })} />
+          </div>
+          <div className="field">
+            <label htmlFor="login-password">{t('login.password')}</label>
+            <input id="login-password" className="input" type="password" value={form.password}
+              autoComplete="current-password"
+              onChange={(e) => setForm({ ...form, password: e.target.value })} />
+          </div>
+          {error && <div className="error-text" role="alert">{error}</div>}
+          <div className="row" style={{ marginTop: 18 }}>
+            <button type="submit" className="btn primary" disabled={busy}>
+              {t('login.submit')}
+            </button>
+          </div>
+        </form>
         <div className="page-sub" style={{ marginTop: 14 }}>
           {t('login.noAccount')} <Link to="/cadastro">{t('login.createAccount')}</Link>
         </div>

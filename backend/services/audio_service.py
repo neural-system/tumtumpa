@@ -15,6 +15,7 @@ from pathlib import Path
 import db
 from services import blob_client
 from services.songs_service import NotOwner, SongNotFound
+from utils.media_types import is_audio
 from utils.slug import slugify
 
 # teto de tamanho pra faixa de referência via upload direto (ver
@@ -99,6 +100,13 @@ class AudioService:
         expected_prefix = f"audio/{user_id}/{slug}/track"
         if not pathname.startswith(expected_prefix):
             raise ValueError("pathname não corresponde à faixa desta música.")
+        # a URL é do cliente: só vale se for do nosso blob e for exatamente o
+        # pathname autorizado (senão o token mestre iria pra onde o cliente quisesse)
+        if not blob_client.is_trusted_url(blob_url) or not blob_client.url_matches_pathname(blob_url, pathname):
+            raise ValueError("URL do blob inválida.")
+        if content_type and not is_audio(content_type):
+            raise ValueError("A faixa de referência precisa ser um arquivo de áudio.")
+        size = max(0, min(int(size or 0), MAX_TRACK_UPLOAD_BYTES))
         with db.get_pool().connection() as conn:
             conn.execute(
                 """insert into audio_tracks (song_id, blob_url, content_type, size_bytes) values (%s, %s, %s, %s)

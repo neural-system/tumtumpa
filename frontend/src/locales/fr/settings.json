@@ -97,7 +97,7 @@
     "setlistsCount_other": "{{count}} setlists",
     "favoritesCount_one": "{{count}} favorite",
     "favoritesCount_other": "{{count}} favorites",
-    "newPasswordPlaceholder": "Nouveau mot de passe (min. 6 caractères)",
+    "newPasswordPlaceholder": "Nouveau mot de passe (min. 8 caractères)",
     "confirm": "Confirmer",
     "saving": "Enregistrement…",
     "deleteUserError": "Impossible de supprimer l'utilisateur.",

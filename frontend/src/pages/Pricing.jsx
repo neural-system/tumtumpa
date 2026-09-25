@@ -107,7 +107,7 @@ export default function Pricing() {
           const isUpgrade = !!currentPlan && p.price_cents > currentPlan.price_cents
           return (
             <div key={p.id} className="card" style={{
-              minWidth: 220, flex: '1 1 220px',
+              minWidth: 'min(100%, 220px)', flex: '1 1 220px',
               borderColor: isCurrent ? 'var(--accent)' : isPopular ? 'var(--accent-soft)' : undefined,
             }}>
               {isCurrent

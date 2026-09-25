@@ -16,6 +16,8 @@ from flask_cors import CORS
 
 import db
 from config import Config
+
+_DEFAULT_SECRET_KEY = "troque-esta-chave-em-producao"  # mesmo valor padrão de config.py
 from middlewares.auth_middleware import require_admin, require_auth, require_not_blocked
 from middlewares.rate_limit import RateLimiter
 from routes.api_routes import build_blueprint
@@ -78,6 +80,11 @@ class Services:
         # Proteção básica contra abuso, só pra biblioteca pública sem login
         # (ver hook em api_routes.py) — 60 req/min por IP.
         self.public_rate_limit = RateLimiter(max_requests=60, window_seconds=60)
+        # autenticação: por IP (varredura/criação em massa) e por usuário-alvo
+        # (força bruta numa conta só, mesmo vindo de vários IPs)
+        self.login_ip_limit = RateLimiter(max_requests=20, window_seconds=60)
+        self.login_user_limit = RateLimiter(max_requests=8, window_seconds=300)
+        self.register_ip_limit = RateLimiter(max_requests=6, window_seconds=600)
 
 
 def create_app() -> Flask:
@@ -87,12 +94,32 @@ def create_app() -> Flask:
     )
     app = Flask(__name__)
     app.config.from_object(Config)
+    if Config.SECRET_KEY == _DEFAULT_SECRET_KEY or len(Config.SECRET_KEY) < 32:
+        # o JWT (e o is_admin dentro dele) é assinado com esta chave: com o
+        # valor padrão público (ou uma chave curta) qualquer pessoa forja um
+        # token de administrador. Não derruba o app (poderia tirar o site do
+        # ar por engano), mas grita no log a cada inicialização.
+        logging.getLogger(__name__).critical(
+            "SECRET_KEY ausente, padrão ou curta (<32 caracteres) — defina uma chave aleatória forte "
+            "(ex.: python -c \"import secrets; print(secrets.token_urlsafe(48))\") nas variáveis de ambiente.")
     CORS(app, origins=Config.CORS_ORIGINS.split(","))
 
     db.init_schema()  # idempotente (CREATE ... IF NOT EXISTS) — garante o schema em qualquer ambiente novo
 
     ctx = Services()
     app.register_blueprint(build_blueprint(ctx))
+
+    @app.after_request
+    def security_headers(resp):
+        # nosniff: o navegador não "adivinha" outro tipo pra um upload. A CSP
+        # com sandbox em toda resposta da API: mesmo que algum arquivo enviado
+        # por usuário fosse aberto direto, rodaria numa origem isolada, sem
+        # acesso ao localStorage/token do app.
+        resp.headers.setdefault("X-Content-Type-Options", "nosniff")
+        resp.headers.setdefault("Content-Security-Policy", "default-src 'none'; sandbox")
+        resp.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+        resp.headers.setdefault("Cross-Origin-Resource-Policy", "same-site")
+        return resp
 
     @app.get("/api/health")
     def health():

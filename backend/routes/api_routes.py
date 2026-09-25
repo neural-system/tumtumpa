@@ -7,7 +7,7 @@ from config import Config
 from middlewares.rate_limit import client_ip
 from services.ai_service import AIError
 from services.auth_service import AuthError
-from services.billing_service import BillingError
+from services.billing_service import BillingError, is_safe_redirect_url
 from services.band_board_service import FILE_KINDS as BAND_MEDIA_FILE_KINDS
 from services.band_board_service import LINK_KINDS as BAND_MEDIA_LINK_KINDS
 from services.blob_client import BlobError
@@ -17,6 +17,7 @@ from services.plans_service import DuplicatePlanName, PlanNotFound, StripeSyncEr
 from services.quota_service import QuotaExceeded
 from services.songs_service import NotOwner, SongNotFound
 from services.youtube_service import YoutubeError
+from utils.media_types import safe_media_type
 from utils.error_codes import (
     auth_error_code, band_media_error_code, billing_error_code, quota_error_code, youtube_error_code,
 )
@@ -33,11 +34,37 @@ def build_blueprint(ctx) -> Blueprint:
     # (/public/plans, /branding/..., /band-board).
     @api.before_request
     def _rate_limit_public():
-        if request.path.startswith("/api/public/"):
+        # a lista pública do mural e o contador de visitas (uma linha no
+        # banco por chamada) também entram
+        # (só a LISTA do mural — as fotos/vídeos de cada anúncio são muitas requisições
+        # legítimas por página e não podem bater no limite)
+        if request.path.startswith(("/api/public/", "/api/telemetry/landing-view")) or request.path == "/api/band-board":
             hit = ctx.public_rate_limit.check(client_ip(request))
             if hit:
                 body, status = hit
                 return jsonify(body), status
+
+    @api.before_request
+    def _rate_limit_auth():
+        # sem isto o login aceitava tentativas ilimitadas (força bruta / credential
+        # stuffing) e o cadastro, contas em massa. Contadores por instância
+        # serverless (ver rate_limit.py) — freio, não muro.
+        if request.method != "POST":
+            return None
+        ip = client_ip(request)
+        checks = []
+        if request.path == "/api/auth/login":
+            body = request.get_json(silent=True) or {}
+            user = str(body.get("username", "")).strip().lower()[:80] if isinstance(body, dict) else ""
+            checks = [(ctx.login_ip_limit, ip)] + ([(ctx.login_user_limit, user)] if user else [])
+        elif request.path == "/api/auth/register":
+            checks = [(ctx.register_ip_limit, ip)]
+        for limiter, key in checks:
+            hit = limiter.check(key)
+            if hit:
+                body, status = hit
+                return jsonify(body), status
+        return None
 
     # ---------------- auth ----------------
     @api.post("/auth/login")
@@ -222,7 +249,7 @@ def build_blueprint(ctx) -> Blueprint:
         if not result:
             return jsonify({"error": "Esta música não tem áudio enviado.", "error_code": "AUDIO_NOT_FOUND"}), 404
         data, content_type = result
-        return Response(data, mimetype=content_type or "application/octet-stream")
+        return Response(data, mimetype=safe_media_type(content_type))
 
     @api.get("/public/songs/<slug>/samples/<sample_id>")
     def public_get_sample(slug, sample_id):
@@ -234,7 +261,7 @@ def build_blueprint(ctx) -> Blueprint:
         if not result:
             return jsonify({"error": "Sample não encontrado.", "error_code": "SAMPLE_NOT_FOUND"}), 404
         data, content_type = result
-        return Response(data, mimetype=content_type or "application/octet-stream")
+        return Response(data, mimetype=safe_media_type(content_type))
 
     # Formulário público de feedback da plateia (PublicFeedback.jsx) — sem
     # login, token imprevisível na URL faz as vezes de autenticação (ver
@@ -402,6 +429,8 @@ def build_blueprint(ctx) -> Blueprint:
     @protected
     def create_checkout_session():
         d = request.get_json(force=True)
+        if not (is_safe_redirect_url(d.get("success_url", ""), request.host) and is_safe_redirect_url(d.get("cancel_url", ""), request.host)):
+            return jsonify({"error": "URL de retorno inválida.", "error_code": "BILLING_REDIRECT_INVALID"}), 400
         try:
             url = ctx.billing.create_checkout_session(
                 g.user_id, d.get("plan_id", ""),
@@ -414,6 +443,8 @@ def build_blueprint(ctx) -> Blueprint:
     @api.get("/billing/portal-session")
     @protected
     def get_portal_session():
+        if not is_safe_redirect_url(request.args.get("return_url", ""), request.host):
+            return jsonify({"error": "URL de retorno inválida.", "error_code": "BILLING_REDIRECT_INVALID"}), 400
         try:
             url = ctx.billing.create_portal_session(g.user_id, request.args.get("return_url", ""))
         except BillingError as e:
@@ -522,6 +553,19 @@ def build_blueprint(ctx) -> Blueprint:
         return jsonify(ctx.audio.storage_recompute_batch(limit=limit))
 
     # ---------------- músicas ----------------
+    def _hidden_song_response(slug):
+        """Rotas com login que leem mídia/versões de uma música só valem se o
+        usuário PODE VER a música (própria, compartilhada ou órfã; admin vê
+        tudo) — o slug é previsível (gênero--intérprete--título), então sem
+        isto qualquer conta baixaria a faixa de uma música privada alheia.
+        Devolve a resposta 404 (igual a "não existe", pra não confirmar que
+        a música privada existe) ou None se pode seguir."""
+        try:
+            ctx.songs.get(g.user_id, slug, is_admin=g.is_admin)
+        except SongNotFound:
+            return jsonify({"error": "Música não encontrada.", "error_code": "SONG_NOT_FOUND"}), 404
+        return None
+
     @api.get("/songs")
     @protected
     def list_songs():
@@ -677,12 +721,18 @@ def build_blueprint(ctx) -> Blueprint:
     @api.post("/songs/<slug>/favorite")
     @protected
     def favorite(slug):
+        hidden = _hidden_song_response(slug)
+        if hidden:
+            return hidden
         d = request.get_json(force=True)
         return jsonify(ctx.songs.set_favorite(g.user_id, slug, bool(d.get("value"))))
 
     @api.post("/songs/<slug>/rating")
     @protected
     def rating(slug):
+        hidden = _hidden_song_response(slug)
+        if hidden:
+            return hidden
         d = request.get_json(force=True)
         return jsonify(ctx.songs.set_rating(g.user_id, slug, int(d.get("nota", 5))))
 
@@ -735,6 +785,9 @@ def build_blueprint(ctx) -> Blueprint:
     @api.post("/songs/<slug>/suggest-youtube")
     @protected
     def suggest_youtube(slug):
+        hidden = _hidden_song_response(slug)
+        if hidden:
+            return hidden
         try:
             candidates = ctx.songs.suggest_youtube_candidates(slug)
         except SongNotFound:
@@ -831,11 +884,14 @@ def build_blueprint(ctx) -> Blueprint:
     @api.get("/songs/<slug>/audio")
     @protected
     def get_audio(slug):
+        hidden = _hidden_song_response(slug)
+        if hidden:
+            return hidden
         result = ctx.audio.track_bytes(g.user_id, slug)
         if not result:
             return jsonify({"error": "Esta música não tem áudio enviado.", "error_code": "AUDIO_NOT_FOUND"}), 404
         data, content_type = result
-        return Response(data, mimetype=content_type or "application/octet-stream")
+        return Response(data, mimetype=safe_media_type(content_type))
 
     @api.delete("/songs/<slug>/audio")
     @protected
@@ -869,16 +925,22 @@ def build_blueprint(ctx) -> Blueprint:
     @api.get("/songs/<slug>/samples")
     @protected
     def list_samples(slug):
+        hidden = _hidden_song_response(slug)
+        if hidden:
+            return hidden
         return jsonify(ctx.audio.list_samples(g.user_id, slug))
 
     @api.get("/songs/<slug>/samples/<sample_id>")
     @protected
     def get_sample(slug, sample_id):
+        hidden = _hidden_song_response(slug)
+        if hidden:
+            return hidden
         result = ctx.audio.sample_bytes(g.user_id, slug, sample_id)
         if not result:
             return jsonify({"error": "Sample não encontrado.", "error_code": "SAMPLE_NOT_FOUND"}), 404
         data, content_type = result
-        return Response(data, mimetype=content_type or "application/octet-stream")
+        return Response(data, mimetype=safe_media_type(content_type))
 
     @api.delete("/songs/<slug>/samples/<sample_id>")
     @protected
@@ -913,6 +975,9 @@ def build_blueprint(ctx) -> Blueprint:
     @api.get("/songs/<slug>/clips")
     @protected
     def list_clips(slug):
+        hidden = _hidden_song_response(slug)
+        if hidden:
+            return hidden
         return jsonify(ctx.clips.list_clips(g.user_id, slug))
 
     @api.post("/songs/<slug>/clips/reorder")
@@ -930,11 +995,14 @@ def build_blueprint(ctx) -> Blueprint:
     @api.get("/songs/<slug>/clips/<clip_id>")
     @protected
     def get_clip(slug, clip_id):
+        hidden = _hidden_song_response(slug)
+        if hidden:
+            return hidden
         result = ctx.clips.clip_bytes(g.user_id, slug, clip_id)
         if not result:
             return jsonify({"error": "Clipe não encontrado.", "error_code": "CLIP_NOT_FOUND"}), 404
         data, content_type = result
-        return Response(data, mimetype=content_type or "application/octet-stream")
+        return Response(data, mimetype=safe_media_type(content_type))
 
     @api.delete("/songs/<slug>/clips/<clip_id>")
     @protected
@@ -963,11 +1031,17 @@ def build_blueprint(ctx) -> Blueprint:
     @api.get("/songs/<slug>/versions")
     @protected
     def versions(slug):
+        hidden = _hidden_song_response(slug)
+        if hidden:
+            return hidden
         return jsonify(ctx.history.versions(g.user_id, slug))
 
     @api.get("/songs/<slug>/versions/<version_id>")
     @protected
     def version_content(slug, version_id):
+        hidden = _hidden_song_response(slug)
+        if hidden:
+            return hidden
         try:
             return jsonify({"content": ctx.history.read_version(g.user_id, slug, version_id),
                             "diff": ctx.history.diff(g.user_id, slug, version_id)})
@@ -1203,7 +1277,7 @@ def build_blueprint(ctx) -> Blueprint:
         if not result:
             return jsonify({"error": "Este usuário não tem logo enviada.", "error_code": "LOGO_NOT_FOUND"}), 404
         data, content_type = result
-        return Response(data, mimetype=content_type or "application/octet-stream")
+        return Response(data, mimetype=safe_media_type(content_type))
 
     # ---------------- mural "monte uma banda" (Fase 9) ----------------
     # Leitura pública (sem @protected), mesmo precedente de /karaoke/:slug —
@@ -1324,7 +1398,7 @@ def build_blueprint(ctx) -> Blueprint:
         if not result:
             return jsonify({"error": "Mídia não encontrada.", "error_code": "BAND_MEDIA_NOT_FOUND"}), 404
         data, content_type = result
-        return Response(data, mimetype=content_type)
+        return Response(data, mimetype=safe_media_type(content_type))
 
     # ---------------- dicionário de acordes ----------------
     @api.get("/acordes")

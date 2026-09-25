@@ -14,6 +14,7 @@ from pathlib import Path
 
 import db
 from services import blob_client
+from utils.media_types import is_image
 
 VARIANTS = ("black", "white", "color_light", "color_dark")
 
@@ -32,6 +33,8 @@ class BrandingService:
             raise ValueError(f"Variante de logo inválida: {variant}")
         ext = Path(file_storage.filename or "").suffix.lower() or ".png"
         content_type = file_storage.mimetype or None
+        if not is_image(content_type):
+            raise ValueError("A logo precisa ser uma imagem PNG, JPEG, WebP ou GIF.")
         data = file_storage.read()
         blob = blob_client.put(f"branding/{user_id}/{variant}{ext}", data, content_type)
         with db.get_pool().connection() as conn:

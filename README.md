@@ -18,7 +18,7 @@ Sistema web para músicos, bandas e ministérios de louvor: exibe **cifras em mo
 cd backend
 pip install -r requirements.txt
 cp .env.example .env        # ajuste SECRET_KEY, DATABASE_URL (Postgres) e BLOB_READ_WRITE_TOKEN
-python seed.py              # opcional: cria usuário demo (demo/demo123) com músicas
+python seed.py              # opcional: cria usuário demo (demo/demo1234) com músicas
 python app.py               # http://localhost:5000 — cria o schema (schema.sql) sozinho se não existir
 ```
 

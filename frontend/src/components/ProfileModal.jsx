@@ -40,11 +40,11 @@ function PasswordSection({ t }) {
       </div>
       <div className="field">
         <label>{t('password.new')}</label>
-        <input className="input" type="password" value={next} onChange={(e) => setNext(e.target.value)} required minLength={6} />
+        <input className="input" type="password" value={next} onChange={(e) => setNext(e.target.value)} required minLength={8} />
       </div>
       <div className="field">
         <label>{t('password.confirm')}</label>
-        <input className="input" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required minLength={6} />
+        <input className="input" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required minLength={8} />
       </div>
       {(localError || save.isError) && (
         <p className="error-text">{localError || save.error?.response?.data?.error || t('genericError')}</p>

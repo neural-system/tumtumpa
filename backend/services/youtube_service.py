@@ -87,9 +87,11 @@ class YoutubeService:
                 "type": "video", "maxResults": max_results,
             }, timeout=_TIMEOUT)
         except requests.RequestException as e:
-            raise YoutubeError(f"Falha ao consultar a API do YouTube: {e}") from e
+            # não repassa `e`: a mensagem do requests costuma trazer a URL
+            # completa da chamada, com `?key=<YOUTUBE_API_KEY>`
+            raise YoutubeError("Falha ao consultar a API do YouTube (rede).") from e
         if not resp.ok:
-            raise YoutubeError(f"Falha ao consultar a API do YouTube: {resp.status_code} {resp.text}")
+            raise YoutubeError(f"Falha ao consultar a API do YouTube (HTTP {resp.status_code}).")
         results = []
         for item in resp.json().get("items", []):
             video_id = item.get("id", {}).get("videoId")
@@ -138,9 +140,11 @@ class YoutubeService:
                 "key": Config.YOUTUBE_API_KEY, "id": ",".join(ids), "part": "contentDetails",
             }, timeout=_TIMEOUT)
         except requests.RequestException as e:
-            raise YoutubeError(f"Falha ao consultar a API do YouTube: {e}") from e
+            # não repassa `e`: a mensagem do requests costuma trazer a URL
+            # completa da chamada, com `?key=<YOUTUBE_API_KEY>`
+            raise YoutubeError("Falha ao consultar a API do YouTube (rede).") from e
         if not resp.ok:
-            raise YoutubeError(f"Falha ao consultar a API do YouTube: {resp.status_code} {resp.text}")
+            raise YoutubeError(f"Falha ao consultar a API do YouTube (HTTP {resp.status_code}).")
         result = {}
         for item in resp.json().get("items", []):
             video_id = item.get("id")

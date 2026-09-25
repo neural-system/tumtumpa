@@ -9,6 +9,7 @@ import { usePlaylistStore } from '../store/playlistStore'
 import { useZoomStore } from '../store/zoomStore'
 import { useHotkeys } from '../hooks/useHotkeys'
 import { usePedalControl } from '../hooks/usePedalControl'
+import { useWakeLock } from '../hooks/useWakeLock'
 import { extractUniqueChords } from '../utils/chordParser'
 import { useChordSidebarStore } from '../store/chordSidebarStore'
 import KaraokeChordSidebar from '../components/KaraokeChordSidebar'
@@ -107,6 +108,7 @@ export default function ScrollPlayer({ data }) {
   const sheetRef = useRef(null)
   const progressFillRef = useRef(null)
   const hideTimer = useRef(null)
+  const playingRef = useRef(false)
   const audioRef = useRef(null)
   const elapsedRef = useRef(0) // ms decorridos no modo legado (sem áudio)
   const intervalRef = useRef(null)
@@ -447,9 +449,13 @@ export default function ScrollPlayer({ data }) {
   const poke = () => {
     setControlsVisible(true)
     clearTimeout(hideTimer.current)
-    hideTimer.current = setTimeout(() => setControlsVisible(false), 2500)
+    // pausado = controles ficam na tela (só somem enquanto toca, pra não
+    // atrapalhar a leitura, e voltam a qualquer toque/movimento)
+    hideTimer.current = setTimeout(() => { if (playingRef.current) setControlsVisible(false) }, 2500)
   }
   useEffect(() => { poke(); return () => clearTimeout(hideTimer.current) }, [])
+  useEffect(() => { playingRef.current = playing; if (!playing) setControlsVisible(true) }, [playing])
+  useWakeLock(playing)
   useEffect(() => () => clearInterval(countdownTimer.current), [])
 
   const toggleFullscreen = () => {

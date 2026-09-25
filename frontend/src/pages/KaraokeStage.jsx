@@ -11,6 +11,7 @@ import { useZoomStore } from '../store/zoomStore'
 import { useHotkeys } from '../hooks/useHotkeys'
 import { useAudioSync } from '../hooks/useAudioSync'
 import { usePedalControl } from '../hooks/usePedalControl'
+import { useWakeLock } from '../hooks/useWakeLock'
 import { resolveTimeline, estimateSynthDuration } from '../utils/timeline'
 import { buildStepWindow } from '../utils/steps'
 import { playClick } from '../utils/clickSound'
@@ -69,6 +70,7 @@ export default function KaraokeStage() {
   const [rate, setRate] = useState(1)
   const [sampleUrls, setSampleUrls] = useState({})
   const hideTimer = useRef(null)
+  const playingRef = useRef(false)
   const stageRef = useRef(null)
   const audioRef = useRef(null)
   const sweepRootRef = useRef(null)
@@ -274,9 +276,12 @@ export default function KaraokeStage() {
   const poke = () => {
     setControlsVisible(true)
     clearTimeout(hideTimer.current)
-    hideTimer.current = setTimeout(() => setControlsVisible(false), 2500)
+    // pausado = controles ficam na tela (só somem enquanto toca)
+    hideTimer.current = setTimeout(() => { if (playingRef.current) setControlsVisible(false) }, 2500)
   }
   useEffect(() => { poke(); return () => clearTimeout(hideTimer.current) }, [])
+  useEffect(() => { playingRef.current = player.playing; if (!player.playing) setControlsVisible(true) }, [player.playing])
+  useWakeLock(player.playing)
   useEffect(() => () => clearInterval(countdownTimer.current), [])
 
   const toggleFullscreen = () => {

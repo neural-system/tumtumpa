@@ -92,8 +92,9 @@ export default function Songs() {
         {items.length > 0 && (
           <VirtualList items={items} rowHeight={58} height={Math.min(640, items.length * 58)}
             renderRow={(s) => (
-              <div key={s.slug} className="song-row" style={{ height: 58 }}
-                onClick={() => navigate(`/musicas/${s.slug}`)}>
+              <div key={s.slug} className="song-row" style={{ height: 58 }} role="link" tabIndex={0}
+                onClick={() => navigate(`/musicas/${s.slug}`)}
+                onKeyDown={(e) => { if (e.key === 'Enter' && e.target === e.currentTarget) navigate(`/musicas/${s.slug}`) }}>
                 <div>
                   <div className="title">{s.favorita && <span className="fav-star">★ </span>}{s.titulo}</div>
                   <div className="meta">
@@ -105,7 +106,7 @@ export default function Songs() {
                 <div className="meta hide-sm">{s.genero}</div>
                 <div className="meta hide-sm">{s.tags.slice(0, 2).join(', ')}</div>
                 <div>{s.tom && <span className="chip">{s.tom}</span>}</div>
-                <button className="btn" style={{ padding: '5px 12px' }}
+                <button className="btn" style={{ padding: '5px 12px' }} aria-label={`▶ ${s.titulo}`}
                   onClick={(e) => { e.stopPropagation(); navigate(`/karaoke/${s.slug}`) }}>▶</button>
               </div>
             )} />

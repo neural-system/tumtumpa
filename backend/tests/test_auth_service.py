@@ -10,17 +10,17 @@ def auth():
 
 
 def test_register_and_login(auth):
-    user = auth.register("demo", "demo123", "Usuário Demo")
+    user = auth.register("demo", "demo1234", "Usuário Demo")
     assert user["username"] == "demo" and user["name"] == "Usuário Demo"
 
-    result = auth.login("demo", "demo123")
+    result = auth.login("demo", "demo1234")
     assert result["user"]["id"] == user["id"]
     payload = auth.verify_token(result["token"])
     assert payload["sub"] == user["id"] and payload["username"] == "demo"
 
 
 def test_register_lowercases_username(auth):
-    user = auth.register("DeMo", "demo123")
+    user = auth.register("DeMo", "demo1234")
     assert user["username"] == "demo"
 
 
@@ -30,7 +30,7 @@ def test_register_defaults_name_to_username(auth):
 
 
 def test_register_duplicate_username_raises(auth):
-    auth.register("demo", "demo123")
+    auth.register("demo", "demo1234")
     with pytest.raises(AuthError):
         auth.register("demo", "outrasenha")
 
@@ -48,7 +48,7 @@ def test_register_missing_fields_raises(auth):
 
 
 def test_login_wrong_password_raises(auth):
-    auth.register("demo", "demo123")
+    auth.register("demo", "demo1234")
     with pytest.raises(AuthError):
         auth.login("demo", "senhaerrada")
 
@@ -94,12 +94,12 @@ def test_list_users_includes_is_admin(auth):
 
 
 def test_login_increments_count_and_sets_last_login(auth):
-    user = auth.register("demo", "demo123")
+    user = auth.register("demo", "demo1234")
     users = auth.list_users()
     assert users[0]["login_count"] == 0 and users[0]["last_login_at"] is None
 
-    auth.login("demo", "demo123")
-    auth.login("demo", "demo123")
+    auth.login("demo", "demo1234")
+    auth.login("demo", "demo1234")
     users = auth.list_users()
     assert users[0]["login_count"] == 2
     assert users[0]["last_login_at"] is not None
@@ -107,7 +107,7 @@ def test_login_increments_count_and_sets_last_login(auth):
 
 
 def test_failed_login_does_not_increment_count(auth):
-    auth.register("demo", "demo123")
+    auth.register("demo", "demo1234")
     with pytest.raises(AuthError):
         auth.login("demo", "senhaerrada")
     assert auth.list_users()[0]["login_count"] == 0
@@ -117,7 +117,7 @@ def test_list_users_includes_setlists_and_favorites_count(auth):
     from services.setlist_service import SetlistService
     from services.songs_service import SongsService
 
-    user = auth.register("demo", "demo123")
+    user = auth.register("demo", "demo1234")
     songs = SongsService()
     setlists = SetlistService()
     entry = songs.create(user["id"], "Pop", "Coldplay", "Yellow", "@titulo: Yellow\n\nB\nletra")
@@ -130,7 +130,7 @@ def test_list_users_includes_setlists_and_favorites_count(auth):
 
 
 def test_cannot_delete_own_account(auth):
-    user = auth.register("demo", "demo123")
+    user = auth.register("demo", "demo1234")
     with pytest.raises(AuthError):
         auth.delete_user(user["id"], user["id"])
 
@@ -162,16 +162,16 @@ def test_delete_unknown_user_is_idempotent(auth):
 
 
 def test_reset_password_updates_login(auth):
-    user = auth.register("demo", "demo123")
+    user = auth.register("demo", "demo1234")
     auth.reset_password(user["id"], "novasenha123")
     result = auth.login("demo", "novasenha123")
     assert result["user"]["id"] == user["id"]
     with pytest.raises(AuthError):
-        auth.login("demo", "demo123")
+        auth.login("demo", "demo1234")
 
 
 def test_reset_password_rejects_short_password(auth):
-    user = auth.register("demo", "demo123")
+    user = auth.register("demo", "demo1234")
     with pytest.raises(AuthError):
         auth.reset_password(user["id"], "123")
 
@@ -244,7 +244,7 @@ def test_register_lowercases_email(auth):
 
 
 def test_get_profile_includes_email(auth):
-    user = auth.register("demo", "demo123", email="demo@example.com")
+    user = auth.register("demo", "demo1234", email="demo@example.com")
     profile = auth.get_profile(user["id"])
     assert profile["username"] == "demo"
     assert profile["email"] == "demo@example.com"
@@ -259,7 +259,7 @@ def test_get_profile_unknown_user_raises(auth):
 
 def test_register_with_city_and_instruments(auth):
     user = auth.register(
-        "demo", "demo123", city="São Paulo",
+        "demo", "demo1234", city="São Paulo",
         instruments=[{"instrument": "guitar", "skill_level": "avancado"}, {"instrument": "bass", "skill_level": ""}],
     )
     profile = auth.get_profile(user["id"])
@@ -272,43 +272,43 @@ def test_register_with_city_and_instruments(auth):
 
 def test_register_rejects_invalid_instrument(auth):
     with pytest.raises(AuthError):
-        auth.register("demo", "demo123", instruments=[{"instrument": "kazoo", "skill_level": ""}])
+        auth.register("demo", "demo1234", instruments=[{"instrument": "kazoo", "skill_level": ""}])
 
 
 def test_register_rejects_invalid_skill_level(auth):
     with pytest.raises(AuthError):
-        auth.register("demo", "demo123", instruments=[{"instrument": "guitar", "skill_level": "lendario"}])
+        auth.register("demo", "demo1234", instruments=[{"instrument": "guitar", "skill_level": "lendario"}])
 
 
 def test_register_without_city_or_instruments_defaults_empty(auth):
-    user = auth.register("demo", "demo123")
+    user = auth.register("demo", "demo1234")
     profile = auth.get_profile(user["id"])
     assert profile["city"] == ""
     assert profile["instruments"] == []
 
 
 def test_set_instruments_replaces_whole_set(auth):
-    user = auth.register("demo", "demo123", instruments=[{"instrument": "guitar", "skill_level": "iniciante"}])
+    user = auth.register("demo", "demo1234", instruments=[{"instrument": "guitar", "skill_level": "iniciante"}])
     result = auth.set_instruments(user["id"], [{"instrument": "drums", "skill_level": "profissional"}])
     assert result == [{"instrument": "drums", "skill_level": "profissional"}]
     assert auth.list_instruments(user["id"]) == [{"instrument": "drums", "skill_level": "profissional"}]
 
 
 def test_set_instruments_rejects_invalid_instrument(auth):
-    user = auth.register("demo", "demo123")
+    user = auth.register("demo", "demo1234")
     with pytest.raises(AuthError):
         auth.set_instruments(user["id"], [{"instrument": "kazoo", "skill_level": ""}])
     assert auth.list_instruments(user["id"]) == []
 
 
 def test_update_city(auth):
-    user = auth.register("demo", "demo123")
+    user = auth.register("demo", "demo1234")
     auth.update_city(user["id"], "  Rio de Janeiro  ")
     assert auth.get_profile(user["id"])["city"] == "Rio de Janeiro"
 
 
 def test_deleting_user_cascades_instruments(auth):
-    user = auth.register("demo", "demo123", instruments=[{"instrument": "piano", "skill_level": ""}])
+    user = auth.register("demo", "demo1234", instruments=[{"instrument": "piano", "skill_level": ""}])
     with db.get_pool().connection() as conn:
         conn.execute("delete from users where id=%s", (user["id"],))
         remaining = conn.execute("select count(*) as n from user_instruments").fetchone()["n"]
@@ -316,58 +316,58 @@ def test_deleting_user_cascades_instruments(auth):
 
 
 def test_change_own_password_requires_correct_current_password(auth):
-    user = auth.register("demo", "demo123")
+    user = auth.register("demo", "demo1234")
     with pytest.raises(AuthError):
         auth.change_own_password(user["id"], "senhaerrada", "novasenha123")
     # senha antiga continua valendo — a troca não deve ter acontecido
-    auth.login("demo", "demo123")
+    auth.login("demo", "demo1234")
 
 
 def test_change_own_password_succeeds_with_correct_current_password(auth):
-    user = auth.register("demo", "demo123")
-    auth.change_own_password(user["id"], "demo123", "novasenha123")
+    user = auth.register("demo", "demo1234")
+    auth.change_own_password(user["id"], "demo1234", "novasenha123")
     auth.login("demo", "novasenha123")
     with pytest.raises(AuthError):
-        auth.login("demo", "demo123")
+        auth.login("demo", "demo1234")
 
 
 def test_change_own_password_rejects_short_new_password(auth):
-    user = auth.register("demo", "demo123")
+    user = auth.register("demo", "demo1234")
     with pytest.raises(AuthError):
-        auth.change_own_password(user["id"], "demo123", "123")
+        auth.change_own_password(user["id"], "demo1234", "123")
 
 
 def test_change_email_requires_correct_password(auth):
-    user = auth.register("demo", "demo123", email="old@example.com")
+    user = auth.register("demo", "demo1234", email="old@example.com")
     with pytest.raises(AuthError):
         auth.change_email(user["id"], "new@example.com", "senhaerrada")
     assert auth.get_profile(user["id"])["email"] == "old@example.com"
 
 
 def test_change_email_succeeds_with_correct_password(auth):
-    user = auth.register("demo", "demo123", email="old@example.com")
-    auth.change_email(user["id"], "new@example.com", "demo123")
+    user = auth.register("demo", "demo1234", email="old@example.com")
+    auth.change_email(user["id"], "new@example.com", "demo1234")
     assert auth.get_profile(user["id"])["email"] == "new@example.com"
 
 
 def test_change_email_rejects_invalid_format(auth):
-    user = auth.register("demo", "demo123")
+    user = auth.register("demo", "demo1234")
     with pytest.raises(AuthError):
-        auth.change_email(user["id"], "nao-e-um-email", "demo123")
+        auth.change_email(user["id"], "nao-e-um-email", "demo1234")
 
 
 def test_change_email_rejects_already_taken(auth):
     auth.register("outro", "senha123", email="ocupado@example.com")
-    user = auth.register("demo", "demo123")
+    user = auth.register("demo", "demo1234")
     with pytest.raises(AuthError):
-        auth.change_email(user["id"], "ocupado@example.com", "demo123")
+        auth.change_email(user["id"], "ocupado@example.com", "demo1234")
 
 
 def test_change_email_resets_email_verified(auth):
-    user = auth.register("demo", "demo123", email="old@example.com")
+    user = auth.register("demo", "demo1234", email="old@example.com")
     with db.get_pool().connection() as conn:
         conn.execute("update users set email_verified=true where id=%s", (user["id"],))
-    auth.change_email(user["id"], "new@example.com", "demo123")
+    auth.change_email(user["id"], "new@example.com", "demo1234")
     with db.get_pool().connection() as conn:
         row = conn.execute("select email_verified from users where id=%s", (user["id"],)).fetchone()
     assert row["email_verified"] is False

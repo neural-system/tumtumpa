@@ -30,7 +30,7 @@ function FavoriteArtistsGenresCard() {
   const genres = data?.genres || []
 
   return (
-    <div className="card" style={{ flex: 1, minWidth: 280 }}>
+    <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
       <h3 style={{ marginBottom: 10 }}>{t('sections.yourFavorites')}</h3>
       {artists.length === 0 && genres.length === 0 ? (
         <div className="empty">
@@ -64,25 +64,25 @@ export default function Dashboard() {
         <div className="card stat"><div className="big">{data.most_played.length}</div><div className="label">{t('stats.radar')}</div></div>
       </div>
       <div className="row" style={{ alignItems: 'stretch', marginBottom: 22 }}>
-        <div className="card" style={{ flex: 1, minWidth: 280 }}>
+        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
           <h3 style={{ marginBottom: 10 }}>{t('sections.mostPlayed')}</h3>
           <SongLinks items={data.most_played} extra={(s) => `${s.plays}×`} emptyLabel={t('empty')} />
         </div>
-        <div className="card" style={{ flex: 1, minWidth: 280 }}>
+        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
           <h3 style={{ marginBottom: 10 }}>{t('sections.recent')}</h3>
           <SongLinks items={data.recent} emptyLabel={t('empty')} />
         </div>
-        <div className="card" style={{ flex: 1, minWidth: 280 }}>
+        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
           <h3 style={{ marginBottom: 10 }}>{t('sections.favorites')}</h3>
           <SongLinks items={data.favorites} extra={() => '★'} emptyLabel={t('empty')} />
         </div>
       </div>
       <div className="row" style={{ alignItems: 'stretch' }}>
-        <div className="card" style={{ flex: 1, minWidth: 280 }}>
+        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
           <h3 style={{ marginBottom: 10 }}>{t('sections.mostPlayedArtists')}</h3>
           <ArtistLinks items={data.most_played_artists} emptyLabel={t('emptyArtists')} />
         </div>
-        <div className="card" style={{ flex: 1, minWidth: 280 }}>
+        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
           <h3 style={{ marginBottom: 10 }}>{t('sections.newlyAdded')}</h3>
           <SongLinks items={data.newly_added} emptyLabel={t('empty')} />
         </div>

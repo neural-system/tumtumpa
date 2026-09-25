@@ -97,7 +97,7 @@
     "setlistsCount_other": "{{count}} alinhamentos",
     "favoritesCount_one": "{{count}} favorita",
     "favoritesCount_other": "{{count}} favoritas",
-    "newPasswordPlaceholder": "Nova palavra-passe (mín. 6 caracteres)",
+    "newPasswordPlaceholder": "Nova palavra-passe (mín. 8 caracteres)",
     "confirm": "Confirmar",
     "saving": "A guardar…",
     "deleteUserError": "Não foi possível eliminar o utilizador.",

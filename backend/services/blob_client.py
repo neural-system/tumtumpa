@@ -42,6 +42,40 @@ class BlobError(Exception):
     pass
 
 
+# Domínios de blob em que o token mestre pode ser enviado. `get`/`size_of`/
+# `delete` recebem URLs que vêm do banco — e uma URL já chegou lá vinda do
+# cliente (confirmação do upload direto). Sem esta trava, quem confirma um
+# upload com `url` apontando pra um servidor seu receberia o token mestre
+# (acesso total ao store) na próxima leitura da faixa.
+_TRUSTED_SUFFIXES = ("blob.vercel-storage.com",)
+
+
+def is_trusted_url(url: str) -> bool:
+    """https, sem credenciais embutidas, e host dentro de `_TRUSTED_SUFFIXES`."""
+    try:
+        parsed = urllib.parse.urlparse(url or "")
+        host = (parsed.hostname or "").lower()
+    except ValueError:
+        return False
+    if parsed.scheme != "https" or parsed.username or parsed.password or not host:
+        return False
+    return any(host == s or host.endswith("." + s) for s in _TRUSTED_SUFFIXES)
+
+
+def url_matches_pathname(url: str, pathname: str) -> bool:
+    """A URL do blob termina exatamente no pathname que o servidor autorizou."""
+    try:
+        path = urllib.parse.unquote(urllib.parse.urlparse(url or "").path)
+    except ValueError:
+        return False
+    return path.lstrip("/") == pathname.lstrip("/")
+
+
+def _require_trusted(url: str) -> None:
+    if not is_trusted_url(url):
+        raise BlobError("URL de blob fora do domínio confiável.")
+
+
 def _headers(**extra: str | None) -> dict:
     headers = {
         "authorization": f"Bearer {Config.BLOB_READ_WRITE_TOKEN}",
@@ -72,6 +106,7 @@ def get(url: str) -> tuple[bytes, str]:
     """Busca os bytes de um blob privado — a leitura vai direto no domínio
     `*.private.blob.vercel-storage.com` do blob (não na API de gerência),
     autenticada com o mesmo token. Devolve (bytes, content_type)."""
+    _require_trusted(url)
     resp = requests.get(url, headers={"authorization": f"Bearer {Config.BLOB_READ_WRITE_TOKEN}"}, timeout=_TIMEOUT)
     if not resp.ok:
         raise BlobError(f"Falha ao buscar blob: {resp.status_code} {resp.text}")
@@ -82,6 +117,7 @@ def size_of(url: str) -> int:
     """HEAD no blob — só o tamanho, sem baixar o conteúdo. Usado no
     recálculo em lote de linhas antigas que nasceram sem `size_bytes`
     (upload novo já grava o tamanho na hora, via `len(data)`)."""
+    _require_trusted(url)
     resp = requests.head(url, headers={"authorization": f"Bearer {Config.BLOB_READ_WRITE_TOKEN}"}, timeout=_TIMEOUT)
     if not resp.ok:
         raise BlobError(f"Falha ao consultar tamanho do blob: {resp.status_code} {resp.text}")
@@ -93,6 +129,8 @@ def delete(urls: list[str]) -> None:
     mais (mesma semântica do `del()` do SDK oficial)."""
     if not urls:
         return
+    for u in urls:
+        _require_trusted(u)
     resp = requests.post(
         f"{_API_URL}/delete",
         headers=_headers(**{"content-type": "application/json"}),

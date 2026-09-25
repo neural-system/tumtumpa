@@ -97,7 +97,7 @@
     "setlistsCount_other": "{{count}} сетлистов",
     "favoritesCount_one": "{{count}} избранная",
     "favoritesCount_other": "{{count}} избранных",
-    "newPasswordPlaceholder": "Новый пароль (мин. 6 символов)",
+    "newPasswordPlaceholder": "Новый пароль (мин. 8 символов)",
     "confirm": "Подтвердить",
     "saving": "Сохранение…",
     "deleteUserError": "Не удалось удалить пользователя.",

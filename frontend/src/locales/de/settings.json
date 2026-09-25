@@ -97,7 +97,7 @@
     "setlistsCount_other": "{{count}} Setlists",
     "favoritesCount_one": "{{count}} Favorit",
     "favoritesCount_other": "{{count}} Favoriten",
-    "newPasswordPlaceholder": "Neues Passwort (mind. 6 Zeichen)",
+    "newPasswordPlaceholder": "Neues Passwort (mind. 8 Zeichen)",
     "confirm": "Bestätigen",
     "saving": "Wird gespeichert…",
     "deleteUserError": "Der Benutzer konnte nicht gelöscht werden.",

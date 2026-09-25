@@ -7,6 +7,8 @@ import base64
 import hashlib
 import hmac
 
+import pytest
+
 from services import blob_client
 
 
@@ -46,3 +48,43 @@ def test_presign_put_url_different_pathname_changes_signature():
 def test_presign_put_url_never_leaks_client_signing_token():
     url = blob_client.presign_put_url("audio/u1/some-song/track.mp3", "deleg-token", "super-secret-signing-key")
     assert "super-secret-signing-key" not in url
+
+
+# ---------- trava de domínio (o token mestre só vai pro blob de verdade) ----------
+
+def test_is_trusted_url_accepts_only_https_blob_hosts():
+    assert blob_client.is_trusted_url("https://abc123.private.blob.vercel-storage.com/audio/u1/x/track.mp3")
+    assert blob_client.is_trusted_url("https://abc123.blob.vercel-storage.com/a.mp3")
+
+
+@pytest.mark.parametrize("url", [
+    "http://abc.private.blob.vercel-storage.com/a.mp3",          # sem TLS
+    "https://evil.example/audio/u1/x/track.mp3",                  # outro host
+    "https://blob.vercel-storage.com.evil.example/a.mp3",         # sufixo falso
+    "https://user:pw@abc.private.blob.vercel-storage.com/a.mp3",  # credenciais embutidas
+    "https://evilblob.vercel-storage.com/a.mp3",                  # não é subdomínio real
+    "", "not a url", "file:///etc/passwd",
+])
+def test_is_trusted_url_rejects_everything_else(url):
+    assert not blob_client.is_trusted_url(url)
+
+
+def test_url_matches_pathname_requires_exact_path():
+    url = "https://abc.private.blob.vercel-storage.com/audio/u1/musica/track.mp3"
+    assert blob_client.url_matches_pathname(url, "audio/u1/musica/track.mp3")
+    assert not blob_client.url_matches_pathname(url, "audio/u2/outra/track.mp3")
+    assert not blob_client.url_matches_pathname(url + "?x=1&../", "audio/u1/musica/track.mp3/..")
+
+
+def test_blob_reads_refuse_untrusted_urls_without_sending_the_token(monkeypatch):
+    sent = []
+    monkeypatch.setattr(blob_client.requests, "get", lambda *a, **k: sent.append((a, k)))
+    monkeypatch.setattr(blob_client.requests, "head", lambda *a, **k: sent.append((a, k)))
+    monkeypatch.setattr(blob_client.requests, "post", lambda *a, **k: sent.append((a, k)))
+    with pytest.raises(blob_client.BlobError):
+        blob_client.get("https://evil.example/x")
+    with pytest.raises(blob_client.BlobError):
+        blob_client.size_of("https://evil.example/x")
+    with pytest.raises(blob_client.BlobError):
+        blob_client.delete(["https://evil.example/x"])
+    assert sent == []

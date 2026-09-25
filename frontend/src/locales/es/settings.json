@@ -97,7 +97,7 @@
     "setlistsCount_other": "{{count}} listas de repertorio",
     "favoritesCount_one": "{{count}} favorita",
     "favoritesCount_other": "{{count}} favoritas",
-    "newPasswordPlaceholder": "Nueva contraseña (mín. 6 caracteres)",
+    "newPasswordPlaceholder": "Nueva contraseña (mín. 8 caracteres)",
     "confirm": "Confirmar",
     "saving": "Guardando…",
     "deleteUserError": "No se pudo eliminar al usuario.",

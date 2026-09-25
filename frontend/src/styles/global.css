@@ -34,6 +34,7 @@
   --radius: 8px;
   --radius-sm: 5px;
   --sidebar-w: 232px;
+  --accent-text: var(--accent); /* cor de destaque quando usada como TEXTO/foco (ver tema claro + destaque branco) */
 }
 
 /* ---------- tema claro/escuro (cromia geral) ---------- */
@@ -52,6 +53,10 @@
   color-scheme: dark; /* barras de rolagem e controles nativos escuros */
 }
 :root[data-theme="light"] {
+  /* versões escuras das cores de conteúdo (âmbar/verde/azul puros somem no papel) */
+  --amber-ink: color-mix(in srgb, var(--amber) 60%, #000);
+  --ok-ink: color-mix(in srgb, var(--ok) 55%, #000);
+  --sample-ink: color-mix(in srgb, var(--sample) 55%, #000);
   --bg: #f2f0e9;
   --bg-raise: #fbfaf6;
   --glass: rgba(8, 8, 8, 0.035);
@@ -116,6 +121,7 @@
 }
 :root[data-theme="light"][data-accent="branco"] {
   --accent: #ffffff; --accent-soft: rgba(8, 8, 8, 0.06); --accent-ink: #141311;
+  --accent-text: var(--text); /* branco sobre papel some: texto/foco usam a tinta */
 }
 :root[data-accent="cinza"] {
   --accent: #a39d8f; --accent-soft: rgba(163, 157, 143, 0.16); --accent-ink: #0f0e0c;
@@ -136,7 +142,7 @@ body {
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; }
 ::selection { background: var(--accent-soft); }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
 
 /* ---------- layout ---------- */
 .app-shell { display: flex; min-height: 100vh; }
@@ -148,6 +154,10 @@ button { font-family: inherit; }
 .page-title { font-family: var(--font-display); font-size: 30px; font-weight: 800; letter-spacing: -0.045em; line-height: 1.05; }
 .page-sub { color: var(--muted); margin-top: 6px; margin-bottom: 26px; }
 .section-heading { font: 700 11px var(--font-mono); text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin: 0 0 12px; }
+/* <h3> solto dentro de um card (dezenas de telas): mesmo rótulo dos .section-heading */
+.card > h3, .card > .row > h3:first-child, .card > div > h3:first-child {
+  font: 700 11px var(--font-mono); text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted);
+}
 /* rótulo editorial (mesmo .palco-section-kicker do /) */
 .kicker { font: 700 11px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
 
@@ -171,7 +181,7 @@ button { font-family: inherit; }
 .brand-logo-icon { display: none; height: 34px; width: auto; }
 /* marca em texto, igual .palco-brand da home */
 .brand-word { font-weight: 900; font-size: 19px; letter-spacing: -1px; white-space: nowrap; transform: rotate(-2deg); transform-origin: left center; }
-.brand-word b { color: var(--accent); }
+.brand-word b { color: var(--accent-text); }
 button.nav-item { border: none; background: none; cursor: pointer; width: 100%; text-align: left; }
 .nav-item {
   display: flex; align-items: center; gap: 10px;
@@ -199,7 +209,7 @@ button.nav-item { border: none; background: none; cursor: pointer; width: 100%; 
   padding: 18px 20px;
 }
 .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 22px; }
-.stat .big { font-family: var(--font-display); font-size: 34px; font-weight: 800; letter-spacing: -0.04em; color: var(--accent); }
+.stat .big { font-family: var(--font-display); font-size: 34px; font-weight: 800; letter-spacing: -0.04em; color: var(--accent-text); }
 .stat .label { color: var(--muted); font: 700 10.5px var(--font-mono); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 4px; }
 
 /* ---------- controles ---------- */
@@ -250,7 +260,7 @@ button.nav-item { border: none; background: none; cursor: pointer; width: 100%; 
   color: var(--text); font-size: 14px;
 }
 .input:hover { border-color: var(--btn-hover-border); }
-.input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+.input:focus { border-color: var(--accent-text); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
 textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: vertical; }
 .field { margin-bottom: 14px; }
 .field label { display: block; font: 700 10.5px var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 7px; }
@@ -327,8 +337,8 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .song-row.setlist-row > :first-child { flex: 1 1 220px; min-width: 0; }
 .song-row .title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .song-row .meta { color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.chip { display: inline-block; padding: 2px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); font: 700 10.5px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
-.fav-star { color: var(--accent); }
+.chip { display: inline-block; padding: 2px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent-text); font: 700 10.5px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.fav-star { color: var(--accent-text); }
 .plan-badge { text-decoration: none; padding: 5px 12px; font: 700 11px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; transition: 120ms; }
 .plan-badge:hover { background: var(--accent); color: var(--bg, #fff); }
 
@@ -339,6 +349,16 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 /* âmbar puro some no papel claro — escurece a cor escolhida (mantém o matiz) */
 :root[data-theme="light"] .main .chord-sheet .acorde,
 :root[data-theme="light"] .landing-page .chord-sheet .acorde { color: color-mix(in srgb, var(--amber) 60%, #000); }
+/* tema claro: âmbar/verde/azul puros somem no papel — usa as tintas escuras
+   (--amber-ink etc., ver tokens do tema) em tudo que é TEXTO de conteúdo. O
+   palco de karaokê/rolagem é sempre escuro e não entra aqui. */
+:root[data-theme="light"] :is(.main, .landing-page) .chord-sheet :is(.secao) { color: var(--amber-ink); }
+:root[data-theme="light"] :is(.main, .landing-page) .chord-sheet :is(.solo, .riff) { color: var(--ok-ink); }
+:root[data-theme="light"] :is(.main, .landing-page) .chord-sheet .tab { border-left-color: var(--ok-ink); }
+:root[data-theme="light"] :is(.main, .landing-page) .chord-sheet .sample { color: var(--sample-ink); border-left-color: var(--sample-ink); }
+:root[data-theme="light"] .main .sync-step-chord, :root[data-theme="light"] .main .sync-step.secao > span { color: var(--amber-ink); }
+:root[data-theme="light"] .main .sync-step.sample > span { color: var(--sample-ink); }
+:root[data-theme="light"] .main .sync-step-block-header, :root[data-theme="light"] .main .diff .add { color: var(--ok-ink); }
 .chord-sheet .secao {
   color: var(--amber); font-weight: 700; text-transform: uppercase;
   letter-spacing: 0.06em; font-size: 12.5px;
@@ -390,7 +410,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .chord-dict-row .title { font-weight: 600; }
 .chord-dict-row .meta { color: var(--muted); font-size: 12px; }
 .fav-toggle { background: none; border: none; cursor: pointer; font-size: 18px; color: var(--muted); line-height: 1; padding: 4px; }
-.fav-toggle:hover { color: var(--accent); }
+.fav-toggle:hover { color: var(--accent-text); }
 .chord-dict-detail { min-height: 420px; }
 .chord-dict-title { font-family: var(--font-display); font-size: 26px; font-weight: 700; display: flex; align-items: center; }
 .chord-dict-diagram-wrap { width: 100%; max-width: 320px; height: 260px; margin: 0 auto; }
@@ -444,7 +464,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
   background: var(--glass); color: var(--muted); font-size: 11px; font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
-.sync-step-chip.marked { background: var(--accent-soft); color: var(--accent); }
+.sync-step-chip.marked { background: var(--accent-soft); color: var(--accent-text); }
 
 /* ---------- player karaokê ---------- */
 /* Tela de performance: sempre escura, propositalmente independente do
@@ -648,9 +668,18 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
      funcionava porque Tab+Enter aciona o elemento focado direto, sem
      depender de qual elemento está por cima na pilha visual). */
   position: absolute; bottom: 0; left: 0; right: var(--k-sidebar-w, 0px);
-  display: flex; align-items: center; justify-content: center; gap: 10px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px;
   padding: 18px; background: linear-gradient(transparent, rgba(0,0,0,0.85));
   opacity: 0; transition: opacity 200ms;
+  max-height: 60vh; overflow-y: auto;
+  /* escondida = não clicável: no celular o toque que "acorda" a barra caía no
+     botão que estava por baixo (Parar, Sair, Próxima…) */
+  pointer-events: none;
+}
+.karaoke-stage.controls-visible .k-controls { pointer-events: auto; }
+@media (pointer: coarse) {
+  .k-controls .btn { min-height: 46px; min-width: 46px; padding: 8px 16px; font-size: 14px; }
+  .k-controls { gap: 8px; padding: 14px 10px; }
 }
 .karaoke-stage.controls-visible .k-controls { opacity: 1; }
 /* botões do palco (karaokê e rolagem): vidro fosco sobre o preto, maiores pra
@@ -909,7 +938,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 }
 .metronome-bpm-value {
   font-family: var(--font-display); font-size: 60px; font-weight: 700;
-  color: var(--accent); text-shadow: 0 0 26px var(--accent-soft); line-height: 1;
+  color: var(--accent-text); text-shadow: 0 0 26px var(--accent-soft); line-height: 1;
 }
 .metronome-bpm-unit { font-size: 14px; font-weight: 600; color: var(--muted); margin-left: 6px; }
 .metronome-tempo-marking {
@@ -968,19 +997,19 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
   font: 700 10.5px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); transition: color 120ms;
 }
 .ms-th:hover, .ms-th.sorted { color: var(--text); }
-.ms-th.sorted { color: var(--accent); }
+.ms-th.sorted { color: var(--accent-text); }
 .ms-sort { font-size: 9px; }
 .ms-body { border-bottom: 1px solid var(--stroke); cursor: pointer; transition: background 100ms; }
 .ms-body:hover { background: var(--glass); }
 .ms-title-cell { min-width: 0; }
 .ms-title-cell .title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
-.ms-origin { color: var(--accent); }
+.ms-origin { color: var(--accent-text); }
 .ms-title-cell .meta, .ms-body > .meta { color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ms-col-narrow { text-align: left; }
 .ms-col-play { justify-self: end; }
 .ms-star { background: none; border: none; cursor: pointer; font-size: 19px; line-height: 1; color: var(--muted); padding: 4px; transition: transform 120ms, color 120ms; }
-.ms-star:hover { transform: scale(1.2); color: var(--accent); }
-.ms-star.on { color: var(--accent); }
+.ms-star:hover { transform: scale(1.2); color: var(--accent-text); }
+.ms-star.on { color: var(--accent-text); }
 .ms-star.via { color: color-mix(in srgb, var(--accent) 60%, var(--muted)); }
 .ms-setlists { display: flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; }
 .ms-sl-chip { max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-transform: none; letter-spacing: 0; font: 600 12px var(--font-body); padding: 3px 8px; }
@@ -1015,7 +1044,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .acc-style-name { font-weight: 800; letter-spacing: -0.02em; }
 .acc-style-meta { font: 700 10.5px var(--font-mono); letter-spacing: 0.08em; color: var(--muted); }
 .acc-bpm { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
-.acc-bpm-value { font: 800 40px var(--font-display); letter-spacing: -0.04em; color: var(--accent); line-height: 1; text-align: center; }
+.acc-bpm-value { font: 800 40px var(--font-display); letter-spacing: -0.04em; color: var(--accent-text); line-height: 1; text-align: center; }
 .acc-bpm-value span { display: block; font: 700 10px var(--font-mono); letter-spacing: 0.14em; color: var(--muted); margin-top: 4px; }
 .acc-range { width: 100%; accent-color: var(--accent); }
 .acc-check { display: flex; align-items: center; gap: 8px; margin-top: 14px; cursor: pointer; }

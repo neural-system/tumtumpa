@@ -97,7 +97,7 @@
     "setlistsCount_other": "{{count}} setlists",
     "favoritesCount_one": "{{count}} favorita",
     "favoritesCount_other": "{{count}} favoritas",
-    "newPasswordPlaceholder": "Nova senha (mín. 6 caracteres)",
+    "newPasswordPlaceholder": "Nova senha (mín. 8 caracteres)",
     "confirm": "Confirmar",
     "saving": "Salvando…",
     "deleteUserError": "Não foi possível excluir o usuário.",

@@ -97,7 +97,7 @@
     "setlistsCount_other": "{{count}} 个歌单",
     "favoritesCount_one": "{{count}} 首收藏",
     "favoritesCount_other": "{{count}} 首收藏",
-    "newPasswordPlaceholder": "新密码（至少6个字符）",
+    "newPasswordPlaceholder": "新密码（至少8个字符）",
     "confirm": "确认",
     "saving": "正在保存…",
     "deleteUserError": "无法删除该用户。",

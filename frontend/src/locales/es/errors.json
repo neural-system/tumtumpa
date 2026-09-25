@@ -2,7 +2,7 @@
   "AUTH_REQUIRED": "Autenticación necesaria.",
   "AUTH_ERROR": "No se pudo completar la operación.",
   "AUTH_CREDENTIALS_REQUIRED": "Usuario y contraseña son obligatorios.",
-  "AUTH_PASSWORD_TOO_SHORT": "La contraseña debe tener al menos 6 caracteres.",
+  "AUTH_PASSWORD_TOO_SHORT": "La contraseña debe tener al menos 8 caracteres.",
   "AUTH_EMAIL_INVALID": "Correo electrónico inválido.",
   "AUTH_USERNAME_TAKEN": "Este usuario ya existe.",
   "AUTH_EMAIL_TAKEN": "Este correo ya está registrado.",

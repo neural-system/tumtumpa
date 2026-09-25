@@ -42,22 +42,22 @@ export default function SignUp() {
         <div className="tag">{t('signup.tagline')}</div>
         <div className="field">
           <label>{t('signup.name')}</label>
-          <input className="input" value={form.name} autoFocus
+          <input className="input" value={form.name} autoFocus autoComplete="name"
             onChange={(e) => setForm({ ...form, name: e.target.value })} />
         </div>
         <div className="field">
           <label>{t('signup.username')}</label>
-          <input className="input" value={form.username}
+          <input className="input" value={form.username} autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false}
             onChange={(e) => setForm({ ...form, username: e.target.value })} />
         </div>
         <div className="field">
           <label>{t('signup.email')}</label>
-          <input className="input" type="email" value={form.email}
+          <input className="input" type="email" value={form.email} autoComplete="email"
             onChange={(e) => setForm({ ...form, email: e.target.value })} />
         </div>
         <div className="field">
           <label>{t('signup.password')}</label>
-          <input className="input" type="password" value={form.password}
+          <input className="input" type="password" value={form.password} autoComplete="new-password" minLength={8}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             onKeyDown={(e) => e.key === 'Enter' && submit()} />
         </div>

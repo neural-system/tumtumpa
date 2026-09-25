@@ -58,26 +58,26 @@ export default function AdminTools() {
       </div>
 
       <div className="row" style={{ alignItems: 'flex-start' }}>
-        <div className="card" style={{ flex: 1, minWidth: 280 }}>
+        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
           <h3 style={{ marginBottom: 10 }}>{t('sections.mostPlayed')}</h3>
           <SongRankList items={data.most_played} suffix={t('playsSuffix')} valueKey="count" emptyLabel={t('empty')} />
         </div>
-        <div className="card" style={{ flex: 1, minWidth: 280 }}>
+        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
           <h3 style={{ marginBottom: 10 }}>{t('sections.mostEdited')}</h3>
           <SongRankList items={data.most_edited} suffix={t('editsSuffix')} valueKey="edits" emptyLabel={t('empty')} />
         </div>
-        <div className="card" style={{ flex: 1, minWidth: 280 }}>
+        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
           <h3 style={{ marginBottom: 10 }}>{t('sections.mostSetlisted')}</h3>
           <SongRankList items={data.most_setlisted} suffix={t('setlistsSuffix')} valueKey="count" emptyLabel={t('empty')} />
         </div>
       </div>
 
       <div className="row" style={{ alignItems: 'flex-start' }}>
-        <div className="card" style={{ flex: 1, minWidth: 280 }}>
+        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
           <h3 style={{ marginBottom: 10 }}>{t('sections.topUploaders')}</h3>
           <UserRankList items={data.top_uploaders} suffix={t('songsSuffix')} valueKey="songs_count" emptyLabel={t('empty')} />
         </div>
-        <div className="card" style={{ flex: 1, minWidth: 280 }}>
+        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
           <h3 style={{ marginBottom: 10 }}>{t('sections.topByLogins')}</h3>
           <UserRankList items={data.top_by_logins} suffix={t('loginsSuffix')} valueKey="login_count" emptyLabel={t('empty')} />
         </div>

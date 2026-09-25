@@ -97,7 +97,7 @@
     "setlistsCount_other": "{{count}} scalette",
     "favoritesCount_one": "{{count}} preferito",
     "favoritesCount_other": "{{count}} preferiti",
-    "newPasswordPlaceholder": "Nuova password (min. 6 caratteri)",
+    "newPasswordPlaceholder": "Nuova password (min. 8 caratteri)",
     "confirm": "Conferma",
     "saving": "Salvataggio…",
     "deleteUserError": "Impossibile eliminare l'utente.",
