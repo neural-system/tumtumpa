@@ -17,10 +17,10 @@ export default function Privacy() {
         <div className="page-sub">{t('legal.updated')}</div>
         <p className="chip" style={{ marginBottom: 20 }}>{t('legal.draft')}</p>
         {Array.isArray(sections) && sections.map((s) => (
-          <section key={s.h} style={{ marginBottom: 22 }}>
+          <div key={s.h} style={{ marginBottom: 22 }}>
             <h2 className="section-heading" style={{ color: 'var(--text)' }}>{s.h}</h2>
             <p style={{ lineHeight: 1.65, color: 'var(--muted)' }}>{s.p}</p>
-          </section>
+          </div>
         ))}
         <Link className="btn" to="/">{t('common.close')}</Link>
       </div>
