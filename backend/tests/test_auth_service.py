@@ -492,3 +492,64 @@ def test_delete_own_account_refuses_active_subscription_and_last_admin(auth):
     chefe = auth.register("chefe", "senha1234", "Chefe", is_admin=True)
     with pytest.raises(AuthError, match="último administrador"):
         auth.delete_own_account(chefe["id"], "senha1234")
+
+
+def _session(auth, username, password):
+    result = auth.login(username, password)
+    return auth.verify_token(result["token"]), result["user"]["id"]
+
+
+def test_check_session_accepts_fresh_token(auth):
+    auth.register("demo", "demo1234")
+    payload, _ = _session(auth, "demo", "demo1234")
+    assert auth.check_session(payload) is False
+
+
+def test_password_change_revokes_old_tokens(auth):
+    auth.register("demo", "demo1234")
+    old, user_id = _session(auth, "demo", "demo1234")
+    auth.change_own_password(user_id, "demo1234", "outrasenha1")
+    with pytest.raises(AuthError):
+        auth.check_session(old)
+    new, _ = _session(auth, "demo", "outrasenha1")
+    assert auth.check_session(new) is False
+
+
+def test_admin_reset_password_revokes_old_tokens(auth):
+    auth.register("demo", "demo1234")
+    old, user_id = _session(auth, "demo", "demo1234")
+    auth.reset_password(user_id, "novasenha99")
+    with pytest.raises(AuthError):
+        auth.check_session(old)
+
+
+def test_deleted_user_token_is_rejected(auth):
+    auth.register("chefe", "senha123", is_admin=True)
+    auth.register("demo", "demo1234")
+    payload, user_id = _session(auth, "demo", "demo1234")
+    boss = auth.login("chefe", "senha123")["user"]["id"]
+    assert auth.check_session(payload) is False
+    auth.delete_user(user_id, boss)
+    with pytest.raises(AuthError):
+        auth.check_session(payload)
+
+
+def test_check_session_returns_current_admin_flag(auth):
+    auth.register("chefe", "senha123", is_admin=True)
+    auth.register("demo", "demo1234")
+    boss = auth.login("chefe", "senha123")["user"]["id"]
+    payload, user_id = _session(auth, "demo", "demo1234")
+    assert auth.check_session(payload) is False
+    auth.set_plan_category(user_id, boss, "admin")
+    # o token antigo (is_admin=False) foi revogado; o novo enxerga o admin
+    with pytest.raises(AuthError):
+        auth.check_session(payload)
+    fresh, _ = _session(auth, "demo", "demo1234")
+    assert auth.check_session(fresh) is True
+
+
+def test_token_without_version_claim_counts_as_zero(auth):
+    user = auth.register("demo", "demo1234")
+    legacy = auth.verify_token(auth.issue_token(user["id"], "demo"))
+    legacy.pop("tv")
+    assert auth.check_session(legacy) is False

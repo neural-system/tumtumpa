@@ -45,7 +45,7 @@ def test_status_is_none_before_activation(ctx):
 def test_status_reflects_current_song_after_update(ctx):
     feedback, _ = ctx
     feedback.activate("u1", "ensaio")
-    feedback.set_current_song("ensaio", "pop--coldplay--yellow")
+    feedback.set_current_song("u1", "ensaio", "pop--coldplay--yellow")
     status = feedback.status("u1", "ensaio")
     assert status["current_song_slug"] == "pop--coldplay--yellow"
 
@@ -66,7 +66,7 @@ def test_public_status_unknown_token_raises_not_found(ctx):
 def test_public_status_reports_current_song(ctx):
     feedback, _ = ctx
     token = feedback.activate("u1", "ensaio")["token"]
-    feedback.set_current_song("ensaio", "pop--coldplay--yellow")
+    feedback.set_current_song("u1", "ensaio", "pop--coldplay--yellow")
     status = feedback.public_status(token)
     assert status["active"] is True
     assert status["setlist_nome"] == "Ensaio"
@@ -83,7 +83,7 @@ def test_submit_rating_without_current_song_raises(ctx):
 def test_submit_rating_after_deactivation_raises(ctx):
     feedback, _ = ctx
     token = feedback.activate("u1", "ensaio")["token"]
-    feedback.set_current_song("ensaio", "pop--coldplay--yellow")
+    feedback.set_current_song("u1", "ensaio", "pop--coldplay--yellow")
     feedback.deactivate("u1", "ensaio")
     with pytest.raises(NoActiveSession):
         feedback.submit_rating(token, 8)
@@ -92,7 +92,7 @@ def test_submit_rating_after_deactivation_raises(ctx):
 def test_submit_rating_clamps_out_of_range_values(ctx):
     feedback, _ = ctx
     token = feedback.activate("u1", "ensaio")["token"]
-    feedback.set_current_song("ensaio", "pop--coldplay--yellow")
+    feedback.set_current_song("u1", "ensaio", "pop--coldplay--yellow")
     feedback.submit_rating(token, 999)
     report = feedback.report("u1", "ensaio")
     assert report[0]["media"] == 10
@@ -101,7 +101,7 @@ def test_submit_rating_clamps_out_of_range_values(ctx):
 def test_report_aggregates_multiple_ratings_per_song(ctx):
     feedback, _ = ctx
     token = feedback.activate("u1", "ensaio")["token"]
-    feedback.set_current_song("ensaio", "pop--coldplay--yellow")
+    feedback.set_current_song("u1", "ensaio", "pop--coldplay--yellow")
     feedback.submit_rating(token, 8, nome="Ana", observacoes="Muito boa!")
     feedback.submit_rating(token, 6)
     report = feedback.report("u1", "ensaio")
@@ -116,13 +116,13 @@ def test_report_aggregates_multiple_ratings_per_song(ctx):
 def test_report_survives_reactivation_summing_all_sessions(ctx):
     feedback, _ = ctx
     token1 = feedback.activate("u1", "ensaio")["token"]
-    feedback.set_current_song("ensaio", "pop--coldplay--yellow")
+    feedback.set_current_song("u1", "ensaio", "pop--coldplay--yellow")
     feedback.submit_rating(token1, 10)
     feedback.deactivate("u1", "ensaio")
 
     token2 = feedback.activate("u1", "ensaio")["token"]
     assert token2 != token1
-    feedback.set_current_song("ensaio", "pop--coldplay--yellow")
+    feedback.set_current_song("u1", "ensaio", "pop--coldplay--yellow")
     feedback.submit_rating(token2, 8)
 
     report = feedback.report("u1", "ensaio")
@@ -134,3 +134,21 @@ def test_non_owner_cannot_view_report(ctx, other_user_id):
     feedback, _ = ctx
     with pytest.raises(PermissionError):
         feedback.report("u2", "ensaio")
+
+
+def test_set_current_song_ignores_non_owners(ctx, other_user_id):
+    feedback, _ = ctx
+    feedback.activate("u1", "ensaio")
+    feedback.set_current_song("u1", "ensaio", "pop--coldplay--yellow")
+    feedback.set_current_song(other_user_id, "ensaio", "rock--outra--musica")  # não é dono: no-op
+    assert feedback.status("u1", "ensaio")["current_song_slug"] == "pop--coldplay--yellow"
+    feedback.set_current_song(other_user_id, "ensaio", "rock--admin--musica", is_admin=True)
+    assert feedback.status("u1", "ensaio")["current_song_slug"] == "rock--admin--musica"
+
+
+def test_same_slug_setlists_of_two_users_do_not_collide(ctx, other_user_id):
+    feedback, setlists = ctx
+    created = setlists.save(other_user_id, "Ensaio", ["Coldplay/Yellow"])  # slug automático: "ensaio" também (único só por usuário)
+    assert created["id"] == "ensaio"
+    assert feedback.activate("u1", "ensaio")["token"]  # o dono de cada um acha o seu
+    assert feedback.activate(other_user_id, "ensaio")["token"]

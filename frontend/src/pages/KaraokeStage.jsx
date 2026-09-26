@@ -402,6 +402,9 @@ export default function KaraokeStage() {
   // veio de uma setlist: sair volta pra ela com foco nesta música (ver
   // goToSetlist acima); senão, comportamento de sempre (voltar uma página).
   const exitPlayer = () => { if (inPlaylist) goToSetlist(slug); else navigate(-1) }
+  // Esc no teclado: tocando, o primeiro só pausa (um toque sem querer no meio
+  // da música não derruba o palco); parado, sai.
+  const escapeKey = () => { if (player.playing) player.pause(); else exitPlayer() }
 
   // ações que o pedal (foot switch) pode disparar nesta página — id do
   // catálogo (config/pedalActions.js) -> handler local; um id sem entrada
@@ -460,7 +463,7 @@ export default function KaraokeStage() {
     ArrowDown: () => adjustRate(-0.1),
     r: restart,
     R: restart,
-    Escape: exitPlayer,
+    Escape: escapeKey,
     f: toggleFullscreen,
     F: toggleFullscreen,
     '+': zoomIn,

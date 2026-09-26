@@ -189,8 +189,8 @@ class SetlistService:
     def get(self, user_id: str, setlist_id: str) -> dict:
         with db.get_pool().connection() as conn:
             row = conn.execute(
-                "select id, slug, nome, user_id, shared from setlists where slug=%s and not deleted",
-                (setlist_id,),
+                "select id, slug, nome, user_id, shared from setlists where slug=%s and not deleted order by (user_id = %s) desc nulls last limit 1",
+                (setlist_id, user_id),
             ).fetchone()
             is_owner = not row or row["user_id"] is None or row["user_id"] == user_id
             if not row or (not is_owner and not row["shared"]):
@@ -234,7 +234,7 @@ class SetlistService:
         if setlist_id:
             with db.get_pool().connection() as conn:
                 existing = conn.execute(
-                    "select id, user_id from setlists where slug=%s and not deleted", (setlist_id,),
+                    "select id, user_id from setlists where slug=%s and not deleted order by (user_id = %s) desc nulls last limit 1", (setlist_id, user_id),
                 ).fetchone()
             if existing and existing["user_id"] is not None and existing["user_id"] != user_id and not is_admin:
                 raise PermissionError(setlist_id)
@@ -266,7 +266,7 @@ class SetlistService:
     def set_shared(self, user_id: str, setlist_id: str, value: bool, is_admin: bool = False) -> dict:
         with db.get_pool().connection() as conn:
             row = conn.execute(
-                "select id, user_id from setlists where slug=%s and not deleted", (setlist_id,),
+                "select id, user_id from setlists where slug=%s and not deleted order by (user_id = %s) desc nulls last limit 1", (setlist_id, user_id),
             ).fetchone()
             if not row:
                 raise FileNotFoundError(setlist_id)
@@ -282,7 +282,7 @@ class SetlistService:
         acesso direto (não há "restaurar" pela própria interface)."""
         with db.get_pool().connection() as conn:
             row = conn.execute(
-                "select id, user_id from setlists where slug=%s and not deleted", (setlist_id,),
+                "select id, user_id from setlists where slug=%s and not deleted order by (user_id = %s) desc nulls last limit 1", (setlist_id, user_id),
             ).fetchone()
             if not row:
                 return  # já não existe (ou já excluído) — idempotente, como sempre foi
@@ -298,7 +298,7 @@ class SetlistService:
         não afeta o setlist em si nem quem mais o segue (ver list())."""
         with db.get_pool().connection() as conn:
             row = conn.execute(
-                "select id from setlists where slug=%s and not deleted", (setlist_id,),
+                "select id from setlists where slug=%s and not deleted order by (user_id = %s) asc nulls last limit 1  -- deixar de seguir = o setlist de OUTRA pessoa", (setlist_id, user_id),
             ).fetchone()
             if not row:
                 raise FileNotFoundError(setlist_id)
@@ -315,7 +315,7 @@ class SetlistService:
         precisar de permissão nenhuma, porque não mexe no original."""
         with db.get_pool().connection() as conn:
             row = conn.execute(
-                "select id, nome, user_id, shared from setlists where slug=%s and not deleted", (setlist_id,),
+                "select id, nome, user_id, shared from setlists where slug=%s and not deleted order by (user_id = %s) desc nulls last limit 1", (setlist_id, user_id),
             ).fetchone()
             is_owner = not row or row["user_id"] is None or row["user_id"] == user_id
             if not row or (not is_owner and not row["shared"]):

@@ -18,6 +18,7 @@ from services.plans_service import DuplicatePlanName, PlanNotFound, StripeSyncEr
 from services.quota_service import QuotaExceeded
 from services.songs_service import NotOwner, SongNotFound
 from services.youtube_service import YoutubeError
+from utils.http_headers import attachment_disposition
 from utils.media_types import safe_media_type
 from utils.error_codes import (
     auth_error_code, band_media_error_code, billing_error_code, quota_error_code, youtube_error_code,
@@ -241,7 +242,7 @@ def build_blueprint(ctx) -> Blueprint:
         from utils.parser import Song, serialize_song
         txt = serialize_song(Song(header=data["header"], body=data["body"]))
         return Response(txt, mimetype="text/plain; charset=utf-8", headers={
-            "Content-Disposition": f'attachment; filename="{data["titulo"]}.txt"'})
+            "Content-Disposition": attachment_disposition(data["titulo"])})
 
     @api.get("/public/karaoke/<slug>")
     def public_karaoke(slug):
@@ -835,7 +836,7 @@ def build_blueprint(ctx) -> Blueprint:
         from utils.parser import Song, serialize_song
         txt = serialize_song(Song(header=data["header"], body=data["body"]))
         return Response(txt, mimetype="text/plain; charset=utf-8", headers={
-            "Content-Disposition": f'attachment; filename="{data["titulo"]}.txt"'})
+            "Content-Disposition": attachment_disposition(data["titulo"])})
 
     # ---------------- áudio (faixa de referência + samples) ----------------
     @api.post("/songs/<slug>/audio")
@@ -1159,7 +1160,7 @@ def build_blueprint(ctx) -> Blueprint:
     def export_setlist(setlist_id):
         txt = ctx.setlists.export_txt(g.user_id, setlist_id)
         return Response(txt, mimetype="text/plain; charset=utf-8", headers={
-            "Content-Disposition": f'attachment; filename="{setlist_id}.txt"'})
+            "Content-Disposition": attachment_disposition(setlist_id)})
 
     @api.post("/setlists/import")
     @protected
@@ -1213,7 +1214,7 @@ def build_blueprint(ctx) -> Blueprint:
     @protected
     def feedback_current_song(setlist_id):
         d = request.get_json(force=True)
-        ctx.feedback.set_current_song(setlist_id, d.get("slug", ""))
+        ctx.feedback.set_current_song(g.user_id, setlist_id, d.get("slug", ""), is_admin=g.is_admin)
         return "", 204
 
     @api.get("/setlists/<setlist_id>/feedback/report")

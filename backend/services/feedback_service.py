@@ -36,14 +36,19 @@ class NoActiveSession(Exception):
 
 
 class FeedbackService:
-    def _setlist_row(self, conn, setlist_id: str):
+    def _setlist_row(self, conn, setlist_id: str, user_id: str | None = None):
+        """O slug do setlist só é único POR USUÁRIO — dois usuários podem ter
+        "ensaio". Com `user_id`, o setlist DELE tem prioridade (senão o dono
+        legítimo podia cair no setlist homônimo de outra pessoa e levar um
+        "sem permissão"); sem ele, cai no primeiro que casar."""
         return conn.execute(
-            "select id, user_id, nome from setlists where slug=%s and not deleted",
-            (setlist_id,),
+            """select id, user_id, nome from setlists where slug=%s and not deleted
+               order by (user_id = %s) desc nulls last limit 1""",
+            (setlist_id, user_id or ""),
         ).fetchone()
 
     def _require_owner(self, conn, user_id: str, setlist_id: str, is_admin: bool = False):
-        row = self._setlist_row(conn, setlist_id)
+        row = self._setlist_row(conn, setlist_id, user_id)
         if not row:
             raise FileNotFoundError(setlist_id)
         if row["user_id"] is not None and row["user_id"] != user_id and not is_admin:
@@ -87,16 +92,18 @@ class FeedbackService:
             return None
         return {"token": session["token"], "current_song_slug": session["current_song_slug"]}
 
-    def set_current_song(self, setlist_id: str, slug: str) -> None:
-        """Chamado pelo player a cada troca de música dentro de uma setlist —
-        sem checar dono de propósito: quem está TOCANDO uma setlist
-        compartilhada (não só o dono original) pode ser quem ativou o
-        feedback pra própria apresentação, mesma visibilidade de leitura já
-        usada pra tocar a playlist. No-op silencioso se a setlist sumiu ou
-        não há sessão ativa — nunca deve travar a troca de música."""
+    def set_current_song(self, user_id: str, setlist_id: str, slug: str, is_admin: bool = False) -> None:
+        """Chamado pelo player a cada troca de música dentro de uma setlist.
+        Só o DONO (ou admin) muda a "música atual" da sessão de feedback: antes
+        qualquer usuário logado podia trocar a música de qualquer sessão ativa
+        e a plateia passava a avaliar a música errada. Quem só está tocando um
+        setlist alheio compartilhado cai num no-op silencioso, igual a setlist
+        sumida ou sem sessão ativa — nunca deve travar a troca de música."""
         with db.get_pool().connection() as conn:
-            row = self._setlist_row(conn, setlist_id)
+            row = self._setlist_row(conn, setlist_id, user_id)
             if not row:
+                return
+            if row["user_id"] is not None and row["user_id"] != user_id and not is_admin:
                 return
             conn.execute(
                 """update setlist_feedback_sessions set current_song_slug=%s

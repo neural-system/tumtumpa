@@ -261,6 +261,8 @@ button.nav-item { border: none; background: none; cursor: pointer; width: 100%; 
 }
 .input:hover { border-color: var(--btn-hover-border); }
 .input:focus { border-color: var(--accent-text); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+.input:disabled, .input[readonly] { opacity: 0.6; cursor: not-allowed; background: var(--glass); }
+.input:disabled:hover { border-color: var(--stroke); }
 textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: vertical; }
 .field { margin-bottom: 14px; }
 .field label { display: block; font: 700 10.5px var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 7px; }
@@ -1188,4 +1190,13 @@ a.cm-tile:hover { border-color: color-mix(in srgb, var(--accent) 65%, var(--stro
 }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
+}
+
+/* aviso flutuante com ação de desfazer (ex.: remover música do setlist) */
+.undo-toast {
+  position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 60;
+  display: flex; align-items: center; gap: 14px; max-width: calc(100vw - 32px);
+  padding: 10px 12px 10px 16px; border-radius: var(--radius);
+  background: var(--bg-raise); color: var(--text); border: 1px solid var(--stroke);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); font-size: 13.5px;
 }

@@ -80,5 +80,7 @@
   "notFavorited": "Не в избранном",
   "normalizedAbbr": "Норм.",
   "normalizedTitle": "Заголовок и нотация стандартизированы",
-  "notNormalizedTitle": "Ещё не нормализована"
+  "notNormalizedTitle": "Ещё не нормализована",
+  "songRemoved": "Песня удалена из сетлиста.",
+  "undoRemove": "Отменить"
 }

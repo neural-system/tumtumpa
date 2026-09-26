@@ -99,20 +99,25 @@ export function usePedalControl(slug, data, pedalActions) {
   useEffect(() => {
     if (!hasPedal) return undefined
     const handleDown = (e) => {
-      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) || e.repeat) return
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return
       const buttonId = resolveButtonId(signatureFromKeydown(e), buttons)
       if (!buttonId) return
       e.preventDefault()
+      // a tecla é do pedal: impede que os atalhos de teclado da página (ex.:
+      // Espaço = tocar/pausar) disparem TAMBÉM pelo mesmo evento (registrado
+      // na fase de captura pra rodar antes deles, seja qual for a ordem dos efeitos).
+      e.stopImmediatePropagation()
+      if (e.repeat) return
       engineRef.current?.handleDown(buttonId)
     }
     const handleUp = (e) => {
       const buttonId = resolveButtonId(signatureFromKeydown(e), buttons)
       if (buttonId) engineRef.current?.handleUp(buttonId)
     }
-    window.addEventListener('keydown', handleDown)
+    window.addEventListener('keydown', handleDown, true)
     window.addEventListener('keyup', handleUp)
     return () => {
-      window.removeEventListener('keydown', handleDown)
+      window.removeEventListener('keydown', handleDown, true)
       window.removeEventListener('keyup', handleUp)
     }
   }, [hasPedal, buttons])

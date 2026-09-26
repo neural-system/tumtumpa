@@ -80,5 +80,7 @@
   "notFavorited": "Non è un preferito",
   "normalizedAbbr": "Norm.",
   "normalizedTitle": "Intestazione e notazione standardizzate",
-  "notNormalizedTitle": "Non ancora normalizzata"
+  "notNormalizedTitle": "Non ancora normalizzata",
+  "songRemoved": "Brano rimosso dalla scaletta.",
+  "undoRemove": "Annulla"
 }

@@ -80,5 +80,7 @@
   "notFavorited": "未收藏",
   "normalizedAbbr": "标准",
   "normalizedTitle": "标题和记谱已标准化",
-  "notNormalizedTitle": "尚未标准化"
+  "notNormalizedTitle": "尚未标准化",
+  "songRemoved": "已从歌单中移除歌曲。",
+  "undoRemove": "撤销"
 }

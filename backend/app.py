@@ -11,8 +11,9 @@ from __future__ import annotations
 
 import logging
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
+from werkzeug.exceptions import HTTPException
 
 import db
 from config import Config
@@ -141,6 +142,35 @@ def create_app() -> Flask:
         resp.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
         resp.headers.setdefault("Cross-Origin-Resource-Policy", "same-site")
         return resp
+
+    _HTTP_CODES = {
+        400: "BAD_REQUEST", 401: "AUTH_REQUIRED", 403: "FORBIDDEN", 404: "NOT_FOUND",
+        405: "METHOD_NOT_ALLOWED", 413: "PAYLOAD_TOO_LARGE", 415: "UNSUPPORTED_MEDIA_TYPE",
+    }
+
+    @app.errorhandler(HTTPException)
+    def http_error(e):
+        """JSON malformado, rota inexistente, corpo grande demais… saem no mesmo
+        formato {error, error_code} do resto da API (em vez de uma página HTML)."""
+        if not request.path.startswith("/api"):
+            return e
+        messages = {
+            400: "Requisição inválida.", 404: "Recurso não encontrado.", 405: "Método não permitido.",
+            413: "Arquivo ou corpo grande demais.", 415: "Tipo de conteúdo não suportado.",
+        }
+        return jsonify({
+            "error": messages.get(e.code, e.description or "Erro na requisição."),
+            "error_code": _HTTP_CODES.get(e.code, "HTTP_ERROR"),
+        }), e.code
+
+    @app.errorhandler(Exception)
+    def unexpected_error(e):
+        """Falha inesperada: registra o traceback no log e devolve uma mensagem
+        genérica — nunca o texto da exceção (podia vazar SQL/caminhos)."""
+        logging.getLogger(__name__).exception("Erro não tratado em %s %s", request.method, request.path)
+        if not request.path.startswith("/api"):
+            return "Erro interno.", 500
+        return jsonify({"error": "Erro interno. Tente novamente em instantes.", "error_code": "INTERNAL_ERROR"}), 500
 
     @app.get("/api/health")
     def health():

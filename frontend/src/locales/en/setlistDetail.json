@@ -80,5 +80,7 @@
   "notFavorited": "Not a favorite",
   "normalizedAbbr": "Norm.",
   "normalizedTitle": "Header and notation standardized",
-  "notNormalizedTitle": "Not normalized yet"
+  "notNormalizedTitle": "Not normalized yet",
+  "songRemoved": "Song removed from the setlist.",
+  "undoRemove": "Undo"
 }

@@ -48,7 +48,7 @@ function ProfileForm() {
         <textarea id="pf-bio" className="input" rows={3} maxLength={1000} value={f.bio} onChange={set('bio')} />
       </div>
       <div className="row" style={{ alignItems: 'flex-end' }}>
-        <div className="field" style={{ marginBottom: 0 }}><label htmlFor="pf-city">{t('common.city')}</label><input id="pf-city" className="input" value={f.city} maxLength={80} onChange={set('city')} /></div>
+        <div className="field" style={{ marginBottom: 0, flex: 1, minWidth: 160 }}><label htmlFor="pf-city">{t('common.city')}</label><input id="pf-city" className="input" value={f.city} maxLength={80} onChange={set('city')} /></div>
         <div className="field" style={{ marginBottom: 0, flex: 1, minWidth: 200 }}><label htmlFor="pf-contact">{t('profile.contact')}</label><input id="pf-contact" className="input" value={f.contact} maxLength={160} onChange={set('contact')} /></div>
       </div>
       <p className="acc-hint">{t('profile.contactHint')}</p>
@@ -123,7 +123,7 @@ function MyBands() {
             <div className="field" style={{ marginBottom: 0, flex: 1, minWidth: 160 }}><label htmlFor="nb-handle">{t('band.handle')}</label><input id="nb-handle" className="input" value={f.handle} maxLength={30} autoCapitalize="none" spellCheck={false} onChange={set('handle')} required /></div>
           </div>
           <div className="row" style={{ alignItems: 'flex-end', marginTop: 10 }}>
-            <div className="field" style={{ marginBottom: 0 }}><label htmlFor="nb-city">{t('common.city')}</label><input id="nb-city" className="input" value={f.city} onChange={set('city')} /></div>
+            <div className="field" style={{ marginBottom: 0, flex: 1, minWidth: 160 }}><label htmlFor="nb-city">{t('common.city')}</label><input id="nb-city" className="input" value={f.city} onChange={set('city')} /></div>
             <div className="field" style={{ marginBottom: 0 }}><label htmlFor="nb-genre">{t('band.genre')}</label><input id="nb-genre" className="input" value={f.genre} onChange={set('genre')} /></div>
             <div className="field" style={{ marginBottom: 0 }}><label htmlFor="nb-instr">{t('band.myInstrument')}</label><input id="nb-instr" className="input" value={f.my_instrument} onChange={set('my_instrument')} /></div>
           </div>

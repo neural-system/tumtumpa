@@ -22,6 +22,8 @@ export default function SetlistDetail() {
   const [dragIdx, setDragIdx] = useState(null)
   const [error, setError] = useState('')
   const [editingIdx, setEditingIdx] = useState(null)
+  const [undoItems, setUndoItems] = useState(null) // lista de antes da última remoção, por alguns segundos
+  const undoTimer = useRef(null)
   const [editingValue, setEditingValue] = useState('')
   const [medleyModalOpen, setMedleyModalOpen] = useState(false)
   const [orderModalOpen, setOrderModalOpen] = useState(false)
@@ -154,6 +156,9 @@ export default function SetlistDetail() {
     setItems(next); save.mutate(next)
   }
   const removeAt = (i) => {
+    setUndoItems(items)
+    clearTimeout(undoTimer.current)
+    undoTimer.current = setTimeout(() => setUndoItems(null), 8000)
     let next = items.filter((_, idx) => idx !== i)
     // se a remoção deixou algum medley com uma música só, desfaz o grupo —
     // um "medley" de uma música não faz sentido (mesmo efeito de
@@ -163,6 +168,14 @@ export default function SetlistDetail() {
     next = next.map((it) => (it.medley_id && counts[it.medley_id] === 1 ? { ...it, medley_id: null } : it))
     setItems(next); save.mutate(next)
   }
+
+  const undoRemove = () => {
+    if (!undoItems) return
+    clearTimeout(undoTimer.current)
+    setItems(undoItems); save.mutate(undoItems)
+    setUndoItems(null)
+  }
+  useEffect(() => () => clearTimeout(undoTimer.current), [])
 
   // agrupa as músicas escolhidas (chosenIdx: índices originais em `items`,
   // na ordem de execução que o usuário clicou no MedleyModal) num bloco
@@ -429,6 +442,12 @@ export default function SetlistDetail() {
           )
         })}
       </div>
+      {undoItems && (
+        <div className="undo-toast no-print" role="status">
+          <span>{t('songRemoved')}</span>
+          <button type="button" className="btn sm" onClick={undoRemove}>{t('undoRemove')}</button>
+        </div>
+      )}
     </>
   )
 }

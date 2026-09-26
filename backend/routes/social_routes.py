@@ -25,9 +25,10 @@ def register(api, ctx):
             return None, False
         try:
             payload = ctx.auth.verify_token(header[7:])
+            is_admin = ctx.auth.check_session(payload)
         except AuthError:
             return None, False
-        return payload["sub"], bool(payload.get("is_admin"))
+        return payload["sub"], is_admin
 
     def limited(action: str):
         """Resposta 429 se o usuário logado passou do limite dessa ação; senão None."""

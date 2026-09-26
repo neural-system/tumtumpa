@@ -6,6 +6,7 @@ werkzeug.security — inalterado em relação à versão baseada em arquivo.
 from __future__ import annotations
 
 import re
+import time
 import uuid
 from datetime import datetime, timedelta, timezone
 
@@ -41,7 +42,16 @@ def _validate_instruments(instruments: list[dict]) -> list[dict]:
     return cleaned
 
 
+_SESSION_TTL = 60  # segundos que uma checagem de sessão fica em cache por processo
+
+
 class AuthService:
+    def __init__(self) -> None:
+        # user_id -> (validade monotônica, token_version, is_admin). Evita uma
+        # consulta ao banco por requisição; troca de senha/categoria invalida
+        # na hora neste processo e nos demais em até _SESSION_TTL segundos.
+        self._sessions: dict[str, tuple[float, int, bool]] = {}
+
     def register(self, username: str, password: str, name: str = "", is_admin: bool = False,
                  email: str = "", share_by_default: bool = True, city: str = "",
                  instruments: list[dict] | None = None, grandfathered: bool = True) -> dict:
@@ -99,7 +109,7 @@ class AuthService:
     def login(self, username: str, password: str) -> dict:
         with db.get_pool().connection() as conn:
             record = conn.execute(
-                "select id, username, name, password_hash, is_admin from users where username = %s",
+                "select id, username, name, password_hash, is_admin, token_version from users where username = %s",
                 (username.strip().lower(),),
             ).fetchone()
             if not record or not check_password_hash(record["password_hash"], password):
@@ -108,7 +118,8 @@ class AuthService:
                 "update users set login_count = login_count + 1, last_login_at = now() where id = %s",
                 (record["id"],),
             )
-        token = self.issue_token(record["id"], record["username"], record["is_admin"], record["name"])
+        token = self.issue_token(record["id"], record["username"], record["is_admin"], record["name"],
+                                 record["token_version"])
         return {
             "token": token,
             "user": {
@@ -155,6 +166,7 @@ class AuthService:
                 if remaining == 0:
                     raise AuthError("Não é possível excluir o último administrador.")
             conn.execute("delete from users where id=%s", (user_id,))
+        self._sessions.pop(user_id, None)
 
     def record_terms_acceptance(self, user_id: str) -> None:
         with db.get_pool().connection() as conn:
@@ -190,6 +202,7 @@ class AuthService:
                    where p.user_id = %s and m.blob_url is not null""", (user_id,),
             ).fetchall()]
             conn.execute("delete from users where id=%s", (user_id,))
+        self._sessions.pop(user_id, None)
         if urls:
             try:
                 from services import blob_client
@@ -216,7 +229,8 @@ class AuthService:
             if not row:
                 raise AuthError("Usuário não encontrado.")
             if category == "admin":
-                conn.execute("update users set is_admin=true where id=%s", (user_id,))
+                conn.execute("update users set is_admin=true, token_version=token_version+1 where id=%s", (user_id,))
+                self._sessions.pop(user_id, None)
                 return
             if row["is_admin"]:
                 remaining = conn.execute(
@@ -225,8 +239,10 @@ class AuthService:
                 if remaining == 0:
                     raise AuthError("Não é possível remover o último administrador.")
             conn.execute(
-                "update users set is_admin=false, plan_grandfathered=false where id=%s", (user_id,),
+                "update users set is_admin=false, plan_grandfathered=false, token_version=token_version+1 where id=%s",
+                (user_id,),
             )
+        self._sessions.pop(user_id, None)
 
     def reset_password(self, user_id: str, new_password: str) -> None:
         if len(new_password) < 8:
@@ -236,9 +252,10 @@ class AuthService:
             if not row:
                 raise AuthError("Usuário não encontrado.")
             conn.execute(
-                "update users set password_hash=%s where id=%s",
+                "update users set password_hash=%s, token_version=token_version+1 where id=%s",
                 (generate_password_hash(new_password), user_id),
             )
+        self._sessions.pop(user_id, None)
 
     def get_profile(self, user_id: str) -> dict:
         """Versão self-service de list_users() — uma linha só, sem exigir
@@ -299,9 +316,10 @@ class AuthService:
             if not check_password_hash(row["password_hash"], current_password):
                 raise AuthError("Senha atual incorreta.")
             conn.execute(
-                "update users set password_hash=%s where id=%s",
+                "update users set password_hash=%s, token_version=token_version+1 where id=%s",
                 (generate_password_hash(new_password), user_id),
             )
+        self._sessions.pop(user_id, None)
 
     def change_email(self, user_id: str, new_email: str, password: str) -> None:
         """Também exige a senha atual, mesmo raciocínio de
@@ -328,12 +346,14 @@ class AuthService:
                 (new_email, user_id),
             )
 
-    def issue_token(self, user_id: str, username: str, is_admin: bool = False, name: str = "") -> str:
+    def issue_token(self, user_id: str, username: str, is_admin: bool = False, name: str = "",
+                    token_version: int = 0) -> str:
         payload = {
             "sub": user_id,
             "username": username,
             "is_admin": is_admin,
             "name": name,  # usado pro sufixo "cifra editada por: <name>" — ver songs_service.py
+            "tv": token_version,  # ver check_session(): trocar a senha invalida os tokens antigos
             "iat": datetime.now(timezone.utc),
             "exp": datetime.now(timezone.utc) + timedelta(hours=Config.JWT_HOURS),
         }
@@ -346,3 +366,27 @@ class AuthService:
             raise AuthError("Sessão expirada. Entre novamente.")
         except jwt.InvalidTokenError:
             raise AuthError("Token inválido.")
+
+    def check_session(self, payload: dict) -> bool:
+        """Confere um token JÁ decodificado contra o banco: a conta ainda existe e
+        a versão do token não foi superada (troca de senha, reset por admin ou
+        mudança de categoria). Devolve o is_admin ATUAL (não o do token, que pode
+        estar velho). Tokens sem `tv` valem como versão 0. Levanta AuthError."""
+        user_id = payload.get("sub", "")
+        now = time.monotonic()
+        cached = self._sessions.get(user_id)
+        if not cached or cached[0] < now:
+            with db.get_pool().connection() as conn:
+                row = conn.execute(
+                    "select token_version, is_admin from users where id=%s", (user_id,),
+                ).fetchone()
+            if not row:
+                self._sessions.pop(user_id, None)
+                raise AuthError("Sessão expirada. Entre novamente.")
+            cached = (now + _SESSION_TTL, row["token_version"], bool(row["is_admin"]))
+            if len(self._sessions) > 5000:
+                self._sessions.clear()
+            self._sessions[user_id] = cached
+        if int(payload.get("tv", 0)) != cached[1]:
+            raise AuthError("Sessão expirada. Entre novamente.")
+        return cached[2]

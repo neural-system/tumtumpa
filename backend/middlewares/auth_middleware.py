@@ -24,11 +24,12 @@ def require_auth(auth_service):
                 return jsonify({"error": "Autenticação necessária.", "error_code": "AUTH_REQUIRED"}), 401
             try:
                 payload = auth_service.verify_token(header[7:])
+                is_admin = auth_service.check_session(payload)
             except AuthError as e:
                 return jsonify({"error": str(e), "error_code": auth_error_code(str(e))}), 401
             g.user_id = payload["sub"]
             g.username = payload.get("username", "")
-            g.is_admin = payload.get("is_admin", False)
+            g.is_admin = is_admin
             g.name = payload.get("name", "")
             return fn(*args, **kwargs)
         return wrapper

@@ -526,6 +526,9 @@ export default function ScrollPlayer({ data }) {
   // veio de uma setlist: sair volta pra ela com foco nesta música (ver
   // goToSetlist acima); senão, comportamento de sempre (voltar uma página).
   const exitPlayer = () => { if (inPlaylist) goToSetlist(slug); else navigate(-1) }
+  // Esc no teclado: tocando, o primeiro só pausa (um toque sem querer no meio
+  // da música não derruba o palco); parado, sai.
+  const escapeKey = () => { if (playing) setPlaying(false); else exitPlayer() }
 
   // ações que o pedal (foot switch) pode disparar nesta página — id do
   // catálogo (config/pedalActions.js) -> handler local; um id sem entrada
@@ -554,7 +557,7 @@ export default function ScrollPlayer({ data }) {
     ArrowDown: () => nudgeScroll(0.2),
     r: restart,
     R: restart,
-    Escape: exitPlayer,
+    Escape: escapeKey,
     f: toggleFullscreen,
     F: toggleFullscreen,
     '+': zoomIn,
@@ -569,7 +572,7 @@ export default function ScrollPlayer({ data }) {
     // trocar de música dentro de uma playlist reusa o mesmo componente
     // (replace:true), não remonta. countdown entra pelo mesmo motivo — Space
     // precisa de uma closure atual pra pular a contagem em vez de pausar.
-  }, [canPlay, totalMs, inPlaylist, countdown])
+  }, [canPlay, totalMs, inPlaylist, countdown, playing])
 
   return (
     <div ref={stageRef}

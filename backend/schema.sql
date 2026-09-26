@@ -55,6 +55,7 @@ alter table users add column if not exists share_by_default boolean not null def
 alter table users add column if not exists email text;
 alter table users add column if not exists email_verified boolean not null default false;
 alter table users add column if not exists city text not null default '';
+alter table users add column if not exists token_version int not null default 0;
 create unique index if not exists idx_users_email_unique on users(email) where email is not null;
 
 -- Instrumentos que o usuário toca + nível técnico em cada um — vocabulário
