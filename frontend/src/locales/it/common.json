@@ -18,7 +18,9 @@
     "profile": "Profilo",
     "logout": "Esci",
     "mySongs": "I miei brani",
-    "accompaniment": "Generatore di accompagnamento"
+    "accompaniment": "Generatore di accompagnamento",
+    "community": "Community",
+    "adminModeration": "Moderazione"
   },
   "login": {
     "tagline": "I tuoi testi sincronizzati con il palco.",

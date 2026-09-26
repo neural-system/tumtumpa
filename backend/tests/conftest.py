@@ -28,6 +28,8 @@ _TABLES = (
     "song_plays", "song_versions", "songs", "settings", "users", "plans", "landing_page_views",
     "user_favorite_artists", "user_favorite_genres", "user_logos", "band_posts", "band_post_media",
     "activity_pings", "subscription_events", "user_instruments", "user_alert_dismissals",
+    "profiles", "bands", "band_members", "posts", "post_likes", "post_comments", "follows",
+    "band_events", "gigs", "gig_replies", "social_reports", "user_blocks",
 )
 
 _TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")

@@ -5,6 +5,7 @@ from flask import Blueprint, Response, g, jsonify, request
 
 from config import Config
 from middlewares.rate_limit import client_ip
+from routes import social_routes
 from services.ai_service import AIError
 from services.auth_service import AuthError
 from services.billing_service import BillingError, is_safe_redirect_url
@@ -38,7 +39,10 @@ def build_blueprint(ctx) -> Blueprint:
         # banco por chamada) também entram
         # (só a LISTA do mural — as fotos/vídeos de cada anúncio são muitas requisições
         # legítimas por página e não podem bater no limite)
-        if request.path.startswith(("/api/public/", "/api/telemetry/landing-view")) or request.path == "/api/band-board":
+        # leituras da rede social SEM login (visitante) também: o token só personaliza
+        anonymous_social = (request.path.startswith("/api/social/") and request.method == "GET"
+                            and not request.headers.get("Authorization"))
+        if anonymous_social or request.path.startswith(("/api/public/", "/api/telemetry/landing-view")) or request.path == "/api/band-board":
             hit = ctx.public_rate_limit.check(client_ip(request))
             if hit:
                 body, status = hit
@@ -59,6 +63,8 @@ def build_blueprint(ctx) -> Blueprint:
             checks = [(ctx.login_ip_limit, ip)] + ([(ctx.login_user_limit, user)] if user else [])
         elif request.path == "/api/auth/register":
             checks = [(ctx.register_ip_limit, ip)]
+        elif request.path == "/api/me/delete":  # chuta senha: mesmo freio do login
+            checks = [(ctx.login_ip_limit, ip)]
         for limiter, key in checks:
             hit = limiter.check(key)
             if hit:
@@ -87,12 +93,16 @@ def build_blueprint(ctx) -> Blueprint:
         email = d.get("email", "").strip()
         if not email:
             return jsonify({"error": "E-mail é obrigatório.", "error_code": "AUTH_EMAIL_REQUIRED"}), 400
+        if d.get("accept_terms") is not True:
+            return jsonify({"error": "É necessário aceitar a Política de Privacidade e os Termos de Uso.",
+                            "error_code": "AUTH_TERMS_REQUIRED"}), 400
         try:
-            ctx.auth.register(
+            user = ctx.auth.register(
                 d.get("username", ""), d.get("password", ""), d.get("name", ""),
                 email=email, share_by_default=False, grandfathered=False,
                 city=d.get("city", ""), instruments=d.get("instruments", []),
             )
+            ctx.auth.record_terms_acceptance(user["id"])
             return jsonify(ctx.auth.login(d.get("username", ""), d.get("password", "")))
         except AuthError as e:
             return jsonify({"error": str(e), "error_code": auth_error_code(str(e))}), 400
@@ -112,6 +122,17 @@ def build_blueprint(ctx) -> Blueprint:
         d = request.get_json(force=True)
         try:
             ctx.auth.change_own_password(g.user_id, d.get("current_password", ""), d.get("new_password", ""))
+        except AuthError as e:
+            return jsonify({"error": str(e), "error_code": auth_error_code(str(e))}), 400
+        return "", 204
+
+    @api.post("/me/delete")
+    @protected
+    def delete_my_account():
+        """Exclui a própria conta (exige a senha). Ver AuthService.delete_own_account."""
+        d = request.get_json(silent=True) or {}
+        try:
+            ctx.auth.delete_own_account(g.user_id, str(d.get("password", "")) if isinstance(d, dict) else "")
         except AuthError as e:
             return jsonify({"error": str(e), "error_code": auth_error_code(str(e))}), 400
         return "", 204
@@ -1481,5 +1502,7 @@ def build_blueprint(ctx) -> Blueprint:
             "most_played_artists": ctx.history.most_played_artists(g.user_id),
             "newly_added": newly_added,
         })
+
+    social_routes.register(api, ctx)
 
     return api

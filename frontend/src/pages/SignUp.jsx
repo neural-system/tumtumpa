@@ -16,6 +16,8 @@ import AppLogo from '../components/AppLogo'
  */
 export default function SignUp() {
   const { t } = useTranslation()
+  const { t: tLegal } = useTranslation('community')
+  const [accepted, setAccepted] = useState(false)
   const [form, setForm] = useState({ name: '', username: '', email: '', password: '', city: '', instruments: [] })
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
@@ -23,9 +25,10 @@ export default function SignUp() {
   const navigate = useNavigate()
 
   const submit = async () => {
+    if (!accepted) { setError(tLegal('legal.consentRequired')); return }
     setBusy(true); setError('')
     try {
-      const { data } = await api.post('/auth/register', form)
+      const { data } = await api.post('/auth/register', { ...form, accept_terms: accepted })
       setSession(data.token, data.user)
       navigate('/planos')
     } catch (e) {
@@ -70,9 +73,13 @@ export default function SignUp() {
           <label>{t('signup.instruments')}</label>
           <InstrumentPicker value={form.instruments} onChange={(instruments) => setForm({ ...form, instruments })} />
         </div>
-        {error && <div className="error-text" style={{ marginTop: 14 }}>{error}</div>}
+        <label className="ms-check" style={{ marginTop: 16, alignItems: 'flex-start' }}>
+          <input type="checkbox" checked={accepted} onChange={(e) => setAccepted(e.target.checked)} style={{ marginTop: 3 }} />
+          <span>{tLegal('legal.consent')} (<Link to="/privacidade" target="_blank" rel="noopener">{tLegal('legal.consentLink')}</Link>)</span>
+        </label>
+        {error && <div className="error-text" style={{ marginTop: 14 }} role="alert">{error}</div>}
         <div className="row" style={{ marginTop: 18 }}>
-          <button className="btn primary" disabled={busy} onClick={submit}>
+          <button className="btn primary" disabled={busy || !accepted} onClick={submit}>
             {busy ? t('signup.submitting') : t('signup.submit')}
           </button>
         </div>

@@ -495,3 +495,190 @@ create table if not exists subscription_events (
     occurred_at  timestamptz not null default now()
 );
 create index if not exists idx_subscription_events_user on subscription_events(user_id, occurred_at);
+
+-- =============================================================
+-- Rede social de músicos e bandas (ver docs/PROPOSTA_REDE_SOCIAL.md)
+-- Decisões de partida (conservadoras, fáceis de afrouxar depois):
+--  * perfil e banda nascem PRIVADOS — só aparecem/postam publicamente
+--    depois que o dono publica (visibility = 'public');
+--  * banda só pode ser publicada com 2+ integrantes ativos;
+--  * feed cronológico (sem algoritmo);
+--  * contratações são só divulgação + resposta — o app não intermedeia
+--    pagamento nem contrato;
+--  * moderação: denúncia -> fila do admin -> ocultar/banir.
+-- Tudo texto puro (nada de HTML): o React escapa na tela e o servidor
+-- rejeita caracteres de controle.
+-- =============================================================
+alter table users add column if not exists social_banned boolean not null default false;
+-- aceite da Política de Privacidade/Termos no cadastro público (LGPD: prova do consentimento)
+alter table users add column if not exists terms_accepted_at timestamptz;
+
+create table if not exists profiles (
+    user_id      text primary key references users(id) on delete cascade,
+    handle       text not null,
+    display_name text not null default '',
+    bio          text not null default '',
+    city         text not null default '',
+    links        text[] not null default '{}',
+    -- 'private' (padrão) | 'public'
+    visibility   text not null default 'private',
+    -- contato (e-mail/telefone) só é mostrado a quem está logado
+    contact      text not null default '',
+    available_for_hire boolean not null default false,
+    created_at   timestamptz not null default now(),
+    updated_at   timestamptz not null default now()
+);
+create unique index if not exists idx_profiles_handle on profiles (lower(handle));
+create index if not exists idx_profiles_public on profiles (visibility, city);
+
+create table if not exists bands (
+    id          uuid primary key default gen_random_uuid(),
+    handle      text not null,
+    name        text not null,
+    bio         text not null default '',
+    city        text not null default '',
+    genre       text not null default '',
+    links       text[] not null default '{}',
+    visibility  text not null default 'private',
+    contact     text not null default '',
+    created_by  text references users(id) on delete set null,
+    created_at  timestamptz not null default now(),
+    updated_at  timestamptz not null default now(),
+    deleted_at  timestamptz
+);
+create unique index if not exists idx_bands_handle on bands (lower(handle)) where deleted_at is null;
+
+create table if not exists band_members (
+    band_id     uuid not null references bands(id) on delete cascade,
+    user_id     text not null references users(id) on delete cascade,
+    -- 'admin' (edita a banda, convida, publica) | 'member'
+    role        text not null default 'member',
+    instrument  text not null default '',
+    -- 'invited' (convite pendente) | 'active'
+    status      text not null default 'invited',
+    invited_by  text references users(id) on delete set null,
+    created_at  timestamptz not null default now(),
+    joined_at   timestamptz,
+    primary key (band_id, user_id)
+);
+create index if not exists idx_band_members_user on band_members (user_id, status);
+
+create table if not exists posts (
+    id          uuid primary key default gen_random_uuid(),
+    author_id   text not null references users(id) on delete cascade,
+    -- se preenchido, o post é "da banda" (autor = integrante admin)
+    band_id     uuid references bands(id) on delete cascade,
+    kind        text not null default 'text',
+    body        text not null default '',
+    link_url    text not null default '',
+    youtube_id  text not null default '',
+    event_id    uuid,
+    hidden      boolean not null default false,
+    created_at  timestamptz not null default now(),
+    deleted_at  timestamptz
+);
+create index if not exists idx_posts_created on posts (created_at desc, id desc) where deleted_at is null and hidden = false;
+create index if not exists idx_posts_author on posts (author_id, created_at desc);
+create index if not exists idx_posts_band on posts (band_id, created_at desc);
+
+create table if not exists post_likes (
+    post_id    uuid not null references posts(id) on delete cascade,
+    user_id    text not null references users(id) on delete cascade,
+    created_at timestamptz not null default now(),
+    primary key (post_id, user_id)
+);
+
+create table if not exists post_comments (
+    id         uuid primary key default gen_random_uuid(),
+    post_id    uuid not null references posts(id) on delete cascade,
+    user_id    text not null references users(id) on delete cascade,
+    body       text not null,
+    hidden     boolean not null default false,
+    created_at timestamptz not null default now(),
+    deleted_at timestamptz
+);
+create index if not exists idx_post_comments_post on post_comments (post_id, created_at);
+
+create table if not exists follows (
+    follower_id text not null references users(id) on delete cascade,
+    -- 'user' | 'band'
+    target_kind text not null,
+    target_id   text not null,
+    created_at  timestamptz not null default now(),
+    primary key (follower_id, target_kind, target_id)
+);
+create index if not exists idx_follows_target on follows (target_kind, target_id);
+
+create table if not exists band_events (
+    id          uuid primary key default gen_random_uuid(),
+    band_id     uuid not null references bands(id) on delete cascade,
+    title       text not null,
+    description text not null default '',
+    starts_at   timestamptz not null,
+    venue       text not null default '',
+    city        text not null default '',
+    ticket_url  text not null default '',
+    -- 'scheduled' | 'cancelled'
+    status      text not null default 'scheduled',
+    created_by  text references users(id) on delete set null,
+    created_at  timestamptz not null default now(),
+    deleted_at  timestamptz
+);
+create index if not exists idx_band_events_when on band_events (starts_at) where deleted_at is null;
+create index if not exists idx_band_events_band on band_events (band_id, starts_at);
+
+-- contratações: pedido de show/vaga/aula. Só divulgação + resposta privada.
+create table if not exists gigs (
+    id          uuid primary key default gen_random_uuid(),
+    author_id   text not null references users(id) on delete cascade,
+    band_id     uuid references bands(id) on delete set null,
+    -- 'gig' (contratar show) | 'vaga' (vaga em banda) | 'aula' | 'outro'
+    kind        text not null default 'gig',
+    title       text not null,
+    body        text not null default '',
+    city        text not null default '',
+    event_date  date,
+    budget_note text not null default '',
+    -- 'open' | 'closed'
+    status      text not null default 'open',
+    hidden      boolean not null default false,
+    created_at  timestamptz not null default now(),
+    deleted_at  timestamptz
+);
+create index if not exists idx_gigs_open on gigs (created_at desc) where deleted_at is null and hidden = false and status = 'open';
+
+create table if not exists gig_replies (
+    id          uuid primary key default gen_random_uuid(),
+    gig_id      uuid not null references gigs(id) on delete cascade,
+    from_user   text not null references users(id) on delete cascade,
+    band_id     uuid references bands(id) on delete set null,
+    message     text not null,
+    -- 'sent' | 'accepted' | 'declined'
+    status      text not null default 'sent',
+    created_at  timestamptz not null default now(),
+    unique (gig_id, from_user)
+);
+
+create table if not exists social_reports (
+    id          uuid primary key default gen_random_uuid(),
+    reporter_id text not null references users(id) on delete cascade,
+    -- 'post' | 'comment' | 'profile' | 'band' | 'event' | 'gig'
+    target_kind text not null,
+    target_id   text not null,
+    reason      text not null,
+    note        text not null default '',
+    -- 'open' | 'resolved' | 'dismissed'
+    status      text not null default 'open',
+    created_at  timestamptz not null default now(),
+    resolved_by text references users(id) on delete set null,
+    resolved_at timestamptz,
+    unique (reporter_id, target_kind, target_id)
+);
+create index if not exists idx_social_reports_open on social_reports (status, created_at);
+
+create table if not exists user_blocks (
+    blocker_id text not null references users(id) on delete cascade,
+    blocked_id text not null references users(id) on delete cascade,
+    created_at timestamptz not null default now(),
+    primary key (blocker_id, blocked_id)
+);

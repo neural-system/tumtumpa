@@ -18,7 +18,9 @@
     "profile": "Perfil",
     "logout": "Sair",
     "mySongs": "As Minhas Músicas",
-    "accompaniment": "Gerador de acompanhamento"
+    "accompaniment": "Gerador de acompanhamento",
+    "community": "Comunidade",
+    "adminModeration": "Moderação"
   },
   "login": {
     "tagline": "As suas cifras sincronizadas para o palco.",

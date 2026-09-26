@@ -156,6 +156,48 @@ class AuthService:
                     raise AuthError("Não é possível excluir o último administrador.")
             conn.execute("delete from users where id=%s", (user_id,))
 
+    def record_terms_acceptance(self, user_id: str) -> None:
+        with db.get_pool().connection() as conn:
+            conn.execute("update users set terms_accepted_at = now() where id = %s", (user_id,))
+
+    def delete_own_account(self, user_id: str, password: str) -> None:
+        """Exclusão da PRÓPRIA conta (LGPD: direito de eliminação). Exige a senha
+        atual, recusa o último administrador e quem ainda tem assinatura ativa
+        (senão a Stripe continuaria cobrando um cliente sem conta). Perfil,
+        posts, comentários, curtidas, bandas e convites saem em cascata (FKs);
+        músicas e setlists sobrevivem sem autor, como sempre (ver delete_user).
+        Os arquivos do Blob que só existem por causa do usuário (logos e mídia
+        de anúncios) são apagados depois, sem travar a exclusão se falharem."""
+        with db.get_pool().connection() as conn:
+            row = conn.execute(
+                "select password_hash, is_admin, subscription_status from users where id=%s", (user_id,),
+            ).fetchone()
+            if not row:
+                raise AuthError("Usuário não encontrado.")
+            if not check_password_hash(row["password_hash"], password or ""):
+                raise AuthError("Senha atual incorreta.")
+            if row["subscription_status"] in ("active", "trialing", "past_due"):
+                raise AuthError("Cancele sua assinatura antes de excluir a conta.")
+            if row["is_admin"]:
+                others = conn.execute(
+                    "select count(*) as n from users where is_admin = true and id != %s", (user_id,),
+                ).fetchone()["n"]
+                if others == 0:
+                    raise AuthError("Não é possível excluir o último administrador.")
+            urls = [r["blob_url"] for r in conn.execute("select blob_url from user_logos where user_id=%s", (user_id,)).fetchall()]
+            urls += [r["blob_url"] for r in conn.execute(
+                """select m.blob_url from band_post_media m join band_posts p on p.id = m.post_id
+                   where p.user_id = %s and m.blob_url is not null""", (user_id,),
+            ).fetchall()]
+            conn.execute("delete from users where id=%s", (user_id,))
+        if urls:
+            try:
+                from services import blob_client
+                blob_client.delete(urls)
+            except Exception:  # noqa: BLE001 — a conta já foi excluída; sobra de arquivo não deve travar
+                import logging
+                logging.getLogger(__name__).warning("Falha ao apagar blobs da conta excluída (%d arquivos)", len(urls))
+
     def set_plan_category(self, user_id: str, requesting_user_id: str, category: str) -> None:
         """Só a área de gestão de usuários chama isto (rota admin-only) —
         move um usuário cadastrado pra categoria 'guest' (Convidado) ou

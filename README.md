@@ -40,6 +40,12 @@ Console → Branches → Create branch). A suíte faz `TRUNCATE ... CASCADE` nas
 tabelas antes de cada teste; sem essa separação ela roda sem avisar contra
 o banco de dados de verdade e apaga tudo (já aconteceu).
 
+Sem uma branch separada, dá pra rodar a suíte num **schema isolado** do mesmo
+banco (não toca nas tabelas reais; o script confere isso antes de rodar):
+```bash
+python scripts/run_tests_isolated.py tests/test_social_services.py -x
+```
+
 ## Arquitetura
 
 ```

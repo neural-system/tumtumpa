@@ -6,9 +6,10 @@ import AlertsBell from './AlertsBell'
 import PlanBadge from './PlanBadge'
 import { useAuthStore } from '../store/authStore'
 
-export default function Layout() {
-  const token = useAuthStore((s) => s.token)
-  if (!token) return <Navigate to="/login" replace />
+/** Casca do app logado (sidebar + cluster do topo + área principal). Separada
+ * pra páginas que servem visitante E usuário (perfil/banda públicos) usarem a
+ * mesma casca quando há login (ver AutoShell.jsx). */
+export function AppFrame({ children }) {
   return (
     <div className="app-shell">
       <Sidebar />
@@ -18,9 +19,13 @@ export default function Layout() {
         <UserMenu />
         <ThemeToggle />
       </div>
-      <main className="main">
-        <Outlet />
-      </main>
+      <main className="main">{children}</main>
     </div>
   )
+}
+
+export default function Layout() {
+  const token = useAuthStore((s) => s.token)
+  if (!token) return <Navigate to="/login" replace />
+  return <AppFrame><Outlet /></AppFrame>
 }

@@ -18,7 +18,9 @@
     "profile": "个人资料",
     "logout": "退出登录",
     "mySongs": "我的歌曲",
-    "accompaniment": "伴奏生成器"
+    "accompaniment": "伴奏生成器",
+    "community": "社区",
+    "adminModeration": "审核"
   },
   "login": {
     "tagline": "你的歌词谱与舞台同步。",

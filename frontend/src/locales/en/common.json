@@ -18,7 +18,9 @@
     "profile": "Profile",
     "logout": "Sign out",
     "mySongs": "My Songs",
-    "accompaniment": "Accompaniment Generator"
+    "accompaniment": "Accompaniment Generator",
+    "community": "Community",
+    "adminModeration": "Moderation"
   },
   "login": {
     "tagline": "Your chord sheets, synced to the stage.",

@@ -64,5 +64,7 @@
   "AUTH_CANNOT_DEMOTE_LAST_ADMIN": "No es posible quitar al último administrador.",
   "YOUTUBE_SUGGESTION_FAILED": "Fallo al buscar el vídeo de YouTube. Inténtalo de nuevo más tarde.",
   "YOUTUBE_QUOTA_EXCEEDED": "Se alcanzó la cuota diaria gratuita de búsqueda de YouTube. Inténtalo de nuevo mañana.",
-  "YOUTUBE_NOT_CONFIGURED": "La búsqueda de YouTube no está configurada en este servidor."
+  "YOUTUBE_NOT_CONFIGURED": "La búsqueda de YouTube no está configurada en este servidor.",
+  "AUTH_ACCOUNT_HAS_SUBSCRIPTION": "Cancela tu suscripción antes de eliminar la cuenta.",
+  "AUTH_TERMS_REQUIRED": "Debes aceptar la Política de Privacidad y los Términos de Uso."
 }

@@ -34,6 +34,15 @@ import Accompaniment from './pages/Accompaniment'
 import PedalSetup from './pages/PedalSetup'
 import AdminTools from './pages/AdminTools'
 import AdminSales from './pages/AdminSales'
+import Community from './pages/Community'
+import CommunityAgenda from './pages/CommunityAgenda'
+import CommunityDiscover from './pages/CommunityDiscover'
+import CommunityGigs from './pages/CommunityGigs'
+import CommunityProfileEdit from './pages/CommunityProfileEdit'
+import ProfilePublic from './pages/ProfilePublic'
+import BandPublic from './pages/BandPublic'
+import AdminModeration from './pages/AdminModeration'
+import Privacy from './pages/Privacy'
 
 export default function App() {
   useColorSettings()
@@ -55,6 +64,9 @@ export default function App() {
         <Route path="/cadastro" element={<SignUp />} />
         <Route path="/karaoke/:slug" element={<KaraokePlayer />} />
         <Route path="/mural" element={<BandBoard />} />
+        <Route path="/privacidade" element={<Privacy />} />
+        <Route path="/m/:handle" element={<ProfilePublic />} />
+        <Route path="/b/:handle" element={<BandPublic />} />
         <Route element={<Layout />}>
           <Route path="/painel" element={<Dashboard />} />
           <Route path="/mural/meus-anuncios" element={<BandBoardManage />} />
@@ -76,6 +88,12 @@ export default function App() {
           <Route path="/pedal" element={<PedalSetup />} />
           <Route path="/admin/ferramenta" element={<AdminTools />} />
           <Route path="/admin/vendas" element={<AdminSales />} />
+          <Route path="/admin/moderacao" element={<AdminModeration />} />
+          <Route path="/comunidade" element={<Community />} />
+          <Route path="/comunidade/agenda" element={<CommunityAgenda />} />
+          <Route path="/comunidade/descobrir" element={<CommunityDiscover />} />
+          <Route path="/comunidade/contratacoes" element={<CommunityGigs />} />
+          <Route path="/comunidade/perfil" element={<CommunityProfileEdit />} />
         </Route>
       </Routes>
     </BrowserRouter>

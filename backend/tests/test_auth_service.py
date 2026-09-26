@@ -450,3 +450,45 @@ def test_set_plan_category_unknown_user_raises(auth):
     admin = auth.register("chefe", "senha123", is_admin=True)
     with pytest.raises(AuthError):
         auth.set_plan_category("nao-existe", admin["id"], "guest")
+
+
+# ---------- exclusão da própria conta (LGPD) ----------
+
+def test_delete_own_account_requires_current_password(auth):
+    user = auth.register("apagar", "senha1234", "Apagar")
+    with pytest.raises(AuthError, match="Senha atual incorreta"):
+        auth.delete_own_account(user["id"], "errada")
+    auth.delete_own_account(user["id"], "senha1234")
+    with pytest.raises(AuthError):
+        auth.login("apagar", "senha1234")
+
+
+def test_delete_own_account_removes_social_data_but_keeps_songs(auth):
+    import db
+    from services.feed_service import FeedService
+    from services.band_service import BandService
+    from services.profile_service import ProfileService
+    user = auth.register("apagar", "senha1234", "Apagar")
+    uid = user["id"]
+    ProfileService().save_mine(uid, {"handle": "apagar_me", "display_name": "A", "visibility": "public"})
+    FeedService(BandService()).create_post(uid, {"body": "oi"})
+    with db.get_pool().connection() as conn:
+        conn.execute("insert into songs (user_id, slug, titulo, interprete, genero, body, header) values (%s, 'x--y--z', 'Z', 'Y', 'X', '', '{}')", (uid,))
+    auth.delete_own_account(uid, "senha1234")
+    with db.get_pool().connection() as conn:
+        assert conn.execute("select count(*) as n from profiles").fetchone()["n"] == 0
+        assert conn.execute("select count(*) as n from posts").fetchone()["n"] == 0
+        song = conn.execute("select user_id from songs where slug = 'x--y--z'").fetchone()
+    assert song is not None and song["user_id"] is None  # conteúdo da biblioteca sobrevive sem autor
+
+
+def test_delete_own_account_refuses_active_subscription_and_last_admin(auth):
+    import db
+    user = auth.register("assina", "senha1234", "Assina")
+    with db.get_pool().connection() as conn:
+        conn.execute("update users set subscription_status = 'active' where id = %s", (user["id"],))
+    with pytest.raises(AuthError, match="Cancele sua assinatura"):
+        auth.delete_own_account(user["id"], "senha1234")
+    chefe = auth.register("chefe", "senha1234", "Chefe", is_admin=True)
+    with pytest.raises(AuthError, match="último administrador"):
+        auth.delete_own_account(chefe["id"], "senha1234")

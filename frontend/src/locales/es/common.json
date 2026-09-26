@@ -18,7 +18,9 @@
     "profile": "Perfil",
     "logout": "Salir",
     "mySongs": "Mis canciones",
-    "accompaniment": "Generador de acompañamiento"
+    "accompaniment": "Generador de acompañamiento",
+    "community": "Comunidad",
+    "adminModeration": "Moderación"
   },
   "login": {
     "tagline": "Tus cifrados sincronizados con el escenario.",

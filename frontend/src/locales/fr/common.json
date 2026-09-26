@@ -18,7 +18,9 @@
     "profile": "Profil",
     "logout": "Déconnexion",
     "mySongs": "Mes chansons",
-    "accompaniment": "Générateur d'accompagnement"
+    "accompaniment": "Générateur d'accompagnement",
+    "community": "Communauté",
+    "adminModeration": "Modération"
   },
   "login": {
     "tagline": "Vos partitions synchronisées avec la scène.",

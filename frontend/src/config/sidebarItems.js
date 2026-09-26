@@ -1,5 +1,5 @@
 import {
-  IconHome, IconMusic, IconSearch, IconDrum, IconList, IconClock,
+  IconHome, IconMusic, IconSearch, IconDrum, IconChat, IconList, IconClock,
   IconMic, IconBook, IconUsers, IconMetronome, IconTuner, IconPedal, IconShield, IconChart,
   IconSettings, IconUser,
 } from '../components/icons'
@@ -14,6 +14,7 @@ export const ITEMS = [
   { to: '/historico', labelKey: 'nav.history', icon: IconClock },
   { to: '/karaoke', labelKey: 'nav.karaoke', icon: IconMic },
   { to: '/dicionario-acordes', labelKey: 'nav.chordDictionary', icon: IconBook },
+  { to: '/comunidade', labelKey: 'nav.community', icon: IconChat },
   { to: '/mural/meus-anuncios', labelKey: 'nav.bandBoard', icon: IconUsers },
   { section: 'nav.tools' },
   { to: '/acompanhamento', labelKey: 'nav.accompaniment', icon: IconDrum },
@@ -22,6 +23,7 @@ export const ITEMS = [
   { to: '/pedal', labelKey: 'nav.pedalSetup', icon: IconPedal },
   { to: '/admin/ferramenta', labelKey: 'nav.adminTools', icon: IconShield, adminOnly: true },
   { to: '/admin/vendas', labelKey: 'nav.adminSales', icon: IconChart, adminOnly: true },
+  { to: '/admin/moderacao', labelKey: 'nav.adminModeration', icon: IconShield, adminOnly: true },
   { to: '/configuracoes', labelKey: 'nav.settings', icon: IconSettings },
   { to: '/perfil', labelKey: 'nav.profile', icon: IconUser },
 ]

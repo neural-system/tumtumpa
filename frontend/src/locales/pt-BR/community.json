@@ -1,0 +1,299 @@
+{
+  "nav": {
+    "title": "Comunidade",
+    "subtitle": "Músicos e bandas: postagens, agenda de shows e contratações."
+  },
+  "tabs": {
+    "feed": "Feed",
+    "agenda": "Agenda",
+    "discover": "Descobrir",
+    "gigs": "Contratações",
+    "me": "Meu perfil"
+  },
+  "common": {
+    "loading": "Carregando…",
+    "error": "Algo deu errado. Tente de novo.",
+    "retry": "Tentar de novo",
+    "close": "Fechar",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "city": "Cidade"
+  },
+  "feed": {
+    "emptyExplore": "Ainda não há postagens. Seja o primeiro a publicar!",
+    "emptyFollowing": "Você ainda não segue ninguém — encontre músicos e bandas em Descobrir.",
+    "loadMore": "Ver mais",
+    "composerPlaceholder": "Compartilhe um ensaio, um show, uma novidade…",
+    "publish": "Publicar",
+    "publishFirst": "Para postar na comunidade, publique o seu perfil primeiro. Ele começa privado — só você vê até publicar.",
+    "goToProfile": "Configurar meu perfil",
+    "linkPlaceholder": "Link (https://…)",
+    "youtubePlaceholder": "Vídeo do YouTube (link)",
+    "kind": "Tipo de postagem",
+    "postAs": "Postar como",
+    "asMe": "Eu mesmo",
+    "addExtras": "+ link / vídeo",
+    "loginToInteract": "Entre para curtir",
+    "scope": "Feed",
+    "explore": "Explorar",
+    "following": "Seguindo"
+  },
+  "kinds": {
+    "text": "Postagem",
+    "show": "Show",
+    "release": "Lançamento"
+  },
+  "post": {
+    "band": "Banda",
+    "report": "Denunciar",
+    "delete": "Apagar",
+    "deleteConfirm": "Apagar esta postagem?",
+    "comments_one": "{{count}} comentário",
+    "comments_other": "{{count}} comentários"
+  },
+  "comments": {
+    "empty": "Nenhum comentário ainda.",
+    "placeholder": "Escreva um comentário…",
+    "send": "Enviar",
+    "loginToComment": "Entre para comentar"
+  },
+  "report": {
+    "title": "Denunciar conteúdo",
+    "reason": "Motivo",
+    "note": "Detalhes (opcional)",
+    "send": "Enviar denúncia",
+    "sent": "Obrigado! Nossa equipe vai analisar.",
+    "reasons": {
+      "spam": "Spam",
+      "golpe": "Golpe ou fraude",
+      "assedio": "Assédio ou ofensa",
+      "conteudo_improprio": "Conteúdo impróprio",
+      "impersonacao": "Falsa identidade",
+      "outro": "Outro"
+    }
+  },
+  "profile": {
+    "follow": "Seguir",
+    "unfollow": "Seguindo",
+    "followers_one": "{{count}} seguidor",
+    "followers_other": "{{count}} seguidores",
+    "editTitle": "Perfil na comunidade",
+    "displayName": "Nome",
+    "handle": "Identificador público",
+    "handleHint": "Seu endereço será /m/{{handle}} — letras minúsculas, números e _.",
+    "bio": "Sobre você",
+    "contact": "Contato",
+    "contactHint": "WhatsApp, e-mail… Só aparece para quem está logado.",
+    "links": "Links (um por linha)",
+    "availableForHire": "Disponível para contratações",
+    "visibility": "Visibilidade",
+    "visibilityPrivate": "Privado",
+    "visibilityPublic": "Público",
+    "privateHint": "Só você vê este perfil. Para postar, seguir e aparecer em buscas, publique-o.",
+    "publicHint": "Qualquer pessoa pode ver seu nome, bio, cidade, links e posts. O contato só aparece para quem está logado.",
+    "saved": "Salvo!",
+    "viewPublic": "Ver página pública",
+    "pageTitle": "Meu perfil",
+    "pageSub": "Como músicos e bandas veem você na comunidade.",
+    "edit": "Editar perfil",
+    "notFound": "Perfil não encontrado.",
+    "onlyYouSee": "Só você vê este perfil",
+    "bandsOf": "Bandas",
+    "block": "Bloquear",
+    "blockConfirm": "Bloquear esta pessoa? Vocês deixam de ver o conteúdo um do outro.",
+    "contactLoginOnly": "Entre para ver o contato",
+    "posts": "Postagens",
+    "noPosts": "Nenhuma postagem ainda."
+  },
+  "band": {
+    "bio": "Sobre a banda",
+    "myBands": "Minhas bandas",
+    "create": "Criar banda",
+    "invites": "Convites",
+    "accept": "Aceitar",
+    "decline": "Recusar",
+    "name": "Nome da banda",
+    "handle": "Identificador público",
+    "genre": "Gênero",
+    "myInstrument": "Seu instrumento",
+    "createHint": "A banda começa privada. Convide pelo menos mais um integrante para poder publicá-la.",
+    "none": "Você ainda não está em nenhuma banda.",
+    "roles": {
+      "admin": "Administrador",
+      "member": "Integrante"
+    },
+    "manage": "Gerenciar banda",
+    "publish": "Publicar banda",
+    "unpublish": "Voltar a privada",
+    "publishNeeds2": "Uma banda só pode ser publicada com 2 ou mais integrantes ativos.",
+    "members": "Integrantes",
+    "pending": "convite pendente",
+    "promote": "Tornar admin",
+    "demote": "Tirar admin",
+    "remove": "Remover",
+    "removeConfirm": "Remover esta pessoa da banda?",
+    "cancelInvite": "Cancelar convite",
+    "invitePlaceholder": "@identificador ou login do músico",
+    "instrument": "Instrumento",
+    "invite": "Convidar",
+    "inviteSent": "Convite enviado.",
+    "delete": "Excluir banda",
+    "deleteConfirm": "Excluir a banda? Isso não pode ser desfeito.",
+    "events": "Agenda de shows",
+    "noEvents": "Nenhum show marcado.",
+    "leave": "Sair da banda",
+    "leaveConfirm": "Sair desta banda?",
+    "notFound": "Banda não encontrada.",
+    "onlyMembersSee": "Só integrantes veem esta banda"
+  },
+  "event": {
+    "title": "Título do show",
+    "startsAt": "Data e hora",
+    "venue": "Local",
+    "ticketUrl": "Link do ingresso",
+    "new": "+ Novo show",
+    "deleteConfirm": "Apagar este show?",
+    "cancelled": "cancelado",
+    "tickets": "Ingressos",
+    "addToCalendar": "Adicionar ao calendário"
+  },
+  "agenda": {
+    "title": "Agenda de shows",
+    "subtitle": "Próximos shows de bandas da comunidade.",
+    "search": "Buscar show, banda ou local",
+    "empty": "Nenhum show agendado por aqui."
+  },
+  "discover": {
+    "title": "Descobrir",
+    "subtitle": "Encontre bandas e músicos para seguir e tocar junto.",
+    "bands": "Bandas",
+    "people": "Músicos",
+    "search": "Buscar por nome",
+    "availableForHire": "Disponível para contratação",
+    "empty": "Nada encontrado com esses filtros."
+  },
+  "gigs": {
+    "title": "Contratações",
+    "subtitle": "Pedidos de show, vagas em banda e aulas.",
+    "new": "+ Novo pedido",
+    "kind": "Tipo",
+    "allKinds": "Todos os tipos",
+    "kinds": {
+      "gig": "Contratar show",
+      "vaga": "Vaga em banda",
+      "aula": "Aula",
+      "outro": "Outro"
+    },
+    "mine": "Só os meus",
+    "titleField": "Título",
+    "description": "Descrição",
+    "date": "Data",
+    "budget": "Cachê / observação",
+    "safety": "O TumTumPa não intermedeia pagamentos nem contratos: combine tudo diretamente e nunca pague adiantado a desconhecidos. Denuncie qualquer suspeita de golpe.",
+    "publish": "Publicar pedido",
+    "empty": "Nenhum pedido por aqui.",
+    "noReplies": "Ninguém respondeu ainda.",
+    "someone": "Alguém",
+    "replyStatus": {
+      "sent": "nova",
+      "accepted": "aceita",
+      "declined": "recusada"
+    },
+    "contact": "Contato",
+    "accept": "Aceitar",
+    "decline": "Recusar",
+    "closed": "encerrado",
+    "close": "Encerrar",
+    "reopen": "Reabrir",
+    "deleteConfirm": "Apagar este pedido?",
+    "reply": "Responder",
+    "replySent": "Resposta enviada.",
+    "replyPlaceholder": "Escreva sua proposta ou dúvida (só o autor vê)",
+    "repliesCount_one": "{{count}} resposta",
+    "repliesCount_other": "{{count}} respostas"
+  },
+  "admin": {
+    "title": "Moderação da comunidade",
+    "subtitle": "Denúncias de conteúdo — ocultar, restaurar, suspender ou arquivar.",
+    "status": {
+      "open": "Abertas",
+      "resolved": "Resolvidas",
+      "dismissed": "Arquivadas"
+    },
+    "empty": "Nenhuma denúncia.",
+    "kinds": {
+      "post": "Post",
+      "comment": "Comentário",
+      "profile": "Perfil",
+      "band": "Banda",
+      "event": "Show",
+      "gig": "Pedido"
+    },
+    "reportsCount_one": "{{count}} denúncia",
+    "reportsCount_other": "{{count}} denúncias",
+    "open": "Abrir",
+    "deleted": "conteúdo apagado",
+    "hidden": "oculto",
+    "banConfirm": "Suspender a conta deste autor na comunidade?",
+    "actions": {
+      "hide": "Ocultar",
+      "restore": "Restaurar",
+      "ban_user": "Suspender conta",
+      "unban_user": "Reativar conta",
+      "dismiss": "Arquivar"
+    }
+  },
+  "legal": {
+    "title": "Privacidade e termos de uso",
+    "draft": "Rascunho para revisão jurídica antes da divulgação oficial.",
+    "updated": "Última atualização: setembro de 2026",
+    "consent": "Li e aceito a Política de Privacidade e os Termos de Uso",
+    "consentLink": "Ler",
+    "consentRequired": "Aceite a Política de Privacidade e os Termos para criar a conta.",
+    "sections": [
+      {
+        "h": "1. Quem somos",
+        "p": "O TumTumPa é uma ferramenta para músicos: cifras, setlists, palco, ferramentas de ensaio e uma comunidade de músicos e bandas."
+      },
+      {
+        "h": "2. Dados que coletamos",
+        "p": "Cadastro (usuário, nome, e-mail, cidade e instrumentos); conteúdo que você cria (músicas, setlists, perfil, bandas, postagens, comentários, pedidos de contratação); dados de uso (último acesso, contagem de acessos e sessões, músicas tocadas); e dados de assinatura (status e identificadores da Stripe — nunca guardamos dados de cartão)."
+      },
+      {
+        "h": "3. Para que usamos",
+        "p": "Para fornecer o serviço, manter sua conta segura, cobrar assinaturas, alertar sobre bandas na sua cidade e instrumento, moderar a comunidade e melhorar o produto."
+      },
+      {
+        "h": "4. O que é público",
+        "p": "Seu perfil e suas bandas nascem privados. Só o que você publicar (perfil público, postagens, shows) aparece para outras pessoas. Seu contato (e-mail, telefone ou WhatsApp) só é mostrado a usuários logados. Você pode voltar o perfil para privado a qualquer momento."
+      },
+      {
+        "h": "5. Com quem compartilhamos",
+        "p": "Com os provedores que fazem o serviço funcionar: Vercel (hospedagem e armazenamento de arquivos), Neon (banco de dados), Stripe (pagamentos) e, quando você usa os recursos correspondentes, YouTube (vídeos incorporados) e OpenAI (sugestões de cifra). Não vendemos seus dados."
+      },
+      {
+        "h": "6. Seus direitos",
+        "p": "Você pode acessar e corrigir seus dados em Configurações e Meu perfil, e excluir sua conta na página Perfil (ela apaga seu perfil, postagens, comentários, bandas e convites; músicas e setlists da biblioteca compartilhada permanecem sem autor). Para outros pedidos previstos na LGPD (acesso completo, portabilidade, informações sobre o tratamento), fale com o suporte."
+      },
+      {
+        "h": "7. Regras da comunidade",
+        "p": "Não publique spam, golpes, ofensas, assédio, conteúdo ilegal ou que viole direitos autorais e de imagem, nem se passe por outra pessoa. Conteúdo denunciado pode ser ocultado e contas podem ser suspensas. Contratações são combinadas diretamente entre as partes: o TumTumPa não intermedeia pagamentos nem contratos e não se responsabiliza por acordos feitos na comunidade — nunca pague adiantado a desconhecidos."
+      },
+      {
+        "h": "8. Idade mínima",
+        "p": "O uso da comunidade é destinado a maiores de 18 anos ou a menores com autorização e acompanhamento dos responsáveis."
+      },
+      {
+        "h": "9. Segurança e retenção",
+        "p": "Usamos conexão criptografada, senhas com hash e limites de abuso. Guardamos os dados enquanto a conta existir; ao excluir a conta, os dados pessoais são removidos, salvo o que a lei exigir manter."
+      }
+    ]
+  },
+  "account": {
+    "deleteTitle": "Excluir minha conta",
+    "deleteWarning": "Esta ação é definitiva: seu perfil, postagens, comentários, bandas e convites serão apagados. Músicas e setlists da biblioteca compartilhada permanecem sem autor.",
+    "password": "Confirme sua senha",
+    "delete": "Excluir minha conta",
+    "deleteConfirm": "Tem certeza? Não dá para desfazer."
+  }
+}

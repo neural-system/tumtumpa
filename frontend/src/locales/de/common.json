@@ -18,7 +18,9 @@
     "profile": "Profil",
     "logout": "Abmelden",
     "mySongs": "Meine Songs",
-    "accompaniment": "Begleitungsgenerator"
+    "accompaniment": "Begleitungsgenerator",
+    "community": "Community",
+    "adminModeration": "Moderation"
   },
   "login": {
     "tagline": "Deine Songtexte, synchron auf der Bühne.",

@@ -27,15 +27,21 @@ from services.audio_service import AudioService
 from services.auth_service import AuthService
 from services.billing_service import BillingService
 from services.band_board_service import BandBoardService
+from services.band_service import BandService
 from services.branding_service import BrandingService
 from services.chord_dictionary_service import ChordDictionaryService
 from services.clip_queue_service import ClipQueueService
+from services.event_service import EventService
 from services.favorites_service import FavoritesService
 from services.feedback_service import FeedbackService
 from services.admin_stats_service import AdminStatsService
+from services.feed_service import FeedService
+from services.gig_service import GigService
 from services.history_service import HistoryService
 from services.karaoke_service import KaraokeService
+from services.moderation_service import ModerationService
 from services.plans_service import PlansService
+from services.profile_service import ProfileService
 from services.quota_service import QuotaService
 from services.search_service import SearchService
 from services.setlist_service import SetlistService
@@ -73,6 +79,13 @@ class Services:
         self.branding = BrandingService()
         self.band_board = BandBoardService()
         self.alerts = AlertsService()
+        # rede social (ver docs/PROPOSTA_REDE_SOCIAL.md)
+        self.profiles = ProfileService()
+        self.bands = BandService()
+        self.events = EventService(self.bands)
+        self.feed = FeedService(self.bands)
+        self.gigs = GigService(self.bands)
+        self.moderation = ModerationService()
         self.admin_stats = AdminStatsService(setlists=self.setlists, telemetry=self.telemetry)
         self.require_auth = require_auth(self.auth)
         self.require_admin = require_admin(self.auth)
@@ -85,6 +98,14 @@ class Services:
         self.login_ip_limit = RateLimiter(max_requests=20, window_seconds=60)
         self.login_user_limit = RateLimiter(max_requests=8, window_seconds=300)
         self.register_ip_limit = RateLimiter(max_requests=6, window_seconds=600)
+        # escritas da rede social, por usuário (posts, comentários, curtidas…) — freio
+        # contra spam/flood; contadores por instância serverless (ver rate_limit.py)
+        self.social_limits = {
+            "profile": RateLimiter(30, 600), "band": RateLimiter(10, 3600), "invite": RateLimiter(20, 3600),
+            "event": RateLimiter(30, 3600), "post": RateLimiter(10, 600), "comment": RateLimiter(30, 600),
+            "like": RateLimiter(120, 60), "follow": RateLimiter(60, 60), "gig": RateLimiter(5, 3600),
+            "reply": RateLimiter(10, 3600), "report": RateLimiter(10, 3600),
+        }
 
 
 def create_app() -> Flask:

@@ -64,5 +64,7 @@
   "AUTH_CANNOT_DEMOTE_LAST_ADMIN": "Der letzte Administrator kann nicht entfernt werden.",
   "YOUTUBE_SUGGESTION_FAILED": "YouTube-Videosuche fehlgeschlagen. Bitte später erneut versuchen.",
   "YOUTUBE_QUOTA_EXCEEDED": "Das kostenlose Tageskontingent der YouTube-Suche wurde erreicht. Bitte morgen erneut versuchen.",
-  "YOUTUBE_NOT_CONFIGURED": "Die YouTube-Suche ist auf diesem Server nicht konfiguriert."
+  "YOUTUBE_NOT_CONFIGURED": "Die YouTube-Suche ist auf diesem Server nicht konfiguriert.",
+  "AUTH_ACCOUNT_HAS_SUBSCRIPTION": "Kündige dein Abo, bevor du dein Konto löschst.",
+  "AUTH_TERMS_REQUIRED": "Du musst die Datenschutzerklärung und die Nutzungsbedingungen akzeptieren."
 }

@@ -108,8 +108,48 @@ conteúdo gerado por usuários em escala. Antes da Fase 3 é preciso:
 6. Idade mínima e tratamento de menores.
 7. O mural atual (`band_posts`) é **migrado** para `job_posts` ou convive por um tempo?
 
-## 9. Próximo passo sugerido
+## 9. Status da implementação (setembro/2026)
 
-Fechar as decisões acima, terminar a correção dos itens críticos de segurança e então
-implementar a **Fase 1** (perfis + bandas + integrantes), que já entrega valor e valida o
-modelo antes de abrir posts e comentários.
+Implementadas as fases 1 a 4 num único pacote, com as **decisões de partida abaixo** (as
+mais conservadoras; todas podem ser afrouxadas depois sem mudar o modelo):
+
+| Decisão em aberto | Escolha adotada |
+|---|---|
+| Perfil público ou privado | **Privado por padrão**; só publica quem clica em "Publicar" |
+| Quem cria banda | Qualquer usuário, **até 10 bandas ativas** por pessoa |
+| Banda pública | Exige **2+ integrantes ativos** (volta a privada se cair abaixo disso) |
+| Feed | **Cronológico**, paginado por cursor; abas Explorar / Seguindo |
+| Contratações | **Só divulgação + resposta privada**; sem intermediação de pagamento |
+| Moderação | Denúncia → fila do admin (ocultar/restaurar/suspender/arquivar); **3 denúncias ocultam** automaticamente post, comentário ou pedido |
+| Menores | Termos falam em 18+ ou responsáveis (texto é rascunho, precisa de revisão jurídica) |
+| Mural atual (`band_posts`) | **Convive** com a comunidade; migração fica para depois |
+
+**Backend** (`backend/services/`): `profile_service`, `band_service`, `event_service`,
+`feed_service` (posts, curtidas, comentários, seguir, bloquear), `gig_service`,
+`moderation_service`, `social_common` (validações). Rotas em `routes/social_routes.py`
+(`/api/social/*`, `/api/admin/social/*`). Tabelas novas no fim de `schema.sql`
+(`profiles`, `bands`, `band_members`, `posts`, `post_likes`, `post_comments`, `follows`,
+`band_events`, `gigs`, `gig_replies`, `social_reports`, `user_blocks`,
+`users.social_banned`). Leituras públicas aceitam visitante; escritas exigem login e têm
+limite por usuário. Texto sempre puro; links só `http(s)`; vídeos só via ID do YouTube.
+
+**Frontend**: `/comunidade` (feed), `/comunidade/agenda`, `/comunidade/descobrir`,
+`/comunidade/contratacoes`, `/comunidade/perfil`, páginas públicas `/m/:handle` e
+`/b/:handle`, `/admin/moderacao` e `/privacidade` (política + termos, **rascunho**).
+
+**Privacidade (LGPD)**: aceite da política no cadastro, contato só para logados,
+exclusão da própria conta (`POST /api/me/delete`, com senha) que apaga perfil, posts,
+comentários, bandas e convites.
+
+**Testes**: `tests/test_social_services.py` (42) e `tests/test_social_routes.py` (14),
+mais os de exclusão de conta em `tests/test_auth_service.py`.
+
+### Ainda não feito
+
+- Upload de foto/avatar e mídia própria nos posts (hoje: texto, link e vídeo do YouTube).
+- Notificações (curtidas, comentários, convites, respostas) — hoje só dentro das telas.
+- Mensagens diretas; verificação de perfil; avaliações pós-show.
+- Traduções de `community.json` para es/fr/de/ru/zh/it (usam o inglês por enquanto).
+- Migração do mural `band_posts` para `gigs`.
+- Limites por usuário em **store compartilhado** (hoje por instância serverless).
+- Revisão jurídica da política/termos e definição do contato de suporte.

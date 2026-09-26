@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../store/authStore'
+import DeleteAccountCard from '../components/DeleteAccountCard'
 
 export default function Profile() {
   const { t } = useTranslation('profile')
@@ -13,6 +14,7 @@ export default function Profile() {
         <div className="field"><label>{t('username')}</label><div>{user?.username}</div></div>
         <div className="field"><label>{t('id')}</label><div style={{ fontFamily: 'var(--font-mono)', fontSize: 13 }}>{user?.id}</div></div>
       </div>
+      <DeleteAccountCard />
     </>
   )
 }
