@@ -27,11 +27,12 @@
   height: 76px; padding: 0 4vw; display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid #292929; position: sticky; top: 0; z-index: 5; background: #080808;
 }
-.palco-brand { font-weight: 900; letter-spacing: -1px; transform: rotate(-2deg); font-size: 19px; display: inline-block; }
+.palco-brand { font-weight: 900; letter-spacing: -1px; transform: rotate(-2deg); font-size: 19px; display: inline-block; white-space: nowrap; }
 .palco-brand b { color: var(--amber); }
 .palco-tabs { display: flex; gap: 6px; background: #121212; border: 1px solid #292929; border-radius: 999px; padding: 5px; flex-wrap: wrap; }
 .palco-tab { padding: 8px 14px; border-radius: 999px; color: #7f7f7f; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
 .palco-tab.active { color: #090909; background: var(--paper); }
+.palco-nav-actions { display: flex; align-items: center; gap: 18px; white-space: nowrap; }
 .palco-nav-cta { border-bottom: 1px solid var(--amber); padding: 8px 0; font-size: 13px; }
 
 /* ---------- hero ---------- */
@@ -47,7 +48,7 @@
 .palco-hero-title em { color: var(--amber); font-style: normal; }
 .palco-hero-copy { max-width: 480px; margin-left: 30vw; font-size: clamp(16px, 1.5vw, 21px); line-height: 1.45; color: #a8a8a8; }
 .palco-hero-actions { margin: 30px 0 60px 30vw; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
-.palco-primary-button { background: var(--paper); color: #080808; font-weight: 800; padding: 15px 22px; border-radius: 3px; display: inline-block; }
+.palco-shell .palco-primary-button { background: var(--paper); color: #080808; font-weight: 800; padding: 15px 22px; border-radius: 3px; display: inline-block; }
 .palco-play-button { border: 0; background: none; color: #bbb; }
 .palco-play-button span { color: var(--amber); margin-right: 8px; }
 .palco-live-sheet {

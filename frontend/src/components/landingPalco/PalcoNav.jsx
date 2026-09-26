@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useAuthStore } from '../../store/authStore'
 
 /** Cabeçalho compartilhado pelas 4 páginas públicas (/, /palco/fluxo, /palco/comunidade, /palco/classificados) — marca em
  * texto estilizado via CSS (rotação leve + "PÁ" em âmbar), não a logo em
@@ -11,6 +12,9 @@ import { useTranslation } from 'react-i18next'
  * claro/escuro do visitante. */
 export default function PalcoNav({ active }) {
   const { t } = useTranslation('landingPalco')
+  // "Entrar" / "Voltar ao painel" vêm do namespace do mural (já traduzido nos 9 idiomas)
+  const { t: tApp } = useTranslation('bandBoard')
+  const token = useAuthStore((s) => s.token)
 
   return (
     <nav className="palco-nav" aria-label={t('nav.ariaLabel')}>
@@ -31,7 +35,16 @@ export default function PalcoNav({ active }) {
           {t('nav.tabClassificados')}
         </Link>
       </div>
-      <Link className="palco-nav-cta" to="/cadastro">{t('nav.cta')}</Link>
+      <div className="palco-nav-actions">
+        {token ? (
+          <Link className="palco-nav-cta" to="/painel">{tApp('backToApp')}</Link>
+        ) : (
+          <>
+            <Link className="palco-nav-cta" to="/login">{tApp('login')}</Link>
+            <Link className="palco-nav-cta" to="/cadastro">{t('nav.cta')}</Link>
+          </>
+        )}
+      </div>
     </nav>
   )
 }

@@ -11,21 +11,21 @@
     "me": "Meu perfil"
   },
   "common": {
-    "loading": "Carregando…",
+    "loading": "A carregar…",
     "error": "Algo deu errado. Tente de novo.",
     "retry": "Tentar de novo",
     "close": "Fechar",
     "cancel": "Cancelar",
-    "save": "Salvar",
+    "save": "Guardar",
     "city": "Cidade"
   },
   "feed": {
     "emptyExplore": "Ainda não há postagens. Seja o primeiro a publicar!",
     "emptyFollowing": "Você ainda não segue ninguém — encontre músicos e bandas em Descobrir.",
     "loadMore": "Ver mais",
-    "composerPlaceholder": "Compartilhe um ensaio, um show, uma novidade…",
+    "composerPlaceholder": "Partilhe um ensaio, um show, uma novidade…",
     "publish": "Publicar",
-    "publishFirst": "Para postar na comunidade, publique o seu perfil primeiro. Ele começa privado — só você vê até publicar.",
+    "publishFirst": "Para postar na comunidade, publique o o seu perfil primeiro. Ele começa privado — só você vê até publicar.",
     "goToProfile": "Configurar meu perfil",
     "linkPlaceholder": "Link (https://…)",
     "youtubePlaceholder": "Vídeo do YouTube (link)",
@@ -33,7 +33,7 @@
     "postAs": "Postar como",
     "asMe": "Eu mesmo",
     "addExtras": "+ link / vídeo",
-    "loginToInteract": "Entre para curtir",
+    "loginToInteract": "Inicie sessão para gostar",
     "scope": "Feed",
     "explore": "Explorar",
     "following": "Seguindo"
@@ -55,14 +55,14 @@
     "empty": "Nenhum comentário ainda.",
     "placeholder": "Escreva um comentário…",
     "send": "Enviar",
-    "loginToComment": "Entre para comentar"
+    "loginToComment": "Inicie sessão para comentar"
   },
   "report": {
     "title": "Denunciar conteúdo",
     "reason": "Motivo",
     "note": "Detalhes (opcional)",
     "send": "Enviar denúncia",
-    "sent": "Obrigado! Nossa equipe vai analisar.",
+    "sent": "Obrigado! Nossa equipa vai analisar.",
     "reasons": {
       "spam": "Spam",
       "golpe": "Golpe ou fraude",
@@ -82,16 +82,16 @@
     "handle": "Identificador público",
     "handleHint": "Seu endereço será /m/{{handle}} — letras minúsculas, números e _.",
     "bio": "Sobre você",
-    "contact": "Contato",
-    "contactHint": "WhatsApp, e-mail… Só aparece para quem está logado.",
+    "contact": "Contacto",
+    "contactHint": "WhatsApp, e-mail… Só aparece para quem está com sessão iniciada.",
     "links": "Links (um por linha)",
     "availableForHire": "Disponível para contratações",
     "visibility": "Visibilidade",
     "visibilityPrivate": "Privado",
     "visibilityPublic": "Público",
     "privateHint": "Só você vê este perfil. Para postar, seguir e aparecer em buscas, publique-o.",
-    "publicHint": "Qualquer pessoa pode ver seu nome, bio, cidade, links e posts. O contato só aparece para quem está logado.",
-    "saved": "Salvo!",
+    "publicHint": "Qualquer pessoa pode ver seu nome, bio, cidade, links e posts. O contacto só aparece para quem está com sessão iniciada.",
+    "saved": "Guardado!",
     "viewPublic": "Ver página pública",
     "pageTitle": "Meu perfil",
     "pageSub": "Como músicos e bandas veem você na comunidade.",
@@ -101,7 +101,7 @@
     "bandsOf": "Bandas",
     "block": "Bloquear",
     "blockConfirm": "Bloquear esta pessoa? Vocês deixam de ver o conteúdo um do outro.",
-    "contactLoginOnly": "Entre para ver o contato",
+    "contactLoginOnly": "Inicie sessão para ver o contacto",
     "posts": "Postagens",
     "noPosts": "Nenhuma postagem ainda."
   },
@@ -114,7 +114,7 @@
     "decline": "Recusar",
     "name": "Nome da banda",
     "handle": "Identificador público",
-    "genre": "Gênero",
+    "genre": "Género",
     "myInstrument": "Seu instrumento",
     "createHint": "A banda começa privada. Convide pelo menos mais um integrante para poder publicá-la.",
     "none": "Você ainda não está em nenhuma banda.",
@@ -137,8 +137,8 @@
     "instrument": "Instrumento",
     "invite": "Convidar",
     "inviteSent": "Convite enviado.",
-    "delete": "Excluir banda",
-    "deleteConfirm": "Excluir a banda? Isso não pode ser desfeito.",
+    "delete": "Eliminar banda",
+    "deleteConfirm": "Eliminar a banda? Isso não pode ser desfeito.",
     "events": "Agenda de shows",
     "noEvents": "Nenhum show marcado.",
     "leave": "Sair da banda",
@@ -199,7 +199,7 @@
       "accepted": "aceita",
       "declined": "recusada"
     },
-    "contact": "Contato",
+    "contact": "Contacto",
     "accept": "Aceitar",
     "decline": "Recusar",
     "closed": "encerrado",
@@ -257,7 +257,7 @@
       },
       {
         "h": "2. Dados que coletamos",
-        "p": "Cadastro (usuário, nome, e-mail, cidade e instrumentos); conteúdo que você cria (músicas, setlists, perfil, bandas, postagens, comentários, pedidos de contratação); dados de uso (último acesso, contagem de acessos e sessões, músicas tocadas); e dados de assinatura (status e identificadores da Stripe — nunca guardamos dados de cartão)."
+        "p": "Registo (utilizador, nome, e-mail, cidade e instrumentos); conteúdo que você cria (músicas, setlists, perfil, bandas, postagens, comentários, pedidos de contratação); dados de uso (último acesso, contagem de acessos e sessões, músicas tocadas); e dados de assinatura (status e identificadores da Stripe — nunca guardamos dados de cartão)."
       },
       {
         "h": "3. Para que usamos",
@@ -265,7 +265,7 @@
       },
       {
         "h": "4. O que é público",
-        "p": "Seu perfil e suas bandas nascem privados. Só o que você publicar (perfil público, postagens, shows) aparece para outras pessoas. Seu contato (e-mail, telefone ou WhatsApp) só é mostrado a usuários logados. Você pode voltar o perfil para privado a qualquer momento."
+        "p": "O o seu perfil e suas bandas nascem privados. Só o que você publicar (perfil público, postagens, shows) aparece para outras pessoas. O seu contacto (e-mail, telefone ou WhatsApp) só é mostrado a utilizadores com sessão iniciada. Você pode voltar o perfil para privado a qualquer momento."
       },
       {
         "h": "5. Com quem compartilhamos",
@@ -273,7 +273,7 @@
       },
       {
         "h": "6. Seus direitos",
-        "p": "Você pode acessar e corrigir seus dados em Configurações e Meu perfil, e excluir sua conta na página Perfil (ela apaga seu perfil, postagens, comentários, bandas e convites; músicas e setlists da biblioteca compartilhada permanecem sem autor). Para outros pedidos previstos na LGPD (acesso completo, portabilidade, informações sobre o tratamento), fale com o suporte."
+        "p": "Você pode acessar e corrigir seus dados em Configurações e Meu perfil, e eliminar sua conta na página Perfil (ela apaga o seu perfil, postagens, comentários, bandas e convites; músicas e setlists da biblioteca compartilhada permanecem sem autor). Para outros pedidos previstos na LGPD (acesso completo, portabilidade, informações sobre o tratamento), fale com o suporte."
       },
       {
         "h": "7. Regras da comunidade",
@@ -285,15 +285,15 @@
       },
       {
         "h": "9. Segurança e retenção",
-        "p": "Usamos conexão criptografada, senhas com hash e limites de abuso. Guardamos os dados enquanto a conta existir; ao excluir a conta, os dados pessoais são removidos, salvo o que a lei exigir manter."
+        "p": "Usamos ligação criptografada, palavra-passes com hash e limites de abuso. Guardamos os dados enquanto a conta existir; ao eliminar a conta, os dados pessoais são removidos, salvo o que a lei exigir manter."
       }
     ]
   },
   "account": {
-    "deleteTitle": "Excluir minha conta",
-    "deleteWarning": "Esta ação é definitiva: seu perfil, postagens, comentários, bandas e convites serão apagados. Músicas e setlists da biblioteca compartilhada permanecem sem autor.",
-    "password": "Confirme sua senha",
-    "delete": "Excluir minha conta",
+    "deleteTitle": "Eliminar minha conta",
+    "deleteWarning": "Esta ação é definitiva: o seu perfil, postagens, comentários, bandas e convites serão apagados. Músicas e setlists da biblioteca compartilhada permanecem sem autor.",
+    "password": "Confirme a sua palavra-passe",
+    "delete": "Eliminar minha conta",
     "deleteConfirm": "Tem certeza? Não dá para desfazer."
   }
 }
