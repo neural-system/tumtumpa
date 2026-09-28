@@ -468,7 +468,7 @@ export default function SongEditor() {
 
   return (
     <>
-      <div className="row no-print" style={{ justifyContent: 'space-between' }}>
+      <div className="row between no-print">
         <div>
           <h1 className="page-title">
             {data.favorita && <span className="fav-star">★ </span>}
@@ -527,8 +527,8 @@ export default function SongEditor() {
             {t(`tabs.${tb}`)}
           </button>
         ))}
-        <div className="spacer" style={{ flex: 1 }} />
-        <span style={{ color: 'var(--muted)', fontSize: 13 }}>{t('tabs.transpose')}</span>
+        <div className="spacer" />
+        <span className="inline-label">{t('tabs.transpose')}</span>
         <button className="btn" disabled={transpose.isPending}
           title={ownsSong ? undefined : t('transposeTempTitle')}
           onClick={() => transpose.mutate({ semitones: -1 })}>{t('tabs.downHalf')}</button>
@@ -541,7 +541,7 @@ export default function SongEditor() {
           <option value="">{t('tabs.toKey')}</option>
           {KEYS.map((k) => <option key={k}>{k}</option>)}
         </select>
-        <span style={{ color: 'var(--muted)', fontSize: 13 }}>{t('tabs.rating')}</span>
+        <span className="inline-label">{t('tabs.rating')}</span>
         <select className="input" style={{ width: 76 }} value={header.nota || ''}
           onChange={(e) => setRating.mutate(Number(e.target.value))}>
           <option value="">—</option>
@@ -566,7 +566,7 @@ export default function SongEditor() {
       {tab === 'edit' && (
         <div className="row" style={{ alignItems: 'flex-start' }} onKeyDown={handleEditorKeyDown}>
           <div className="card" style={{ width: 'min(100%, 300px)', flexShrink: 0 }}>
-            <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <div className="row between" style={{ marginBottom: 12 }}>
               <h3>{t('edit.header')}</h3>
               <button className="btn" disabled={aiSuggest.isPending}
                 title={t('edit.aiSuggestTitle')}
@@ -604,7 +604,7 @@ export default function SongEditor() {
               </div>
             </div>
             <div className="field">
-              <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="row between">
                 <label style={{ margin: 0 }}>{t('edit.youtubeUrl')}</label>
                 <button type="button" className="btn" disabled={suggestYoutube.isPending}
                   title={t('edit.suggestYoutubeTitle')}
@@ -635,7 +635,7 @@ export default function SongEditor() {
             </div>
           </div>
           <div className="card" style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-            <h3 style={{ marginBottom: 12 }}>{t('edit.chordSheet')}</h3>
+            <h3>{t('edit.chordSheet')}</h3>
             <div className="row" style={{ marginBottom: 8, gap: 8 }}>
               <button className="btn primary" disabled={!dirty || save.isPending} onClick={() => save.mutate()}
                 title={t('edit.saveTitle')}>
@@ -647,14 +647,14 @@ export default function SongEditor() {
                 title={t('edit.redoTitle')}>{t('edit.redo')}</button>
               <button type="button" className="btn danger" disabled={!dirty} onClick={discard}
                 title={t('edit.discardTitle')}>{t('edit.discard')}</button>
-              <span style={{ width: 1, alignSelf: 'stretch', background: 'var(--stroke)' }} />
+              <span className="toolbar-divider" />
               <select className="input" style={{ width: 160 }} value={sectionLabel}
                 onChange={(e) => setSectionLabel(e.target.value)}>
                 {SECTION_LABELS.map((l) => <option key={l}>{l}</option>)}
               </select>
               <button type="button" className="btn" title={t('edit.insertSectionLabelTitle')}
                 onClick={insertSectionLabel}>{t('edit.insertSectionLabel')}</button>
-              <span style={{ width: 1, alignSelf: 'stretch', background: 'var(--stroke)' }} />
+              <span className="toolbar-divider" />
               <button type="button" className="btn" title={t('edit.observationTitle')}
                 onClick={() => insertObservacao(false)}>{t('edit.observation')}</button>
               <button type="button" className="btn" title={t('edit.hiddenObservationTitle')}
@@ -666,7 +666,7 @@ export default function SongEditor() {
               <button type="button" className="btn" title={t('edit.tabTitle')}
                 onClick={() => insertTagBlock('tab')}>{t('edit.tab')}</button>
               {sampleEntries.length > 0 && <>
-                <span style={{ width: 1, alignSelf: 'stretch', background: 'var(--stroke)' }} />
+                <span className="toolbar-divider" />
                 <select className="input" style={{ width: 180 }} value={sampleToInsert}
                   onChange={(e) => setSampleToInsert(e.target.value)}>
                   {sampleEntries.map(([id, meta]) => <option key={id} value={meta.nome}>{meta.nome}</option>)}
@@ -678,7 +678,7 @@ export default function SongEditor() {
             <textarea ref={textareaRef} className="input" value={body}
               style={{ minHeight: 420, resize: 'none', overflow: 'hidden' }}
               onChange={(e) => updateBody(e.target.value)} />
-            <div className="row" style={{ marginTop: 12, flexWrap: 'wrap' }}>
+            <div className="row" style={{ marginTop: 12 }}>
               <button className="btn primary" disabled={!dirty || save.isPending} onClick={() => save.mutate()}
                 title={t('edit.saveTitle')}>
                 {save.isPending ? t('edit.saving') : t('edit.save')}
@@ -887,9 +887,9 @@ function AudioTab({ slug, body, markLineTime, header, updateHeaderField, isOwner
   const chordAvailable = hasRecognizableChord(body)
 
   return (
-    <div>
-      <div className="card" style={{ marginBottom: 16 }}>
-        <h3 style={{ marginBottom: 12 }}>{t('audio.referenceTrack')}</h3>
+    <div className="stacked-cards">
+      <div className="card">
+        <h3>{t('audio.referenceTrack')}</h3>
         {trackUrl ? (
           <>
             <audio ref={audioRef} controls src={trackUrl} style={{ width: '100%', marginBottom: 10 }} />
@@ -922,16 +922,14 @@ function AudioTab({ slug, body, markLineTime, header, updateHeaderField, isOwner
         )}
       </div>
 
-      <div className="card" style={{ marginBottom: 16 }}>
+      <div className="card">
         <SyncWorkspace body={body} markLineTime={markLineTime}
           trackBlob={trackBlob} trackUrl={trackUrl} audioRef={audioRef} samplesMeta={samples} />
       </div>
 
-      <div className="card" style={{ marginBottom: 16 }}>
-        <h3 style={{ marginBottom: 12 }}>{t('audio.synthTitle')}</h3>
-        <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>
-          {t('audio.synthDescription')}
-        </p>
+      <div className="card">
+        <h3>{t('audio.synthTitle')}</h3>
+        <p className="card-desc">{t('audio.synthDescription')}</p>
         <div className="field" style={{ maxWidth: 160 }}>
           <label>@bpm {t('audio.bpmHint')}</label>
           <input className="input" type="number" min="20" max="300" value={header.bpm || ''}
@@ -959,11 +957,9 @@ function AudioTab({ slug, body, markLineTime, header, updateHeaderField, isOwner
         </div>
       </div>
 
-      <div className="card" style={{ marginBottom: 16 }}>
-        <h3 style={{ marginBottom: 12 }}>{t('audio.pedalTitle')}</h3>
-        <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>
-          {t('audio.pedalDescription')}
-        </p>
+      <div className="card">
+        <h3>{t('audio.pedalTitle')}</h3>
+        <p className="card-desc">{t('audio.pedalDescription')}</p>
         <div className="field" style={{ maxWidth: 280 }}>
           <label>{t('audio.pedalMode')}</label>
           <select className="input" value={header.modopedal || ''} disabled={!isOwner}
@@ -980,7 +976,7 @@ function AudioTab({ slug, body, markLineTime, header, updateHeaderField, isOwner
       </div>
 
       <div className="card">
-        <h3 style={{ marginBottom: 12 }}>{t('audio.samples')}</h3>
+        <h3>{t('audio.samples')}</h3>
         {samples && Object.keys(samples).length === 0 && <div className="empty">{t('audio.noSamples')}</div>}
         {samples && Object.entries(samples).map(([id, meta]) => (
           <SampleRow key={id} slug={slug} id={id} nome={meta.nome} isOwner={isOwner}
@@ -1028,9 +1024,9 @@ function SampleRow({ slug, id, nome, onDelete, deleting, isOwner }) {
     return () => URL.revokeObjectURL(u)
   }, [blob])
   return (
-    <div className="row" style={{ marginBottom: 8, alignItems: 'center' }}>
-      <span style={{ minWidth: 160 }}>{nome}</span>
-      {url && <audio controls src={url} style={{ height: 32, flex: 1 }} />}
+    <div className="row audio-item-row">
+      <span className="audio-item-name">{nome}</span>
+      {url && <audio controls src={url} className="audio-item-player" />}
       {isOwner && <button className="btn danger" onClick={onDelete} disabled={deleting}>{t('audio.delete')}</button>}
     </div>
   )
@@ -1128,17 +1124,17 @@ function ClipRow({ slug, id, nome, isOwner, onMoveUp, onMoveDown, canMoveUp, can
     return () => URL.revokeObjectURL(u)
   }, [blob])
   return (
-    <div className="row" style={{ marginBottom: 8, alignItems: 'center' }}>
+    <div className="row audio-item-row">
       {isOwner && (
-        <div className="row" style={{ flexDirection: 'column', gap: 2, flexWrap: 'nowrap' }}>
-          <button type="button" className="btn ghost" style={{ padding: '1px 6px', fontSize: 11, lineHeight: 1.4 }}
+        <div className="row audio-item-move">
+          <button type="button" className="btn ghost xs"
             disabled={!canMoveUp} title={t('audio.clipQueue.moveUp')} onClick={onMoveUp}>▲</button>
-          <button type="button" className="btn ghost" style={{ padding: '1px 6px', fontSize: 11, lineHeight: 1.4 }}
+          <button type="button" className="btn ghost xs"
             disabled={!canMoveDown} title={t('audio.clipQueue.moveDown')} onClick={onMoveDown}>▼</button>
         </div>
       )}
-      <span style={{ minWidth: 160 }}>{nome}</span>
-      {url && <audio controls src={url} style={{ height: 32, flex: 1 }} />}
+      <span className="audio-item-name">{nome}</span>
+      {url && <audio controls src={url} className="audio-item-player" />}
       {isOwner && <button className="btn danger" onClick={onDelete} disabled={deleting}>{t('audio.delete')}</button>}
     </div>
   )
@@ -1180,7 +1176,7 @@ function Versions({ slug }) {
         {!selected && <div className="empty">{t('versions.selectPrompt')}</div>}
         {detail && (
           <>
-            <div className="row" style={{ justifyContent: 'space-between', marginBottom: 12 }}>
+            <div className="row between" style={{ marginBottom: 12 }}>
               <h3>{t('versions.diffTitle')}</h3>
               <button className="btn primary"
                 onClick={() => confirm(t('versions.confirmRestore')) && restore.mutate(selected)}>

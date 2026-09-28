@@ -43,18 +43,15 @@ function ColorSettingsCard() {
   if (!colors) return null
 
   return (
-    <div className="card" style={{ marginBottom: 14 }}>
-      <h3 style={{ marginBottom: 12 }}>{t('color.title')}</h3>
-      <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>
-        {t('color.description')}
-      </p>
+    <div className="card">
+      <h3>{t('color.title')}</h3>
+      <p className="card-desc">{t('color.description')}</p>
       <div className="row" style={{ gap: 20, marginBottom: 14 }}>
         {COLOR_FIELD_KEYS.map((key) => (
-          <div key={key} style={{ textAlign: 'center' }}>
-            <input type="color" value={colors[key] || '#000000'}
-              style={{ width: 46, height: 34, padding: 0, border: '1px solid var(--stroke)', borderRadius: 8, background: 'transparent', cursor: 'pointer' }}
+          <div key={key} className="set-color-swatch">
+            <input type="color" value={colors[key] || '#000000'} className="set-color-input"
               onChange={(e) => setColors({ ...colors, [key]: e.target.value })} />
-            <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 6, maxWidth: 100 }}>{t(`color.fields.${key}`)}</div>
+            <div className="set-color-label">{t(`color.fields.${key}`)}</div>
           </div>
         ))}
       </div>
@@ -88,16 +85,16 @@ function LogoVariantSlot({ t, user, variant, uploaded, onChanged }) {
   })
 
   return (
-    <div style={{ border: '1px solid var(--stroke)', borderRadius: 10, padding: 12 }}>
-      <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{t(`branding.variants.${variant}`)}</div>
-      <div className="row" style={{ marginBottom: 10, alignItems: 'center', minHeight: 48 }}>
+    <div className="set-logo-slot">
+      <div className="set-logo-slot-title">{t(`branding.variants.${variant}`)}</div>
+      <div className="row set-logo-preview-row">
         {uploaded ? (
-          <img src={`/api/branding/${user.id}/logo?variant=${variant}`} alt="" style={{ height: 48, borderRadius: 8 }} />
+          <img src={`/api/branding/${user.id}/logo?variant=${variant}`} alt="" />
         ) : (
           <span className="page-sub" style={{ margin: 0 }}>{t('branding.noLogo')}</span>
         )}
       </div>
-      <div className="row" style={{ flexWrap: 'wrap' }}>
+      <div className="row">
         <input className="input" type="file" accept="image/*" style={{ maxWidth: 180 }}
           onChange={(e) => setFile(e.target.files[0])} />
         <button className="btn primary" disabled={!file || upload.isPending} onClick={() => upload.mutate()}>
@@ -141,9 +138,9 @@ function BrandingSettingsCard() {
   const invalidateVariants = () => qc.invalidateQueries({ queryKey: ['branding-variants', user?.id] })
 
   return (
-    <div className="card" style={{ marginBottom: 14 }}>
-      <h3 style={{ marginBottom: 12 }}>{t('branding.title')}</h3>
-      <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>{t('branding.description')}</p>
+    <div className="card">
+      <h3>{t('branding.title')}</h3>
+      <p className="card-desc">{t('branding.description')}</p>
       <div className="field">
         <label>{t('branding.bandNameLabel')}</label>
         <input className="input" style={{ maxWidth: 320 }} value={bandName}
@@ -157,8 +154,8 @@ function BrandingSettingsCard() {
       </div>
       <div className="field" style={{ marginBottom: 0 }}>
         <label>{t('branding.logoLabel')}</label>
-        <p style={{ color: 'var(--muted)', margin: '0 0 12px', fontSize: 13 }}>{t('branding.logoHint')}</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
+        <p className="card-desc sm">{t('branding.logoHint')}</p>
+        <div className="set-logo-grid">
           {LOGO_VARIANTS.map((variant) => (
             <LogoVariantSlot key={variant} t={t} user={user} variant={variant}
               uploaded={Boolean(variants?.includes(variant))} onChanged={invalidateVariants} />
@@ -184,9 +181,9 @@ function LanguageSettingsCard() {
   }
 
   return (
-    <div className="card" style={{ marginBottom: 14 }}>
-      <h3 style={{ marginBottom: 12 }}>{t('language.label')}</h3>
-      <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>{t('language.description')}</p>
+    <div className="card">
+      <h3>{t('language.label')}</h3>
+      <p className="card-desc">{t('language.description')}</p>
       <select className="input" style={{ maxWidth: 260 }} value={i18n.language} disabled={busy} onChange={onChange}>
         {SUPPORTED_LOCALES.map((locale) => (
           <option key={locale} value={locale}>{LOCALE_LABELS[locale]}</option>
@@ -223,9 +220,9 @@ function ThemeSettingsCard() {
   const accent = data?.prefs?.accentColor || DEFAULT_ACCENT
 
   return (
-    <div className="card" style={{ marginBottom: 14 }}>
-      <h3 style={{ marginBottom: 12 }}>{t('appearance.title')}</h3>
-      <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>{t('appearance.description')}</p>
+    <div className="card">
+      <h3>{t('appearance.title')}</h3>
+      <p className="card-desc">{t('appearance.description')}</p>
       <div className="field">
         <label>{t('appearance.theme')}</label>
         <div className="row">
@@ -243,11 +240,8 @@ function ThemeSettingsCard() {
           {ACCENTS.map((a) => (
             <button key={a} type="button" onClick={() => changeTheme({ accentColor: a })}
               title={t(`appearance.accents.${a}`)} aria-label={t(`appearance.accents.${a}`)}
-              style={{
-                width: 30, height: 30, borderRadius: '50%', cursor: 'pointer', padding: 0,
-                background: ACCENT_SWATCHES[a],
-                border: accent === a ? '3px solid var(--text)' : '1px solid var(--stroke)',
-              }} />
+              className={`set-accent-swatch ${accent === a ? 'selected' : ''}`}
+              style={{ background: ACCENT_SWATCHES[a] }} />
           ))}
         </div>
       </div>
@@ -268,12 +262,10 @@ function PedalSettingsCard() {
   const comboCount = config?.assignments?.filter((a) => a.buttonIds.length >= 2).length || 0
 
   return (
-    <div className="card" style={{ marginBottom: 14 }}>
-      <h3 style={{ marginBottom: 12 }}>{t('pedal.title')}</h3>
-      <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>
-        {t('pedal.description')}
-      </p>
-      <div className="row" style={{ alignItems: 'center', gap: 12 }}>
+    <div className="card">
+      <h3>{t('pedal.title')}</h3>
+      <p className="card-desc">{t('pedal.description')}</p>
+      <div className="row">
         <span>
           {buttonCount
             ? t('pedal.summary', { count: buttonCount, combos: comboCount })
@@ -313,15 +305,15 @@ function BillingCard() {
   if (!status) return null
 
   return (
-    <div className="card" style={{ marginBottom: 14 }}>
-      <h3 style={{ marginBottom: 12 }}>{t('billing.title')}</h3>
-      <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>
+    <div className="card">
+      <h3>{t('billing.title')}</h3>
+      <p className="card-desc">
         {t('billing.status')} <strong>{t(`subscriptionStatus.${status.subscription_status}`, status.subscription_status)}</strong>
         {status.plan_name && <> · {t('billing.plan')} <strong>{status.plan_name}</strong></>}
         {status.current_period_end && <> · {t('billing.renewsOn', { date: new Date(status.current_period_end).toLocaleDateString(i18n.language) })}</>}
       </p>
       {usage?.setlists_max != null && (
-        <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>
+        <p className="card-desc">
           {t('billing.usage', { used: usage.setlists_used, max: usage.setlists_max, storageUsed: usage.storage_used_mb, storageMax: usage.storage_limit_mb })}
         </p>
       )}
@@ -385,8 +377,8 @@ function UserRow({ u, isSelf }) {
   }
 
   return (
-    <li style={{ padding: '10px 0', borderBottom: '1px solid var(--stroke)' }}>
-      <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+    <li className="list-row">
+      <div className="row between">
         <span>
           {u.name} <span style={{ color: 'var(--muted)' }}>@{u.username}</span>
           {u.is_admin && <span className="tag" style={{ marginLeft: 8 }}>admin</span>}
@@ -407,7 +399,7 @@ function UserRow({ u, isSelf }) {
         {t('userAdmin.accessCount', { count: u.login_count })} · {t('userAdmin.lastLogin', { date: u.last_login_at ? new Date(u.last_login_at).toLocaleString(i18n.language) : t('userAdmin.never') })}
         {' · '}{t('userAdmin.setlistsCount', { count: u.setlists_count })} · {t('userAdmin.favoritesCount', { count: u.favorites_count })}
       </div>
-      <div className="row" style={{ marginTop: 6, gap: 8, alignItems: 'center' }}>
+      <div className="row" style={{ marginTop: 6, gap: 8 }}>
         <span className="page-sub" style={{ margin: 0 }}>{t('userAdmin.category')}: {categoryLabel}</span>
         {!isSelf && (
           <select className="input" style={{ width: 'auto' }} value={selectValue} disabled={setCategory.isPending}
@@ -470,8 +462,8 @@ function PlanRow({ plan }) {
   })
 
   return (
-    <li style={{ padding: '10px 0', borderBottom: '1px solid var(--stroke)' }}>
-      <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+    <li className="list-row">
+      <div className="row between">
         <strong>
           {plan.name}
           {!plan.active && <span className="tag" style={{ marginLeft: 8 }}>{t('plansAdmin.archived')}</span>}
@@ -488,7 +480,7 @@ function PlanRow({ plan }) {
           </button>
         </div>
       </div>
-      <div className="row" style={{ marginTop: 8, gap: 8, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+      <div className="row" style={{ marginTop: 8, gap: 8, alignItems: 'flex-end' }}>
         <div className="field" style={{ maxWidth: 140 }}>
           <label>{t('plansAdmin.setlistsMax')}</label>
           <input className="input" type="number" min="0" value={maxSetlists}
@@ -536,9 +528,9 @@ function SpecialPlanRow({ plan }) {
   })
 
   return (
-    <li style={{ padding: '10px 0', borderBottom: '1px solid var(--stroke)' }}>
+    <li className="list-row">
       <strong>{plan.name}</strong>
-      <div className="row" style={{ marginTop: 8, gap: 8, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+      <div className="row" style={{ marginTop: 8, gap: 8, alignItems: 'flex-end' }}>
         <div className="field" style={{ maxWidth: 140 }}>
           <label>{t('plansAdmin.setlistsMax')}</label>
           <input className="input" type="number" min="0" value={maxSetlists}
@@ -587,31 +579,27 @@ function PlansAdminCard() {
   const paidPlans = plans?.filter((p) => p.kind === 'paid') || []
 
   return (
-    <div className="card" style={{ marginBottom: 14 }}>
-      <h3 style={{ marginBottom: 12 }}>{t('plansAdmin.title')}</h3>
-      <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>
-        {t('plansAdmin.description')}
-      </p>
+    <div className="card">
+      <h3>{t('plansAdmin.title')}</h3>
+      <p className="card-desc">{t('plansAdmin.description')}</p>
 
       {specialPlans.length > 0 && (
         <>
           <h4 style={{ marginBottom: 4 }}>{t('plansAdmin.specialTitle')}</h4>
-          <p style={{ color: 'var(--muted)', margin: '0 0 10px', fontSize: 13 }}>
-            {t('plansAdmin.specialDescription')}
-          </p>
-          <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 18px' }}>
+          <p className="card-desc sm">{t('plansAdmin.specialDescription')}</p>
+          <ul className="list-reset">
             {specialPlans.map((p) => <SpecialPlanRow key={p.id} plan={p} />)}
           </ul>
         </>
       )}
 
       {paidPlans.length > 0 && (
-        <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 18px' }}>
+        <ul className="list-reset">
           {paidPlans.map((p) => <PlanRow key={p.id} plan={p} />)}
         </ul>
       )}
 
-      <div className="row" style={{ flexWrap: 'wrap', gap: 8 }}>
+      <div className="row" style={{ gap: 8 }}>
         <div className="field">
           <label>{t('plansAdmin.name')}</label>
           <input className="input" value={form.name}
@@ -665,14 +653,12 @@ function UserAdminCard() {
   })
 
   return (
-    <div className="card" style={{ marginBottom: 14 }}>
-      <h3 style={{ marginBottom: 12 }}>{t('userAdmin.title')}</h3>
-      <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>
-        {t('userAdmin.description')}
-      </p>
+    <div className="card">
+      <h3>{t('userAdmin.title')}</h3>
+      <p className="card-desc">{t('userAdmin.description')}</p>
 
       {users?.length > 0 && (
-        <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 18px' }}>
+        <ul className="list-reset">
           {users.map((u) => <UserRow key={u.id} u={u} isSelf={u.id === currentUser?.id} />)}
         </ul>
       )}
@@ -692,7 +678,7 @@ function UserAdminCard() {
         <input className="input" type="password" value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })} />
       </div>
-      <label className="row" style={{ gap: 8, alignItems: 'center', margin: '4px 0 14px', cursor: 'pointer' }}>
+      <label className="row" style={{ gap: 8, margin: '4px 0 14px', cursor: 'pointer' }}>
         <input type="checkbox" checked={form.is_admin}
           onChange={(e) => setForm({ ...form, is_admin: e.target.checked })} />
         {t('userAdmin.admin')}
@@ -758,17 +744,15 @@ function NormalizeLibraryCard() {
   const percent = total ? Math.round(((total - (remaining ?? total)) / total) * 100) : 0
 
   return (
-    <div className="card" style={{ marginBottom: 14 }}>
-      <h3 style={{ marginBottom: 12 }}>{t('normalizeLibrary.title')}</h3>
-      <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>
-        {t('normalizeLibrary.description')}
-      </p>
+    <div className="card">
+      <h3>{t('normalizeLibrary.title')}</h3>
+      <p className="card-desc">{t('normalizeLibrary.description')}</p>
       {remaining !== null && (
         <>
-          <div style={{ background: 'var(--stroke)', borderRadius: 8, height: 10, overflow: 'hidden', marginBottom: 8 }}>
-            <div style={{ width: `${percent}%`, height: '100%', background: 'var(--accent)', transition: 'width .2s' }} />
+          <div className="progress-bar">
+            <div className="progress-bar-fill" style={{ width: `${percent}%` }} />
           </div>
-          <div className="page-sub" style={{ marginBottom: 14 }}>
+          <div className="card-desc">
             {remaining === 0 ? t('normalizeLibrary.allNormalized') : t('normalizeLibrary.remainingOfTotal', { count: remaining, total })}
           </div>
         </>
@@ -817,20 +801,18 @@ function DuplicateVersionsCard() {
   })
 
   return (
-    <div className="card" style={{ marginBottom: 14 }}>
-      <h3 style={{ marginBottom: 12 }}>{t('duplicateVersions.title')}</h3>
-      <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>
-        {t('duplicateVersions.description')}
-      </p>
+    <div className="card">
+      <h3>{t('duplicateVersions.title')}</h3>
+      <p className="card-desc">{t('duplicateVersions.description')}</p>
       {status && (
-        <div className="page-sub" style={{ marginBottom: 14 }}>
+        <div className="card-desc">
           {status.pending_groups === 0
             ? t('duplicateVersions.none')
             : t('duplicateVersions.pendingGroups', { count: status.pending_groups })}
         </div>
       )}
       {scan.isSuccess && (
-        <div className="page-sub" style={{ marginBottom: 14 }}>
+        <div className="card-desc">
           {t('duplicateVersions.result', { groups: scan.data.groups_found, songs: scan.data.songs_labeled })}
         </div>
       )}
@@ -894,13 +876,11 @@ function YoutubeLinkCard() {
   const stop = () => { stopRef.current = true }
 
   return (
-    <div className="card" style={{ marginBottom: 14 }}>
-      <h3 style={{ marginBottom: 12 }}>{t('youtubeLink.title')}</h3>
-      <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>
-        {t('youtubeLink.description')}
-      </p>
+    <div className="card">
+      <h3>{t('youtubeLink.title')}</h3>
+      <p className="card-desc">{t('youtubeLink.description')}</p>
       {remaining !== null && (
-        <div className="page-sub" style={{ marginBottom: 14 }}>
+        <div className="card-desc">
           {remaining === 0
             ? t('youtubeLink.allFilled')
             : t('youtubeLink.remaining', { count: remaining, inSetlists: remainingInSetlists })}
@@ -959,17 +939,15 @@ function StorageRecomputeCard() {
   const percent = total ? Math.round(((total - (remaining ?? total)) / total) * 100) : 0
 
   return (
-    <div className="card" style={{ marginBottom: 14 }}>
-      <h3 style={{ marginBottom: 12 }}>{t('storageRecompute.title')}</h3>
-      <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>
-        {t('storageRecompute.description')}
-      </p>
+    <div className="card">
+      <h3>{t('storageRecompute.title')}</h3>
+      <p className="card-desc">{t('storageRecompute.description')}</p>
       {remaining !== null && (
         <>
-          <div style={{ background: 'var(--stroke)', borderRadius: 8, height: 10, overflow: 'hidden', marginBottom: 8 }}>
-            <div style={{ width: `${percent}%`, height: '100%', background: 'var(--accent)', transition: 'width .2s' }} />
+          <div className="progress-bar">
+            <div className="progress-bar-fill" style={{ width: `${percent}%` }} />
           </div>
-          <div className="page-sub" style={{ marginBottom: 14 }}>
+          <div className="card-desc">
             {remaining === 0 ? t('storageRecompute.allDone') : t('storageRecompute.remainingOfTotal', { count: remaining, total })}
           </div>
         </>
@@ -993,18 +971,20 @@ export default function Settings() {
     <>
       <h1 className="page-title">{t('pageTitle')}</h1>
       <div className="page-sub">{t('pageSub')}</div>
-      <LanguageSettingsCard />
-      <ThemeSettingsCard />
-      <ColorSettingsCard />
-      <BrandingSettingsCard />
-      <PedalSettingsCard />
-      <BillingCard />
-      {user?.is_admin && <UserAdminCard />}
-      {user?.is_admin && <PlansAdminCard />}
-      {user?.is_admin && <NormalizeLibraryCard />}
-      {user?.is_admin && <DuplicateVersionsCard />}
-      {user?.is_admin && <YoutubeLinkCard />}
-      {user?.is_admin && <StorageRecomputeCard />}
+      <div className="stacked-cards">
+        <LanguageSettingsCard />
+        <ThemeSettingsCard />
+        <ColorSettingsCard />
+        <BrandingSettingsCard />
+        <PedalSettingsCard />
+        <BillingCard />
+        {user?.is_admin && <UserAdminCard />}
+        {user?.is_admin && <PlansAdminCard />}
+        {user?.is_admin && <NormalizeLibraryCard />}
+        {user?.is_admin && <DuplicateVersionsCard />}
+        {user?.is_admin && <YoutubeLinkCard />}
+        {user?.is_admin && <StorageRecomputeCard />}
+      </div>
     </>
   )
 }

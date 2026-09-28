@@ -252,125 +252,127 @@ export default function PedalSetup() {
         </div>
       )}
 
-      <div className="card" style={{ marginBottom: 14 }}>
-        <h3 style={{ marginBottom: 12 }}>{t('devices.title')}</h3>
-        <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>{t('devices.hint')}</p>
+      <div className="stacked-cards">
+        <div className="card">
+          <h3>{t('devices.title')}</h3>
+          <p className="card-desc">{t('devices.hint')}</p>
 
-        <div className="pedal-device-row" style={{ fontWeight: 600, color: 'var(--muted)' }}>
-          <span>{t('devices.midiSectionTitle')}</span>
-        </div>
-        {!pedalStatus.midiInputs.length && <div className="pedal-device-row">{t('devices.midiEmpty')}</div>}
-        {pedalStatus.midiInputs.map((i) => (
-          <div className="pedal-device-row" key={i.name + i.state}>
-            <span>{i.name}</span>
-            <span className={i.state === 'connected' ? 'chip' : 'chip'} style={i.state !== 'connected' ? { background: 'var(--danger, #ef5a5f)', color: '#fff' } : undefined}>
-              {i.state === 'connected' ? t('status.connected') : t('status.disconnected')}
-            </span>
+          <div className="pedal-device-row" style={{ fontWeight: 600, color: 'var(--muted)' }}>
+            <span>{t('devices.midiSectionTitle')}</span>
           </div>
-        ))}
-
-        <div className="pedal-device-row" style={{ fontWeight: 600, color: 'var(--muted)', marginTop: 10 }}>
-          <span>{t('devices.gamepadSectionTitle')}</span>
-        </div>
-        {!pedalStatus.gamepads.length && <div className="pedal-device-row">{t('devices.gamepadEmpty')}</div>}
-        {pedalStatus.gamepads.map((g) => (
-          <div className="pedal-device-row" key={g.id}>
-            <span>{g.id}</span>
-            <span className="chip">{t('status.connected')}</span>
-          </div>
-        ))}
-
-        <p style={{ color: 'var(--muted)', fontSize: 12.5, margin: '14px 0 0' }}>{t('devices.batteryNote')}</p>
-      </div>
-
-      <div className="card" style={{ marginBottom: 14 }}>
-        <h3 style={{ marginBottom: 12 }}>{t('buttons.title')}</h3>
-
-        {!buttons.length && <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>{t('buttons.empty')}</p>}
-
-        {buttons.map((b) => (
-          <div className="pedal-row" key={b.id}>
-            <span className={`pedal-dot status-${buttonStatus(b.id)}${flashingButtons.has(b.id) ? ' flash' : ''}`}
-              title={`${statusLabel(buttonStatus(b.id))} — ${t('buttons.testHint')}`} />
-            <input className="input pedal-row-label" value={b.label}
-              onChange={(e) => renameButton(b.id, e.target.value)} />
-            <span className="pedal-row-sig">{signatureLabel(b.input, t)}</span>
-            <select className="input pedal-row-action" value={singleAssignmentFor(b.id)?.actionId || ''}
-              onChange={(e) => setSingleAction(b.id, e.target.value)}>
-              <option value="">{t('buttons.noAction')}</option>
-              {PEDAL_ACTIONS.map((a) => <option key={a.id} value={a.id}>{actionLabel(a.id)}</option>)}
-            </select>
-            <button className="btn danger ghost" onClick={() => removeButton(b.id)}>{t('buttons.delete')}</button>
-          </div>
-        ))}
-
-        <div style={{ marginTop: buttons.length ? 14 : 0 }}>
-          <button className="btn primary" disabled={capturing} onClick={() => setCapturing(true)}>
-            {capturing ? t('buttons.listening') : t('buttons.add')}
-          </button>
-        </div>
-      </div>
-
-      <div className="card" style={{ marginBottom: 14 }}>
-        <h3 style={{ marginBottom: 12 }}>{t('combos.title')}</h3>
-        <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>{t('combos.description')}</p>
-
-        {!combos.length && <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>{t('combos.empty')}</p>}
-
-        {combos.map((a) => (
-          <div className="pedal-row" key={a.id}>
-            <span className={`pedal-dot${flashingAssignments.has(a.id) ? ' flash' : ''}`} title={t('buttons.testHint')} />
-            <span className="row" style={{ flex: '0 0 auto', gap: 6 }}>
-              {a.buttonIds.map((id, i) => (
-                <span key={id} className="chip">{buttonLabel(id)}{i < a.buttonIds.length - 1 ? ' +' : ''}</span>
-              ))}
-            </span>
-            <span className="pedal-row-action" style={{ color: 'var(--muted)' }}>{actionLabel(a.actionId)}</span>
-            <button className="btn danger ghost" onClick={() => removeAssignment(a.id)}>{t('buttons.delete')}</button>
-          </div>
-        ))}
-
-        {buttons.length >= 2 && (
-          <div style={{ marginTop: combos.length ? 14 : 0 }}>
-            <div className="row" style={{ marginBottom: 10 }}>
-              {buttons.map((b) => (
-                <button key={b.id} type="button"
-                  className={`btn ghost pedal-combo-chip${comboSelection.has(b.id) ? ' selected' : ''}`}
-                  onClick={() => toggleComboButton(b.id)}>
-                  {b.label}
-                </button>
-              ))}
+          {!pedalStatus.midiInputs.length && <div className="pedal-device-row">{t('devices.midiEmpty')}</div>}
+          {pedalStatus.midiInputs.map((i) => (
+            <div className="pedal-device-row" key={i.name + i.state}>
+              <span>{i.name}</span>
+              <span className={`chip${i.state !== 'connected' ? ' danger' : ''}`}>
+                {i.state === 'connected' ? t('status.connected') : t('status.disconnected')}
+              </span>
             </div>
-            <div className="row">
-              <select className="input" style={{ maxWidth: 320 }} value={comboAction} onChange={(e) => setComboAction(e.target.value)}>
-                <option value="">{t('combos.selectAction')}</option>
+          ))}
+
+          <div className="pedal-device-row" style={{ fontWeight: 600, color: 'var(--muted)', marginTop: 10 }}>
+            <span>{t('devices.gamepadSectionTitle')}</span>
+          </div>
+          {!pedalStatus.gamepads.length && <div className="pedal-device-row">{t('devices.gamepadEmpty')}</div>}
+          {pedalStatus.gamepads.map((g) => (
+            <div className="pedal-device-row" key={g.id}>
+              <span>{g.id}</span>
+              <span className="chip">{t('status.connected')}</span>
+            </div>
+          ))}
+
+          <p style={{ color: 'var(--muted)', fontSize: 12.5, margin: '14px 0 0' }}>{t('devices.batteryNote')}</p>
+        </div>
+
+        <div className="card">
+          <h3>{t('buttons.title')}</h3>
+
+          {!buttons.length && <p className="card-desc">{t('buttons.empty')}</p>}
+
+          {buttons.map((b) => (
+            <div className="pedal-row" key={b.id}>
+              <span className={`pedal-dot status-${buttonStatus(b.id)}${flashingButtons.has(b.id) ? ' flash' : ''}`}
+                title={`${statusLabel(buttonStatus(b.id))} — ${t('buttons.testHint')}`} />
+              <input className="input pedal-row-label" value={b.label}
+                onChange={(e) => renameButton(b.id, e.target.value)} />
+              <span className="pedal-row-sig">{signatureLabel(b.input, t)}</span>
+              <select className="input pedal-row-action" value={singleAssignmentFor(b.id)?.actionId || ''}
+                onChange={(e) => setSingleAction(b.id, e.target.value)}>
+                <option value="">{t('buttons.noAction')}</option>
                 {PEDAL_ACTIONS.map((a) => <option key={a.id} value={a.id}>{actionLabel(a.id)}</option>)}
               </select>
-              <button className="btn primary" disabled={comboSelection.size < 2 || !comboAction} onClick={addCombo}>
-                {t('combos.add')}
-              </button>
+              <button className="btn danger ghost" onClick={() => removeButton(b.id)}>{t('buttons.delete')}</button>
             </div>
+          ))}
+
+          <div style={{ marginTop: buttons.length ? 14 : 0 }}>
+            <button className="btn primary" disabled={capturing} onClick={() => setCapturing(true)}>
+              {capturing ? t('buttons.listening') : t('buttons.add')}
+            </button>
           </div>
-        )}
-      </div>
+        </div>
 
-      <div className="card">
-        <h3 style={{ marginBottom: 12 }}>{t('testLog.title')}</h3>
-        <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>{t('testLog.description')}</p>
+        <div className="card">
+          <h3>{t('combos.title')}</h3>
+          <p className="card-desc">{t('combos.description')}</p>
 
-        {!testLog.length && <p style={{ color: 'var(--muted)', margin: '0 0 14px' }}>{t('testLog.empty')}</p>}
-        {testLog.map((entry) => (
-          <div className="pedal-log-entry" key={entry.id}>
-            <strong>{entry.label}</strong> — {entry.time}
+          {!combos.length && <p className="card-desc">{t('combos.empty')}</p>}
+
+          {combos.map((a) => (
+            <div className="pedal-row" key={a.id}>
+              <span className={`pedal-dot${flashingAssignments.has(a.id) ? ' flash' : ''}`} title={t('buttons.testHint')} />
+              <span className="row" style={{ flex: '0 0 auto', gap: 6 }}>
+                {a.buttonIds.map((id, i) => (
+                  <span key={id} className="chip">{buttonLabel(id)}{i < a.buttonIds.length - 1 ? ' +' : ''}</span>
+                ))}
+              </span>
+              <span className="pedal-row-action" style={{ color: 'var(--muted)' }}>{actionLabel(a.actionId)}</span>
+              <button className="btn danger ghost" onClick={() => removeAssignment(a.id)}>{t('buttons.delete')}</button>
+            </div>
+          ))}
+
+          {buttons.length >= 2 && (
+            <div style={{ marginTop: combos.length ? 14 : 0 }}>
+              <div className="row" style={{ marginBottom: 10 }}>
+                {buttons.map((b) => (
+                  <button key={b.id} type="button"
+                    className={`btn ghost pedal-combo-chip${comboSelection.has(b.id) ? ' selected' : ''}`}
+                    onClick={() => toggleComboButton(b.id)}>
+                    {b.label}
+                  </button>
+                ))}
+              </div>
+              <div className="row">
+                <select className="input" style={{ maxWidth: 320 }} value={comboAction} onChange={(e) => setComboAction(e.target.value)}>
+                  <option value="">{t('combos.selectAction')}</option>
+                  {PEDAL_ACTIONS.map((a) => <option key={a.id} value={a.id}>{actionLabel(a.id)}</option>)}
+                </select>
+                <button className="btn primary" disabled={comboSelection.size < 2 || !comboAction} onClick={addCombo}>
+                  {t('combos.add')}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="card">
+          <h3>{t('testLog.title')}</h3>
+          <p className="card-desc">{t('testLog.description')}</p>
+
+          {!testLog.length && <p className="card-desc">{t('testLog.empty')}</p>}
+          {testLog.map((entry) => (
+            <div className="pedal-log-entry" key={entry.id}>
+              <strong>{entry.label}</strong> — {entry.time}
+            </div>
+          ))}
+
+          <div style={{ marginTop: 14 }}>
+            <button className="btn primary" disabled={testSongState === 'loading'} onClick={testOnRealSong}>
+              {testSongState === 'loading' ? t('testLog.testSongLoading') : t('testLog.testSongButton')}
+            </button>
+            <p style={{ color: 'var(--muted)', fontSize: 12.5, margin: '10px 0 0' }}>{t('testLog.testSongHint')}</p>
+            {testSongState === 'error' && <p style={{ color: 'var(--danger, #ef5a5f)', margin: '8px 0 0' }}>{t('testLog.testSongError')}</p>}
           </div>
-        ))}
-
-        <div style={{ marginTop: 14 }}>
-          <button className="btn primary" disabled={testSongState === 'loading'} onClick={testOnRealSong}>
-            {testSongState === 'loading' ? t('testLog.testSongLoading') : t('testLog.testSongButton')}
-          </button>
-          <p style={{ color: 'var(--muted)', fontSize: 12.5, margin: '10px 0 0' }}>{t('testLog.testSongHint')}</p>
-          {testSongState === 'error' && <p style={{ color: 'var(--danger, #ef5a5f)', margin: '8px 0 0' }}>{t('testLog.testSongError')}</p>}
         </div>
       </div>
     </>

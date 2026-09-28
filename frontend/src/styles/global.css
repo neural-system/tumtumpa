@@ -155,7 +155,13 @@ button { font-family: inherit; }
 .page-sub { color: var(--muted); margin-top: 6px; margin-bottom: 26px; }
 .section-heading { font: 700 11px var(--font-mono); text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin: 0 0 12px; }
 /* <h3> solto dentro de um card (dezenas de telas): mesmo rótulo dos .section-heading */
-.card > h3, .card > .row > h3:first-child, .card > div > h3:first-child {
+.card > h3, .card > div > h3:first-child {
+  font: 700 11px var(--font-mono); text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted);
+  margin: 0 0 10px;
+}
+/* h3 dentro de uma .row (ex.: ao lado de um botão) não herda a margem —
+   quem espaça é a .row.between em volta */
+.card > .row > h3:first-child {
   font: 700 11px var(--font-mono); text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted);
 }
 /* rótulo editorial (mesmo .palco-section-kicker do /) */
@@ -199,7 +205,7 @@ button.nav-item { border: none; background: none; cursor: pointer; width: 100%; 
   padding: 16px 12px 4px; font: 700 10px var(--font-mono); letter-spacing: 0.14em;
   text-transform: uppercase; color: var(--muted); opacity: 0.75;
 }
-.sidebar .spacer { flex: 1; }
+.spacer { flex: 1; }
 
 /* ---------- vidro / cartões ---------- */
 .card {
@@ -267,6 +273,25 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .field { margin-bottom: 14px; }
 .field label { display: block; font: 700 10.5px var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 7px; }
 .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.row.between { justify-content: space-between; }
+.btn.xs { padding: 1px 6px; font-size: 11px; line-height: 1.4; }
+
+/* pilha vertical de cards (Settings, aba Áudio do editor de música etc.) —
+   cada card ganha respiro embaixo sem precisar repetir style={{marginBottom}} */
+.stacked-cards > .card { margin-bottom: 14px; }
+.stacked-cards > .card:last-child { margin-bottom: 0; }
+/* parágrafo de descrição logo abaixo do <h3> de um card */
+.card-desc { color: var(--muted); margin: 0 0 14px; }
+.card-desc.sm { font-size: 13px; }
+/* divisor vertical fino entre grupos de botões numa barra de ferramentas */
+.toolbar-divider { width: 1px; align-self: stretch; background: var(--stroke); }
+/* lista simples dentro de um card (linhas de admin: usuários, planos...) */
+.list-reset { list-style: none; padding: 0; margin: 0 0 18px; }
+.list-row { padding: 10px 0; border-bottom: 1px solid var(--stroke); }
+/* barra de progresso (normalizar biblioteca, recalcular armazenamento...);
+   a largura de .progress-bar-fill continua inline — é o único valor dinâmico */
+.progress-bar { background: var(--stroke); border-radius: var(--radius-sm); height: 10px; overflow: hidden; margin-bottom: 8px; }
+.progress-bar-fill { height: 100%; background: var(--accent); transition: width 0.2s; }
 
 /* ---------- pedal (foot switch) — pages/PedalSetup.jsx ---------- */
 .pedal-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--stroke); flex-wrap: wrap; }
@@ -294,6 +319,24 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
   0% { box-shadow: 0 0 0 0 var(--accent); }
   100% { box-shadow: 0 0 0 7px transparent; }
 }
+
+/* ---------- configurações — pages/Settings.jsx ---------- */
+.set-color-swatch { text-align: center; }
+.set-color-input { width: 46px; height: 34px; padding: 0; border: 1px solid var(--stroke); border-radius: var(--radius-sm); background: transparent; cursor: pointer; }
+.set-color-label { font-size: 12px; color: var(--muted); margin-top: 6px; max-width: 100px; }
+.set-accent-swatch { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; padding: 0; border: 1px solid var(--stroke); }
+.set-accent-swatch.selected { border: 3px solid var(--text); }
+.set-logo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.set-logo-slot { border: 1px solid var(--stroke); border-radius: var(--radius); padding: 12px; }
+.set-logo-slot-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+.set-logo-preview-row { margin-bottom: 10px; align-items: center; min-height: 48px; }
+.set-logo-preview-row img { height: 48px; border-radius: var(--radius-sm); }
+
+/* ---------- editor de música — pages/SongEditor.jsx (aba Áudio) ---------- */
+.audio-item-row { margin-bottom: 8px; align-items: center; }
+.audio-item-name { min-width: 160px; }
+.audio-item-player { height: 32px; flex: 1; }
+.audio-item-move { flex-direction: column; gap: 2px; flex-wrap: nowrap; }
 
 /* ---------- tabela de músicas ---------- */
 .song-row {
@@ -340,6 +383,11 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .song-row .title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .song-row .meta { color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chip { display: inline-block; padding: 2px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent-text); font: 700 10.5px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.chip.active { background: var(--accent); color: var(--accent-ink); }
+.chip.danger { background: var(--danger); color: #fff; }
+/* rótulo curto ao lado de um controle numa .row (ex.: "Transpor:" antes dos
+   botões de semitom) — mesmo tamanho/cor do .meta de .song-row */
+.inline-label { color: var(--muted); font-size: 13px; }
 .fav-star { color: var(--accent-text); }
 .plan-badge { text-decoration: none; padding: 5px 12px; font: 700 11px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; transition: 120ms; }
 .plan-badge:hover { background: var(--accent); color: var(--bg, #fff); }

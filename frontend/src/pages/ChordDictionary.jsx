@@ -250,12 +250,12 @@ export default function ChordDictionary() {
           {!atual && <div className="empty">{t('selectPrompt')}</div>}
           {atual && (
             <>
-              <div className="row" style={{ justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+              <div className="row between" style={{ alignItems: 'flex-start' }}>
                 <div>
                   <h2 className="chord-dict-title">
                     {tituloAcorde}
                     {atual.acorde_enarmonico && (
-                      <button type="button" className="btn ghost" style={{ marginLeft: 10, fontSize: 12, padding: '4px 8px' }}
+                      <button type="button" className="btn ghost sm" style={{ marginLeft: 10 }}
                         onClick={() => setEnarmonico((v) => !v)} title={t('enharmonicToggleTitle')}>
                         ⇄ {enarmonico ? selecionado : atual.acorde_enarmonico}
                       </button>
@@ -278,7 +278,7 @@ export default function ChordDictionary() {
                 </span>
                 <button className="btn" onClick={() => setVariacaoIdx((i) => (i + 1) % lista.length)}
                   disabled={lista.length < 2}>›</button>
-                <div className="spacer" style={{ flex: 1 }} />
+                <div className="spacer" />
                 {instrumento !== 'teclado' && (
                   <label className="row" style={{ gap: 6 }}>
                     <input type="checkbox" checked={mirror} onChange={(e) => setMirror(e.target.checked)} />
@@ -316,7 +316,7 @@ export default function ChordDictionary() {
               )}
 
               <div className="row no-print" style={{ margin: '10px 0' }}>
-                <span style={{ color: 'var(--muted)', fontSize: 13 }}>{t('transpose')}</span>
+                <span className="inline-label">{t('transpose')}</span>
                 <button className="btn" onClick={() => transpor.mutate(-1)}>{t('semitoneDown')}</button>
                 <button className="btn" onClick={() => transpor.mutate(1)}>{t('semitoneUp')}</button>
                 <select className="input" style={{ width: 150 }} value=""

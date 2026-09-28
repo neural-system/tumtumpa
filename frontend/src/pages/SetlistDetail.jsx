@@ -427,7 +427,7 @@ export default function SetlistDetail() {
                     </span>
                   )}
                   {item.song?.tom && <span className="chip">{item.song.tom}</span>}
-                  {!item.song && <span className="chip" style={{ background: 'var(--danger)', color: '#fff' }}>{t('notFound')}</span>}
+                  {!item.song && <span className="chip danger">{t('notFound')}</span>}
                 </div>
               </div>
               {item.song && (

@@ -167,9 +167,7 @@ export default function Tuner() {
             {strings.map((str) => {
               const active = activeStringFreq != null && Math.abs(str.freq - activeStringFreq) < 0.01
               return (
-                <span key={`${str.note}${str.octave}`} className="chip" style={active ? {
-                  background: 'var(--accent)', color: 'var(--accent-ink)',
-                } : undefined}>
+                <span key={`${str.note}${str.octave}`} className={`chip${active ? ' active' : ''}`}>
                   {str.note}{str.octave}
                 </span>
               )
@@ -179,7 +177,7 @@ export default function Tuner() {
 
         {error ? (
           <div style={{ textAlign: 'center' }}>
-            <p style={{ color: 'var(--danger, #ef5a5f)', marginBottom: 14 }}>{t(error)}</p>
+            <p className="error-text" style={{ marginBottom: 14 }}>{t(error)}</p>
             <button className="btn primary" onClick={start}>{t('retry')}</button>
           </div>
         ) : (
