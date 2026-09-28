@@ -24,6 +24,8 @@
   --ok: #46c48a;
   --sample: #6fa8ff;          /* trechos de solo/sample com disparo automático */
   --sample-soft: rgba(111, 168, 255, 0.14);
+  --star-gold: #f2c94c;       /* favoritos e "cifra normalizada" — fixo, não segue o destaque do tema */
+  --star-gold-soft: rgba(242, 201, 76, 0.16);
   --sweep-sung: var(--amber);  /* varredura estilo CDG: trecho já cantado */
   --sweep-upcoming: rgba(255, 255, 255, 0.82); /* trecho ainda por vir, na linha ativa */
   --font-display: 'Geist Variable', sans-serif;
@@ -395,6 +397,12 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .chip { display: inline-block; padding: 2px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent-text); font: 700 10.5px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .chip.active { background: var(--accent); color: var(--accent-ink); }
 .chip.danger { background: var(--danger); color: #fff; }
+.chip.normalized { background: var(--star-gold-soft); color: var(--star-gold); }
+.chip.muted { background: var(--glass); color: var(--muted); }
+/* estrela de favorito dentro do .meta de uma linha (SetlistDetail) — cor
+   fixa (--star-gold) quando marcada, muted quando não */
+.setlist-fav-icon { font-size: 14px; line-height: 15px; color: var(--muted); }
+.setlist-fav-icon.on { color: var(--star-gold); }
 /* rótulo curto ao lado de um controle numa .row (ex.: "Transpor:" antes dos
    botões de semitom) — mesmo tamanho/cor do .meta de .song-row */
 .inline-label { color: var(--muted); font-size: 13px; }

@@ -252,7 +252,7 @@ export default function SetlistDetail() {
   return (
     <>
       {error && <div className="error-text no-print" style={{ marginBottom: 14 }}>{error}</div>}
-      <div className="row no-print" style={{ justifyContent: 'space-between' }}>
+      <div className="row between no-print">
         <div>
           {isOwner ? (
             <input className="input" style={{ fontSize: 22, fontWeight: 700, background: 'transparent', border: 'none', padding: 0 }}
@@ -351,7 +351,7 @@ export default function SetlistDetail() {
               onDragOver={(e) => draggableRow && e.preventDefault()}
               onDrop={() => draggableRow && onDrop(i)}
               onDragEnd={() => setDragIdx(null)}>
-              <div className="row no-print" style={{ gap: 6, flexWrap: 'nowrap', alignItems: 'center' }}>
+              <div className="row no-print" style={{ gap: 6, flexWrap: 'nowrap' }}>
                 {isOwner ? (
                   editingIdx === i ? (
                     <input
@@ -377,11 +377,11 @@ export default function SetlistDetail() {
                   <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--muted)' }}>{i + 1}</span>
                 )}
                 {isOwner && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <button type="button" className="btn ghost" style={{ padding: '1px 6px', fontSize: 11, lineHeight: 1.4 }}
+                  <div className="row audio-item-move">
+                    <button type="button" className="btn ghost xs"
                       disabled={i === 0 || isMedleyMember} title={t('moveUp')}
                       onClick={(e) => { e.stopPropagation(); moveItem(i, i - 1) }}>▲</button>
-                    <button type="button" className="btn ghost" style={{ padding: '1px 6px', fontSize: 11, lineHeight: 1.4 }}
+                    <button type="button" className="btn ghost xs"
                       disabled={i === items.length - 1 || isMedleyMember} title={t('moveDown')}
                       onClick={(e) => { e.stopPropagation(); moveItem(i, i + 1) }}>▼</button>
                   </div>
@@ -397,8 +397,8 @@ export default function SetlistDetail() {
                   )}
                   {item.song?.titulo || item.ref}
                   {isFirstOfGroup && isOwner && (
-                    <button type="button" className="btn ghost no-print" title={t('ungroupMedley')}
-                      style={{ padding: '0 6px', fontSize: 11, lineHeight: 1.6, marginLeft: 6 }}
+                    <button type="button" className="btn ghost xs no-print" title={t('ungroupMedley')}
+                      style={{ marginLeft: 6 }}
                       onClick={(e) => { e.stopPropagation(); ungroupMedley(item.medley_id) }}>✂</button>
                   )}
                 </div>
@@ -417,11 +417,9 @@ export default function SetlistDetail() {
                         <path d="M23.5 6.2a3.02 3.02 0 0 0-2.12-2.14C19.51 3.5 12 3.5 12 3.5s-7.51 0-9.38.56A3.02 3.02 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3.02 3.02 0 0 0 2.12 2.14C4.49 20.5 12 20.5 12 20.5s7.51 0 9.38-.56a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8ZM9.6 15.6V8.4L15.8 12l-6.2 3.6Z" />
                       </svg>
                       <span title={item.song.favorita ? t('favorited') : t('notFavorited')}
-                        style={{ color: item.song.favorita ? '#f2c94c' : 'var(--muted)', fontSize: 14, lineHeight: '15px' }}>★</span>
-                      <span className="chip" title={item.song.normalizada ? t('normalizedTitle') : t('notNormalizedTitle')}
-                        style={item.song.normalizada
-                          ? { background: 'rgba(242, 201, 76, 0.16)', color: '#f2c94c' }
-                          : { background: 'var(--glass)', color: 'var(--muted)' }}>
+                        className={`setlist-fav-icon${item.song.favorita ? ' on' : ''}`}>★</span>
+                      <span className={`chip ${item.song.normalizada ? 'normalized' : 'muted'}`}
+                        title={item.song.normalizada ? t('normalizedTitle') : t('notNormalizedTitle')}>
                         {t('normalizedAbbr')}
                       </span>
                     </span>
