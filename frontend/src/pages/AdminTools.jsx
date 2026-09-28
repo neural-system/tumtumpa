@@ -14,7 +14,7 @@ function formatDuration(seconds, unavailableLabel) {
 function SongRankList({ items, suffix, valueKey, emptyLabel }) {
   if (!items?.length) return <div className="empty">{emptyLabel}</div>
   return items.map((s) => (
-    <Link key={s.slug} to={`/musicas/${s.slug}`} className="song-row" style={{ gridTemplateColumns: '1fr auto' }}>
+    <Link key={s.slug} to={`/musicas/${s.slug}`} className="song-row compact">
       <div><div className="title">{s.titulo}</div><div className="meta">{s.interprete}</div></div>
       <span className="chip">{s[valueKey]} {suffix}</span>
     </Link>
@@ -24,7 +24,7 @@ function SongRankList({ items, suffix, valueKey, emptyLabel }) {
 function UserRankList({ items, suffix, valueKey, emptyLabel }) {
   if (!items?.length) return <div className="empty">{emptyLabel}</div>
   return items.map((u) => (
-    <div key={u.username} className="song-row" style={{ gridTemplateColumns: '1fr auto', cursor: 'default' }}>
+    <div key={u.username} className="song-row compact" style={{ cursor: 'default' }}>
       <div><div className="title">{u.name}</div><div className="meta">@{u.username}</div></div>
       <span className="chip">{u[valueKey]} {suffix}</span>
     </div>
@@ -57,28 +57,28 @@ export default function AdminTools() {
         </div>
       </div>
 
-      <div className="row" style={{ alignItems: 'flex-start' }}>
-        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
-          <h3 style={{ marginBottom: 10 }}>{t('sections.mostPlayed')}</h3>
+      <div className="row top">
+        <div className="card flex-card">
+          <h3>{t('sections.mostPlayed')}</h3>
           <SongRankList items={data.most_played} suffix={t('playsSuffix')} valueKey="count" emptyLabel={t('empty')} />
         </div>
-        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
-          <h3 style={{ marginBottom: 10 }}>{t('sections.mostEdited')}</h3>
+        <div className="card flex-card">
+          <h3>{t('sections.mostEdited')}</h3>
           <SongRankList items={data.most_edited} suffix={t('editsSuffix')} valueKey="edits" emptyLabel={t('empty')} />
         </div>
-        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
-          <h3 style={{ marginBottom: 10 }}>{t('sections.mostSetlisted')}</h3>
+        <div className="card flex-card">
+          <h3>{t('sections.mostSetlisted')}</h3>
           <SongRankList items={data.most_setlisted} suffix={t('setlistsSuffix')} valueKey="count" emptyLabel={t('empty')} />
         </div>
       </div>
 
-      <div className="row" style={{ alignItems: 'flex-start' }}>
-        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
-          <h3 style={{ marginBottom: 10 }}>{t('sections.topUploaders')}</h3>
+      <div className="row top">
+        <div className="card flex-card">
+          <h3>{t('sections.topUploaders')}</h3>
           <UserRankList items={data.top_uploaders} suffix={t('songsSuffix')} valueKey="songs_count" emptyLabel={t('empty')} />
         </div>
-        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
-          <h3 style={{ marginBottom: 10 }}>{t('sections.topByLogins')}</h3>
+        <div className="card flex-card">
+          <h3>{t('sections.topByLogins')}</h3>
           <UserRankList items={data.top_by_logins} suffix={t('loginsSuffix')} valueKey="login_count" emptyLabel={t('empty')} />
         </div>
       </div>

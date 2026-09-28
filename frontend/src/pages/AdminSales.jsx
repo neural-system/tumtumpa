@@ -21,7 +21,7 @@ function StatusBreakdown({ byStatus, t }) {
 function PlanBreakdown({ items, suffix, emptyLabel }) {
   if (!items?.length) return <div className="empty">{emptyLabel}</div>
   return items.map((p) => (
-    <div key={p.name} className="song-row" style={{ gridTemplateColumns: '1fr auto', cursor: 'default' }}>
+    <div key={p.name} className="song-row compact" style={{ cursor: 'default' }}>
       <div className="title">{p.name}</div>
       <span className="chip">{p.n} {suffix}</span>
     </div>
@@ -68,16 +68,16 @@ export default function AdminSales() {
       </div>
 
       <div className="card" style={{ marginBottom: 14 }}>
-        <h3 style={{ marginBottom: 10 }}>{t('sections.byStatus')}</h3>
+        <h3>{t('sections.byStatus')}</h3>
         <StatusBreakdown byStatus={data.by_status} t={t} />
       </div>
 
-      <div className="row" style={{ alignItems: 'flex-start' }}>
-        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
-          <h3 style={{ marginBottom: 10 }}>{t('sections.byPlan')}</h3>
+      <div className="row top">
+        <div className="card flex-card">
+          <h3>{t('sections.byPlan')}</h3>
           <PlanBreakdown items={data.by_plan} suffix={t('subscribersSuffix')} emptyLabel={t('empty')} />
         </div>
-        <div className="card" style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
+        <div className="card flex-card">
           <h3 style={{ marginBottom: 6 }}>{t('sections.cancellationTrend')}</h3>
           <p style={{ color: 'var(--muted)', fontSize: 12, marginBottom: 12 }}>{t('trendHint')}</p>
           <CancellationTrend data={data.cancellations_by_day} emptyLabel={t('empty')} />

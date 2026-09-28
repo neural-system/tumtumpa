@@ -274,7 +274,17 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .field label { display: block; font: 700 10.5px var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 7px; }
 .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .row.between { justify-content: space-between; }
+.row.center { justify-content: center; }
+.row.stretch { align-items: stretch; }
+.row.top { align-items: flex-start; }
+.row.check { gap: 6px; cursor: pointer; }
 .btn.xs { padding: 1px 6px; font-size: 11px; line-height: 1.4; }
+/* card de largura flexível numa .row de cards lado a lado (Dashboard,
+   AdminTools, AdminSales) — cresce até caber, empilha em telas estreitas */
+.flex-card { flex: 1; min-width: min(100%, 280px); }
+/* variante compacta de .song-row: só título/meta + um valor à direita
+   (rankings do Dashboard) */
+.song-row.compact { grid-template-columns: 1fr auto; }
 
 /* pilha vertical de cards (Settings, aba Áudio do editor de música etc.) —
    cada card ganha respiro embaixo sem precisar repetir style={{marginBottom}} */
@@ -391,6 +401,16 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .fav-star { color: var(--accent-text); }
 .plan-badge { text-decoration: none; padding: 5px 12px; font: 700 11px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; transition: 120ms; }
 .plan-badge:hover { background: var(--accent); color: var(--bg, #fff); }
+
+/* ---------- planos — pages/Pricing.jsx ---------- */
+.pricing-includes-list { color: var(--muted); padding-left: 18px; margin: 8px 0 0; }
+.pricing-card { min-width: min(100%, 220px); flex: 1 1 220px; }
+.pricing-card .chip { margin-bottom: 8px; }
+.pricing-card h3 { margin-bottom: 4px; }
+.pricing-blurb { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+.pricing-price { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+.pricing-price-suffix { font-size: 13px; color: var(--muted); font-weight: 400; }
+.pricing-features { color: var(--muted); padding-left: 18px; margin: 0 0 16px; }
 
 /* ---------- cifra (folha) ---------- */
 .chord-sheet { font-family: var(--font-mono); font-size: 14.5px; line-height: 1.6; white-space: pre; overflow-x: auto; }

@@ -37,7 +37,7 @@ export default function Songs() {
 
   return (
     <>
-      <div className="row no-print" style={{ justifyContent: 'space-between' }}>
+      <div className="row between no-print">
         <div>
           <h1 className="page-title">{t('titleLibrary')}</h1>
           <div className="page-sub">
@@ -79,7 +79,7 @@ export default function Songs() {
           {facets?.tons.map((g) => <option key={g}>{g}</option>)}
         </select>
         {(
-          <label className="row" style={{ gap: 6, alignItems: 'center', cursor: 'pointer' }}>
+          <label className="row check">
             <input type="checkbox" checked={onlyMine}
               onChange={(e) => { setOnlyMine(e.target.checked); setPage(1) }} />
             {t('onlyMine')}
@@ -114,7 +114,7 @@ export default function Songs() {
       </div>
 
       {data && data.total_pages > 1 && (
-        <div className="row no-print" style={{ marginTop: 14, justifyContent: 'center' }}>
+        <div className="row center no-print" style={{ marginTop: 14 }}>
           <button className="btn" disabled={page <= 1} onClick={() => setPage(page - 1)}>{t('prevPage')}</button>
           <span className="meta" style={{ color: 'var(--muted)' }}>{t('pageOf', { page: data.page, total: data.total_pages })}</span>
           <button className="btn" disabled={page >= data.total_pages} onClick={() => setPage(page + 1)}>{t('nextPage')}</button>

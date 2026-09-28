@@ -95,30 +95,29 @@ export default function Pricing() {
 
       <div className="card no-print" style={{ marginBottom: 18 }}>
         <strong>{t('allPlansInclude')}</strong>
-        <ul style={{ color: 'var(--muted)', margin: '8px 0 0', paddingLeft: 18 }}>
+        <ul className="pricing-includes-list">
           {INCLUDED_FEATURE_KEYS.map((k) => <li key={k}>{t(`features.${k}`)}</li>)}
         </ul>
       </div>
 
-      <div className="row" style={{ gap: 14, flexWrap: 'wrap', alignItems: 'stretch' }}>
+      <div className="row stretch" style={{ gap: 14 }}>
         {plans.map((p, i) => {
           const isCurrent = p.id === currentPlanId
           const isPopular = i === popularIndex
           const isUpgrade = !!currentPlan && p.price_cents > currentPlan.price_cents
           return (
-            <div key={p.id} className="card" style={{
-              minWidth: 'min(100%, 220px)', flex: '1 1 220px',
+            <div key={p.id} className="card pricing-card" style={{
               borderColor: isCurrent ? 'var(--accent)' : isPopular ? 'var(--accent-soft)' : undefined,
             }}>
               {isCurrent
-                ? <div className="chip" style={{ marginBottom: 8 }}>{t('currentPlan')}</div>
-                : isPopular && <div className="chip" style={{ marginBottom: 8 }}>{t('mostPopular')}</div>}
-              <h3 style={{ marginBottom: 4 }}>{p.name}</h3>
-              <div style={{ color: 'var(--muted)', fontSize: 13, marginBottom: 12 }}>{blurbFor(i, plans.length)}</div>
-              <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 12 }}>
-                {centavosParaMoeda(p.price_cents)}<span style={{ fontSize: 13, color: 'var(--muted)', fontWeight: 400 }}>{t('perMonth')}</span>
+                ? <div className="chip">{t('currentPlan')}</div>
+                : isPopular && <div className="chip">{t('mostPopular')}</div>}
+              <h3>{p.name}</h3>
+              <div className="pricing-blurb">{blurbFor(i, plans.length)}</div>
+              <div className="pricing-price">
+                {centavosParaMoeda(p.price_cents)}<span className="pricing-price-suffix">{t('perMonth')}</span>
               </div>
-              <ul style={{ color: 'var(--muted)', margin: '0 0 16px', paddingLeft: 18 }}>
+              <ul className="pricing-features">
                 <li>{t('setlistsLimit', { count: p.max_setlists })}</li>
                 <li>{t('storageLimit', { mb: p.storage_limit_mb })}</li>
               </ul>
