@@ -10,6 +10,7 @@ import PublicFeedback from './pages/PublicFeedback'
 import Palco from './pages/Palco'
 import PalcoFluxo from './pages/PalcoFluxo'
 import PalcoComunidade from './pages/PalcoComunidade'
+import PalcoRedeTTP from './pages/PalcoRedeTTP'
 import PalcoClassificados from './pages/PalcoClassificados'
 import BandBoard from './pages/BandBoard'
 import BandBoardManage from './pages/BandBoardManage'
@@ -57,6 +58,7 @@ export default function App() {
         <Route path="/sobre" element={<Navigate to="/" replace />} />
         <Route path="/palco/fluxo" element={<PalcoFluxo />} />
         <Route path="/palco/comunidade" element={<PalcoComunidade />} />
+        <Route path="/palco/rede-ttp" element={<PalcoRedeTTP />} />
         <Route path="/palco/classificados" element={<PalcoClassificados />} />
         <Route path="/cifra/:slug" element={<PublicSongView />} />
         <Route path="/feedback/:token" element={<PublicFeedback />} />

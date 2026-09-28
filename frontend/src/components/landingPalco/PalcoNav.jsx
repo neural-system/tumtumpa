@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../../store/authStore'
 
-/** Cabeçalho compartilhado pelas 4 páginas públicas (/, /palco/fluxo, /palco/comunidade, /palco/classificados) — marca em
+/** Cabeçalho compartilhado pelas 5 páginas públicas (/palco/fluxo, /, /palco/rede-ttp,
+ * /palco/comunidade, /palco/classificados — nessa ordem de exibição) — marca em
  * texto estilizado via CSS (rotação leve + "PÁ" em âmbar), não a logo em
  * imagem do resto do app: é um traço de identidade do próprio template
  * (ver .brand em landingPalco.css) que vale a pena manter. Sem
@@ -22,11 +23,14 @@ export default function PalcoNav({ active }) {
         TUM TUM <b>PÁ</b>
       </Link>
       <div className="palco-tabs" aria-label={t('nav.switchAria')}>
+        <Link className={`palco-tab ${active === 'fluxo' ? 'active' : ''}`} to="/palco/fluxo">
+          {t('nav.tabFluxo')}
+        </Link>
         <Link className={`palco-tab ${active === 'palco' ? 'active' : ''}`} to="/">
           {t('nav.tabPalco')}
         </Link>
-        <Link className={`palco-tab ${active === 'fluxo' ? 'active' : ''}`} to="/palco/fluxo">
-          {t('nav.tabFluxo')}
+        <Link className={`palco-tab ${active === 'redettp' ? 'active' : ''}`} to="/palco/rede-ttp">
+          {t('nav.tabRedeTTP')}
         </Link>
         <Link className={`palco-tab ${active === 'comunidade' ? 'active' : ''}`} to="/palco/comunidade">
           {t('nav.tabComunidade')}

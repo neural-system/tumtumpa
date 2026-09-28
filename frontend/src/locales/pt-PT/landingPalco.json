@@ -7,17 +7,20 @@
     "comunidadeTitle": "TumTumPá — Monta a tua banda",
     "comunidadeDescription": "Bandas à procura de músicos, músicos à procura de banda. Conhece o placard de anúncios do TumTumPá.",
     "classificadosTitle": "TumTumPá — Classificados (brevemente)",
-    "classificadosDescription": "Conhece a proposta dos classificados do TumTumPá: instrumentos, áudio e acessórios entre músicos."
+    "classificadosDescription": "Conhece a proposta dos classificados do TumTumPá: instrumentos, áudio e acessórios entre músicos.",
+    "redettpTitle": "TumTumPá — Rede TTP",
+    "redettpDescription": "Perfil, banda, agenda de concertos e feed num só lugar — conhece a rede social de músicos e bandas do TumTumPá."
   },
   "nav": {
     "ariaLabel": "Navegação da apresentação",
     "brandAria": "TumTumPá, início",
     "switchAria": "Alternar secção",
-    "tabPalco": "01 / Palco ao vivo",
-    "tabFluxo": "02 / Central musical",
-    "tabComunidade": "03 / Comunidade",
-    "tabClassificados": "04 / Classificados",
-    "cta": "Começar grátis ↗"
+    "tabPalco": "02 / PARA BANDAS",
+    "tabFluxo": "01 / CIFRAS",
+    "tabComunidade": "04 / MONTA A TUA BANDA",
+    "tabClassificados": "05 / CLASSIFICADOS",
+    "cta": "Começar grátis ↗",
+    "tabRedeTTP": "03 / REDE TTP"
   },
   "footer": {
     "tagline": "Cifras, repertório e banda ao mesmo tempo.",
@@ -242,5 +245,41 @@
     "playerPrev": "ANTERIOR",
     "playerPlay": "TOCAR",
     "playerNext": "SEGUINTE"
+  },
+  "redettp": {
+    "previewLabel": "FEED · PUBLICAÇÕES RECENTES",
+    "previewEmpty": "Ainda não há publicações públicas — sê o primeiro.",
+    "kicker": "REDE TTP · MÚSICOS E BANDAS",
+    "titleLine1": "A tua carreira,",
+    "titleLine2": "em rede.",
+    "subtitle": "Perfil, banda, agenda de concertos e feed num só lugar. Gosta, comenta e acompanha quem toca no teu ritmo.",
+    "ctaExplore": "Explorar a rede",
+    "ctaCreate": "Criar o meu perfil",
+    "accessNote": "Perfis e bandas públicos ficam visíveis para qualquer pessoa. Para publicar e interagir, inicia sessão na tua conta.",
+    "featuresKicker": "O QUE HÁ NA REDE",
+    "featuresTitleLine1": "Mais do que um perfil.",
+    "featuresTitleLine2": "Uma montra para a tua música.",
+    "feature1Title": "Perfil e banda",
+    "feature1Copy": "Mostra os teus instrumentos, a tua cidade e as bandas de que fazes parte.",
+    "feature2Title": "Feed",
+    "feature2Copy": "Publica ensaios, concertos e lançamentos — gosta e comenta o que a rede publica.",
+    "feature3Title": "Agenda de concertos",
+    "feature3Copy": "Divulga as próximas apresentações da tua banda, com data, local e bilhetes.",
+    "feature4Title": "Contratações",
+    "feature4Copy": "Anuncia vagas na banda ou oferece o teu trabalho — sem intermediar pagamentos.",
+    "howKicker": "COMO FUNCIONA",
+    "howTitleLine1": "Do perfil",
+    "howTitleLine2": "à próxima plateia.",
+    "step1Title": "Cria o teu perfil",
+    "step1Copy": "Regista os teus instrumentos, cidade e a ligação às tuas bandas.",
+    "step2Title": "Publica e acompanha",
+    "step2Copy": "Publica no feed, segue outros músicos e bandas, gosta e comenta.",
+    "step3Title": "Toca para mais gente",
+    "step3Copy": "Divulga concertos na agenda e responde a contratações — a rede leva a tua música mais longe.",
+    "finalKicker": "REDE TTP",
+    "finalTitleLine1": "A tua próxima",
+    "finalTitleLine2": "plateia está aqui.",
+    "finalCopy": "Cria o teu perfil e começa a acompanhar músicos e bandas no teu ritmo.",
+    "finalCta": "Criar o meu perfil"
   }
 }

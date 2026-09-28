@@ -7,17 +7,20 @@
     "comunidadeTitle": "TumTumPa — 组建你的乐队",
     "comunidadeDescription": "乐队在找乐手，乐手在找乐队。认识 TumTumPa 的乐队公告板。",
     "classificadosTitle": "TumTumPa — 分类广告（即将上线）",
-    "classificadosDescription": "了解 TumTumPa 即将推出的乐手间乐器、音频设备与配件分类广告。"
+    "classificadosDescription": "了解 TumTumPa 即将推出的乐手间乐器、音频设备与配件分类广告。",
+    "redettpTitle": "TumTumPa — TTP 社交网络",
+    "redettpDescription": "主页、乐队、演出日程和动态都在一个地方——认识 TumTumPa 面向音乐人与乐队的社交网络。"
   },
   "nav": {
     "ariaLabel": "演出导航",
     "brandAria": "TumTumPa，首页",
     "switchAria": "切换板块",
-    "tabPalco": "01 / 现场舞台",
-    "tabFluxo": "02 / 音乐中枢",
-    "tabComunidade": "03 / 社区",
-    "tabClassificados": "04 / 分类广告",
-    "cta": "免费开始 ↗"
+    "tabPalco": "02 / 面向乐队",
+    "tabFluxo": "01 / 歌词谱",
+    "tabComunidade": "04 / 组建你的乐队",
+    "tabClassificados": "05 / 分类广告",
+    "cta": "免费开始 ↗",
+    "tabRedeTTP": "03 / TTP 社交网络"
   },
   "footer": {
     "tagline": "谱子、曲目单与乐队，同一节奏。",
@@ -242,5 +245,41 @@
     "playerPrev": "上一首",
     "playerPlay": "播放",
     "playerNext": "下一首"
+  },
+  "redettp": {
+    "previewLabel": "动态 · 最新发布",
+    "previewEmpty": "暂无公开动态——快来发布第一条吧。",
+    "kicker": "TTP 社交网络 · 乐手与乐队",
+    "titleLine1": "你的音乐生涯，",
+    "titleLine2": "从此连接。",
+    "subtitle": "主页、乐队、演出日程和动态都在一个地方。点赞、评论，关注和你同频的音乐人。",
+    "ctaExplore": "探索社交网络",
+    "ctaCreate": "创建我的主页",
+    "accessNote": "公开的主页和乐队所有人都能看到。要发布内容和互动，请登录账号。",
+    "featuresKicker": "社交网络里有什么",
+    "featuresTitleLine1": "不只是主页。",
+    "featuresTitleLine2": "更是你音乐的展示窗口。",
+    "feature1Title": "主页与乐队",
+    "feature1Copy": "展示你的乐器、城市和所在的乐队。",
+    "feature2Title": "动态",
+    "feature2Copy": "发布排练、演出和新作——为网络里的内容点赞和评论。",
+    "feature3Title": "演出日程",
+    "feature3Copy": "公布乐队即将举行的演出，包含日期、场地和购票信息。",
+    "feature4Title": "招募",
+    "feature4Copy": "发布乐队空缺或推荐自己——TumTumPa 不经手任何支付。",
+    "howKicker": "如何使用",
+    "howTitleLine1": "从主页",
+    "howTitleLine2": "到你的下一场观众。",
+    "step1Title": "建立你的主页",
+    "step1Copy": "填写你的乐器、城市和乐队链接。",
+    "step2Title": "发布与关注",
+    "step2Copy": "在动态里分享，关注其他音乐人和乐队，点赞与评论。",
+    "step3Title": "让更多人听到你",
+    "step3Copy": "在日程里公布演出，回复招募信息——社交网络帮你的音乐传播得更远。",
+    "finalKicker": "TTP 社交网络",
+    "finalTitleLine1": "你的下一批",
+    "finalTitleLine2": "听众，就在这里。",
+    "finalCopy": "创建你的主页，开始关注和你同频的音乐人与乐队。",
+    "finalCta": "创建我的主页"
   }
 }

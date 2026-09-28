@@ -7,17 +7,20 @@
     "comunidadeTitle": "TumTumPa — Stell deine Band zusammen",
     "comunidadeDescription": "Bands suchen Musiker, Musiker suchen eine Band. Entdecke TumTumPas Bandbrett.",
     "classificadosTitle": "TumTumPa — Kleinanzeigen (bald)",
-    "classificadosDescription": "Ein Blick auf TumTumPas geplante Kleinanzeigen: Instrumente, Audio-Equipment und Zubehör unter Musikern."
+    "classificadosDescription": "Ein Blick auf TumTumPas geplante Kleinanzeigen: Instrumente, Audio-Equipment und Zubehör unter Musikern.",
+    "redettpTitle": "TumTumPa — TTP-Netzwerk",
+    "redettpDescription": "Profil, Band, Auftrittskalender und Feed an einem Ort — lerne TumTumPas Netzwerk für Musiker und Bands kennen."
   },
   "nav": {
     "ariaLabel": "Navigation der Show",
     "brandAria": "TumTumPa, Start",
     "switchAria": "Bereich wechseln",
-    "tabPalco": "01 / Bühne live",
-    "tabFluxo": "02 / Musik-Zentrale",
-    "tabComunidade": "03 / Community",
-    "tabClassificados": "04 / Kleinanzeigen",
-    "cta": "Kostenlos starten ↗"
+    "tabPalco": "02 / FÜR BANDS",
+    "tabFluxo": "01 / SONGTEXTE",
+    "tabComunidade": "04 / STELL DEINE BAND ZUSAMMEN",
+    "tabClassificados": "05 / KLEINANZEIGEN",
+    "cta": "Kostenlos starten ↗",
+    "tabRedeTTP": "03 / TTP-NETZWERK"
   },
   "footer": {
     "tagline": "Liedblätter, Setlist und Band im selben Tempo.",
@@ -242,5 +245,41 @@
     "playerPrev": "ZURÜCK",
     "playerPlay": "ABSPIELEN",
     "playerNext": "WEITER"
+  },
+  "redettp": {
+    "previewLabel": "FEED · NEUESTE BEITRÄGE",
+    "previewEmpty": "Noch keine öffentlichen Beiträge — sei der Erste.",
+    "kicker": "TTP-NETZWERK · MUSIKER & BANDS",
+    "titleLine1": "Deine Karriere,",
+    "titleLine2": "vernetzt.",
+    "subtitle": "Profil, Band, Auftrittskalender und Feed an einem Ort. Like, kommentiere und folge Musikern in deinem Rhythmus.",
+    "ctaExplore": "Netzwerk entdecken",
+    "ctaCreate": "Mein Profil erstellen",
+    "accessNote": "Öffentliche Profile und Bands sind für alle sichtbar. Zum Posten und Interagieren melde dich bei deinem Konto an.",
+    "featuresKicker": "WAS DAS NETZWERK BIETET",
+    "featuresTitleLine1": "Mehr als ein Profil.",
+    "featuresTitleLine2": "Eine Bühne für deine Musik.",
+    "feature1Title": "Profil & Band",
+    "feature1Copy": "Zeig deine Instrumente, deine Stadt und die Bands, in denen du spielst.",
+    "feature2Title": "Feed",
+    "feature2Copy": "Poste Proben, Auftritte und Neuerscheinungen — like und kommentiere, was das Netzwerk teilt.",
+    "feature3Title": "Auftrittskalender",
+    "feature3Copy": "Kündige die nächsten Auftritte deiner Band an — mit Datum, Ort und Tickets.",
+    "feature4Title": "Engagements",
+    "feature4Copy": "Schreib eine offene Stelle in deiner Band aus oder biete deine Arbeit an — TumTumPa vermittelt keine Zahlungen.",
+    "howKicker": "SO FUNKTIONIERT'S",
+    "howTitleLine1": "Vom Profil",
+    "howTitleLine2": "zum nächsten Publikum.",
+    "step1Title": "Bau dein Profil auf",
+    "step1Copy": "Trage deine Instrumente, deine Stadt und die Links zu deinen Bands ein.",
+    "step2Title": "Poste und folge",
+    "step2Copy": "Teile im Feed, folge anderen Musikern und Bands, like und kommentiere.",
+    "step3Title": "Spiel für mehr Leute",
+    "step3Copy": "Kündige Auftritte im Kalender an und antworte auf Engagements — das Netzwerk trägt deine Musik weiter.",
+    "finalKicker": "TTP-NETZWERK",
+    "finalTitleLine1": "Dein nächstes",
+    "finalTitleLine2": "Publikum ist hier.",
+    "finalCopy": "Erstelle dein Profil und folge Musikern und Bands in deinem Rhythmus.",
+    "finalCta": "Mein Profil erstellen"
   }
 }

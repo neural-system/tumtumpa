@@ -7,17 +7,20 @@
     "comunidadeTitle": "TumTumPa — Forma la tua band",
     "comunidadeDescription": "Band in cerca di musicisti, musicisti in cerca di una band. Scopri la bacheca di TumTumPa.",
     "classificadosTitle": "TumTumPa — Annunci (in arrivo)",
-    "classificadosDescription": "Scopri il progetto degli annunci di TumTumPa: strumenti, audio e accessori tra musicisti."
+    "classificadosDescription": "Scopri il progetto degli annunci di TumTumPa: strumenti, audio e accessori tra musicisti.",
+    "redettpTitle": "TumTumPa — Rete TTP",
+    "redettpDescription": "Profilo, band, agenda concerti e feed in un solo posto — scopri la rete sociale di musicisti e band di TumTumPa."
   },
   "nav": {
     "ariaLabel": "Navigazione dello show",
     "brandAria": "TumTumPa, home",
     "switchAria": "Cambia sezione",
-    "tabPalco": "01 / Palco dal vivo",
-    "tabFluxo": "02 / Centrale musicale",
-    "tabComunidade": "03 / Community",
-    "tabClassificados": "04 / Annunci",
-    "cta": "Inizia gratis ↗"
+    "tabPalco": "02 / PER LE BAND",
+    "tabFluxo": "01 / TESTI",
+    "tabComunidade": "04 / FORMA LA TUA BAND",
+    "tabClassificados": "05 / ANNUNCI",
+    "cta": "Inizia gratis ↗",
+    "tabRedeTTP": "03 / RETE TTP"
   },
   "footer": {
     "tagline": "Spartiti, scaletta e band, nello stesso tempo.",
@@ -242,5 +245,41 @@
     "playerPrev": "PRECEDENTE",
     "playerPlay": "RIPRODUCI",
     "playerNext": "SUCCESSIVO"
+  },
+  "redettp": {
+    "previewLabel": "FEED · POST RECENTI",
+    "previewEmpty": "Ancora nessun post pubblico — sii il primo.",
+    "kicker": "RETE TTP · MUSICISTI E BAND",
+    "titleLine1": "La tua carriera,",
+    "titleLine2": "in rete.",
+    "subtitle": "Profilo, band, agenda concerti e feed in un solo posto. Metti mi piace, commenta e segui chi suona nel tuo stesso ritmo.",
+    "ctaExplore": "Esplora la rete",
+    "ctaCreate": "Crea il mio profilo",
+    "accessNote": "Profili e band pubblici sono visibili a chiunque. Per pubblicare e interagire, accedi al tuo account.",
+    "featuresKicker": "COSA C'È NELLA RETE",
+    "featuresTitleLine1": "Più di un profilo.",
+    "featuresTitleLine2": "Una vetrina per la tua musica.",
+    "feature1Title": "Profilo e band",
+    "feature1Copy": "Mostra i tuoi strumenti, la tua città e le band di cui fai parte.",
+    "feature2Title": "Feed",
+    "feature2Copy": "Pubblica prove, concerti e uscite — metti mi piace e commenta quello che condivide la rete.",
+    "feature3Title": "Agenda concerti",
+    "feature3Copy": "Annuncia i prossimi concerti della tua band, con data, luogo e biglietti.",
+    "feature4Title": "Ingaggi",
+    "feature4Copy": "Pubblica un posto libero nella tua band o offri il tuo lavoro — TumTumPa non intermedia i pagamenti.",
+    "howKicker": "COME FUNZIONA",
+    "howTitleLine1": "Dal profilo",
+    "howTitleLine2": "al prossimo pubblico.",
+    "step1Title": "Crea il tuo profilo",
+    "step1Copy": "Aggiungi i tuoi strumenti, la città e il link delle tue band.",
+    "step2Title": "Pubblica e segui",
+    "step2Copy": "Pubblica sul feed, segui altri musicisti e band, metti mi piace e commenta.",
+    "step3Title": "Suona per più persone",
+    "step3Copy": "Annuncia i concerti in agenda e rispondi agli ingaggi — la rete porta la tua musica più lontano.",
+    "finalKicker": "RETE TTP",
+    "finalTitleLine1": "Il tuo prossimo",
+    "finalTitleLine2": "pubblico è qui.",
+    "finalCopy": "Crea il tuo profilo e inizia a seguire musicisti e band nel tuo stesso ritmo.",
+    "finalCta": "Crea il mio profilo"
   }
 }

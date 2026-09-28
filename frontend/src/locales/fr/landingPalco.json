@@ -7,17 +7,20 @@
     "comunidadeTitle": "TumTumPa — Montez votre groupe",
     "comunidadeDescription": "Des groupes qui cherchent des musiciens, des musiciens qui cherchent un groupe. Découvrez le tableau d'annonces TumTumPa.",
     "classificadosTitle": "TumTumPa — Petites annonces (bientôt)",
-    "classificadosDescription": "Découvrez le projet de petites annonces de TumTumPa : instruments, matériel audio et accessoires entre musiciens."
+    "classificadosDescription": "Découvrez le projet de petites annonces de TumTumPa : instruments, matériel audio et accessoires entre musiciens.",
+    "redettpTitle": "TumTumPa — Réseau TTP",
+    "redettpDescription": "Profil, groupe, agenda de concerts et fil d'actualité au même endroit — découvrez le réseau social de musiciens et de groupes de TumTumPa."
   },
   "nav": {
     "ariaLabel": "Navigation du spectacle",
     "brandAria": "TumTumPa, accueil",
     "switchAria": "Changer de section",
-    "tabPalco": "01 / Scène en direct",
-    "tabFluxo": "02 / Espace musical",
-    "tabComunidade": "03 / Communauté",
-    "tabClassificados": "04 / Petites annonces",
-    "cta": "Commencer gratuitement ↗"
+    "tabPalco": "02 / POUR LES GROUPES",
+    "tabFluxo": "01 / PARTITIONS",
+    "tabComunidade": "04 / MONTEZ VOTRE GROUPE",
+    "tabClassificados": "05 / PETITES ANNONCES",
+    "cta": "Commencer gratuitement ↗",
+    "tabRedeTTP": "03 / RÉSEAU TTP"
   },
   "footer": {
     "tagline": "Grilles, répertoire et groupe, au même tempo.",
@@ -242,5 +245,41 @@
     "playerPrev": "PRÉCÉDENT",
     "playerPlay": "LECTURE",
     "playerNext": "SUIVANT"
+  },
+  "redettp": {
+    "previewLabel": "FIL · PUBLICATIONS RÉCENTES",
+    "previewEmpty": "Aucune publication publique pour l'instant — soyez le premier.",
+    "kicker": "RÉSEAU TTP · MUSICIENS ET GROUPES",
+    "titleLine1": "Votre carrière,",
+    "titleLine2": "en réseau.",
+    "subtitle": "Profil, groupe, agenda de concerts et fil d'actualité au même endroit. Aimez, commentez et suivez ceux qui jouent sur votre tempo.",
+    "ctaExplore": "Explorer le réseau",
+    "ctaCreate": "Créer mon profil",
+    "accessNote": "Les profils et groupes publics sont visibles par tout le monde. Pour publier et interagir, connectez-vous à votre compte.",
+    "featuresKicker": "CE QUE PROPOSE LE RÉSEAU",
+    "featuresTitleLine1": "Plus qu'un profil.",
+    "featuresTitleLine2": "Une vitrine pour votre musique.",
+    "feature1Title": "Profil et groupe",
+    "feature1Copy": "Montrez vos instruments, votre ville et les groupes dont vous faites partie.",
+    "feature2Title": "Fil d'actualité",
+    "feature2Copy": "Publiez répétitions, concerts et sorties — aimez et commentez ce que partage le réseau.",
+    "feature3Title": "Agenda de concerts",
+    "feature3Copy": "Annoncez les prochains concerts de votre groupe, avec date, lieu et billetterie.",
+    "feature4Title": "Recrutement",
+    "feature4Copy": "Publiez une place dans votre groupe ou proposez vos services — TumTumPa n'intervient pas dans les paiements.",
+    "howKicker": "COMMENT ÇA MARCHE",
+    "howTitleLine1": "Du profil",
+    "howTitleLine2": "au prochain public.",
+    "step1Title": "Créez votre profil",
+    "step1Copy": "Ajoutez vos instruments, votre ville et le lien de vos groupes.",
+    "step2Title": "Publiez et suivez",
+    "step2Copy": "Partagez sur le fil, suivez d'autres musiciens et groupes, aimez et commentez.",
+    "step3Title": "Jouez pour plus de monde",
+    "step3Copy": "Annoncez vos concerts dans l'agenda et répondez aux recrutements — le réseau fait avancer votre musique.",
+    "finalKicker": "RÉSEAU TTP",
+    "finalTitleLine1": "Votre prochain",
+    "finalTitleLine2": "public est ici.",
+    "finalCopy": "Créez votre profil et commencez à suivre des musiciens et des groupes sur votre tempo.",
+    "finalCta": "Créer mon profil"
   }
 }

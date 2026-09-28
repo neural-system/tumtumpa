@@ -7,17 +7,20 @@
     "comunidadeTitle": "TumTumPa — Build your band",
     "comunidadeDescription": "Bands looking for musicians, musicians looking for a band. Meet TumTumPa's band board.",
     "classificadosTitle": "TumTumPa — Classifieds (coming soon)",
-    "classificadosDescription": "A look at TumTumPa's upcoming classifieds: instruments, audio gear and accessories between musicians."
+    "classificadosDescription": "A look at TumTumPa's upcoming classifieds: instruments, audio gear and accessories between musicians.",
+    "redettpTitle": "TumTumPa — TTP Network",
+    "redettpDescription": "Profile, band, gig calendar and feed in one place — meet TumTumPa's network for musicians and bands."
   },
   "nav": {
     "ariaLabel": "Show navigation",
     "brandAria": "TumTumPa, home",
     "switchAria": "Switch section",
-    "tabPalco": "01 / Live Stage",
-    "tabFluxo": "02 / Music Hub",
-    "tabComunidade": "03 / Community",
-    "tabClassificados": "04 / Classifieds",
-    "cta": "Start free ↗"
+    "tabPalco": "02 / FOR BANDS",
+    "tabFluxo": "01 / CHORD SHEETS",
+    "tabComunidade": "04 / BUILD YOUR BAND",
+    "tabClassificados": "05 / CLASSIFIEDS",
+    "cta": "Start free ↗",
+    "tabRedeTTP": "03 / TTP NETWORK"
   },
   "footer": {
     "tagline": "Charts, setlists and band, in the same tempo.",
@@ -242,5 +245,41 @@
     "playerPrev": "PREV",
     "playerPlay": "PLAY",
     "playerNext": "NEXT"
+  },
+  "redettp": {
+    "previewLabel": "FEED · RECENT POSTS",
+    "previewEmpty": "No public posts yet — be the first.",
+    "kicker": "TTP NETWORK · MUSICIANS & BANDS",
+    "titleLine1": "Your career,",
+    "titleLine2": "networked.",
+    "subtitle": "Profile, band, gig calendar and feed in one place. Like, comment and follow musicians on your wavelength.",
+    "ctaExplore": "Explore the network",
+    "ctaCreate": "Create my profile",
+    "accessNote": "Public profiles and bands are visible to everyone. To post and interact, sign in to your account.",
+    "featuresKicker": "WHAT'S IN THE NETWORK",
+    "featuresTitleLine1": "More than a profile.",
+    "featuresTitleLine2": "A stage for your music.",
+    "feature1Title": "Profile & band",
+    "feature1Copy": "Show your instruments, your city and the bands you play in.",
+    "feature2Title": "Feed",
+    "feature2Copy": "Post rehearsals, shows and releases — like and comment on what the network shares.",
+    "feature3Title": "Gig calendar",
+    "feature3Copy": "Announce your band's upcoming shows, with date, venue and tickets.",
+    "feature4Title": "Hiring",
+    "feature4Copy": "Post an opening in your band or offer your work — TumTumPa doesn't handle payments.",
+    "howKicker": "HOW IT WORKS",
+    "howTitleLine1": "From your profile",
+    "howTitleLine2": "to your next crowd.",
+    "step1Title": "Build your profile",
+    "step1Copy": "Add your instruments, city and links to your bands.",
+    "step2Title": "Post and follow",
+    "step2Copy": "Share on the feed, follow other musicians and bands, like and comment.",
+    "step3Title": "Play for more people",
+    "step3Copy": "Announce shows on the calendar and reply to hiring posts — the network carries your music further.",
+    "finalKicker": "TTP NETWORK",
+    "finalTitleLine1": "Your next",
+    "finalTitleLine2": "audience is here.",
+    "finalCopy": "Create your profile and start following musicians and bands on your wavelength.",
+    "finalCta": "Create my profile"
   }
 }
