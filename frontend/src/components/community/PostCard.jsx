@@ -53,6 +53,17 @@ export default function PostCard({ post, onDeleted }) {
       </header>
 
       {post.body && <p className="cm-body">{post.body}</p>}
+      {post.media?.length > 0 && (
+        <div className="bb-media-grid" style={{ marginBottom: 10 }}>
+          {post.media.map((m) => (
+            <div key={m.id} className="bb-media-item">
+              {m.kind === 'photo'
+                ? <img src={`/api/social/posts/${post.id}/media/${m.id}/file`} alt="" className="bb-media-thumb" />
+                : <video src={`/api/social/posts/${post.id}/media/${m.id}/file`} controls className="bb-media-thumb" />}
+            </div>
+          ))}
+        </div>
+      )}
       {link && <a className="cm-link-card" href={link} target="_blank" rel="noopener noreferrer nofollow ugc">{link.replace(/^https?:\/\//, '').slice(0, 70)} ↗</a>}
       {post.youtube_id && (
         <div className="cm-video">

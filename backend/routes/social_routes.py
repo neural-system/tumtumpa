@@ -7,15 +7,18 @@ serve pra personalizar: curtidas, "seguindo", permissões). Toda escrita exige
 login e passa por um limitador por usuário (ver ctx.social_limits)."""
 from __future__ import annotations
 
-from flask import g, jsonify, request
+from flask import Response, g, jsonify, request
 
 from services.auth_service import AuthError
+from services.feed_service import POST_MEDIA_KINDS
 from services.social_common import SocialError
+from utils.media_types import safe_media_type
 
 
 def register(api, ctx):
     protected = ctx.require_auth
     admin_only = ctx.require_admin
+    not_blocked = ctx.require_not_blocked
 
     # ---------- utilidades ----------
     def viewer():
@@ -202,6 +205,38 @@ def register(api, ctx):
     def social_delete_post(post_id):
         ctx.feed.delete_post(g.user_id, post_id, g.is_admin)
         return "", 204
+
+    # Foto/vídeo anexado ao post — mesma regra de dono de delete_post acima
+    # (autor ou admin da banda), mesmo padrão de mídia do mural em api_routes.py.
+    @api.post("/social/posts/<post_id>/media")
+    @protected
+    @not_blocked
+    def social_add_post_media(post_id):
+        if (r := limited("post")):
+            return r
+        kind = request.form.get("kind", "")
+        f = request.files.get("file")
+        if kind not in POST_MEDIA_KINDS:
+            return jsonify({"error": "Tipo de mídia inválido.", "error_code": "SOCIAL_MEDIA_KIND_INVALID"}), 400
+        if not f:
+            return jsonify({"error": "Arquivo ausente.", "error_code": "SOCIAL_MEDIA_FILE_MISSING"}), 400
+        return jsonify(ctx.feed.add_media_file(g.user_id, post_id, kind, f)), 201
+
+    @api.delete("/social/posts/<post_id>/media/<media_id>")
+    @protected
+    def social_delete_post_media(post_id, media_id):
+        ctx.feed.delete_media(g.user_id, post_id, media_id, g.is_admin)
+        return "", 204
+
+    # Pública (sem @protected) — foto/vídeo precisa aparecer pro visitante
+    # sem login, mesmo precedente de get_band_post_media_file.
+    @api.get("/social/posts/<post_id>/media/<media_id>/file")
+    def social_post_media_file(post_id, media_id):
+        result = ctx.feed.media_bytes(post_id, media_id)
+        if not result:
+            return jsonify({"error": "Mídia não encontrada.", "error_code": "SOCIAL_MEDIA_NOT_FOUND"}), 404
+        data, content_type = result
+        return Response(data, mimetype=safe_media_type(content_type))
 
     @api.post("/social/posts/<post_id>/like")
     @protected

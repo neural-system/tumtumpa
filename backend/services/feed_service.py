@@ -12,15 +12,26 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime
+from pathlib import Path
 
 import db
+from services import blob_client
 from services.social_common import (
     MAX_COMMENT, MAX_POST, Conflict, Forbidden, NotFound, SocialError, clamp_limit, clean_text, clean_url,
     one_of, youtube_id_from,
 )
+from utils.media_types import is_image, is_video
 
 POST_KINDS = ("text", "show", "release")
 MAX_FOLLOWS = 500
+
+# Foto/vídeo anexado a um post (link e YouTube já são campos nativos do post
+# — link_url/youtube_id — não passam por post_media). Mesmo padrão de
+# MEDIA_KINDS/MAX_MEDIA_PER_POST de band_board_service.py, limite menor por
+# ser post de feed, não anúncio de banda.
+POST_MEDIA_KINDS = ("photo", "video")
+MAX_POST_MEDIA = 4
+MAX_POST_MEDIA_FILE_BYTES = 50 * 1024 * 1024  # 50 MB
 
 # colunas + joins de leitura — usados por todas as listagens de post
 _POST_SELECT = """
@@ -58,12 +69,39 @@ def _parse_cursor(value: str | None):
         raise SocialError("Cursor inválido.", "SOCIAL_CURSOR_INVALID") from None
 
 
+def _media_row_to_dict(row: dict) -> dict:
+    # blob_url nunca é exposto pro frontend (mesmo padrão de band_post_media)
+    # — foto/vídeo são buscados via GET .../media/<id>/file, proxied pelo backend.
+    return {
+        "id": str(row["id"]), "kind": row["kind"],
+        "content_type": row["content_type"], "size_bytes": row["size_bytes"],
+        "created_at": row["created_at"].isoformat(),
+    }
+
+
 class FeedService:
     def __init__(self, bands=None):
         self.bands = bands  # BandService (injetado)
 
     # ---------- montagem ----------
-    def _post_dict(self, r: dict, viewer_id: str | None, can_delete: bool) -> dict:
+    def _media_for_post(self, conn, post_id: str) -> list[dict]:
+        rows = conn.execute(
+            "select * from post_media where post_id=%s order by created_at", (post_id,),
+        ).fetchall()
+        return [_media_row_to_dict(r) for r in rows]
+
+    def _media_for_posts(self, conn, post_ids: list[str]) -> dict[str, list[dict]]:
+        if not post_ids:
+            return {}
+        rows = conn.execute(
+            "select * from post_media where post_id = any(%s::uuid[]) order by created_at", (post_ids,),
+        ).fetchall()
+        grouped: dict[str, list[dict]] = {pid: [] for pid in post_ids}
+        for r in rows:
+            grouped.setdefault(str(r["post_id"]), []).append(_media_row_to_dict(r))
+        return grouped
+
+    def _post_dict(self, r: dict, viewer_id: str | None, can_delete: bool, media: list[dict] | None = None) -> dict:
         is_band = r["band_id"] is not None
         return {
             "id": str(r["id"]), "kind": r["kind"], "body": r["body"], "link_url": r["link_url"],
@@ -71,7 +109,7 @@ class FeedService:
             "author": ({"type": "band", "handle": r["band_handle"], "name": r["band_name"]} if is_band
                        else {"type": "user", "handle": r["user_handle"], "name": r["user_name"]}),
             "likes": r["like_count"], "comments": r["comment_count"], "liked": bool(r["liked"]),
-            "can_delete": can_delete,
+            "can_delete": can_delete, "media": media if media is not None else [],
         }
 
     def _can_delete(self, conn, r: dict, viewer_id: str | None, is_platform_admin: bool) -> bool:
@@ -125,7 +163,7 @@ class FeedService:
                 (user_id, band_id, kind, body, link, yt),
             ).fetchone()
             r = self._one(conn, str(row["id"]), user_id)
-            return self._post_dict(r, user_id, True)
+            return self._post_dict(r, user_id, True, [])
 
     def delete_post(self, user_id: str, post_id: str, is_platform_admin: bool = False) -> None:
         with db.get_pool().connection() as conn:
@@ -141,7 +179,8 @@ class FeedService:
             r = self._one(conn, post_id, viewer_id)
             if not r:
                 raise NotFound("Post não encontrado.", "SOCIAL_POST_NOT_FOUND")
-            return self._post_dict(r, viewer_id, self._can_delete(conn, r, viewer_id, is_platform_admin))
+            media = self._media_for_post(conn, str(r["id"]))
+            return self._post_dict(r, viewer_id, self._can_delete(conn, r, viewer_id, is_platform_admin), media)
 
     def feed(self, viewer_id: str | None, scope: str = "explore", handle: str = "", cursor: str | None = None,
              limit: int = 20, is_platform_admin: bool = False) -> dict:
@@ -173,7 +212,9 @@ class FeedService:
             ).fetchall()
             more = len(rows) > limit
             rows = rows[:limit]
-            items = [self._post_dict(r, viewer_id, self._can_delete(conn, r, viewer_id, is_platform_admin)) for r in rows]
+            media_by_post = self._media_for_posts(conn, [str(r["id"]) for r in rows])
+            items = [self._post_dict(r, viewer_id, self._can_delete(conn, r, viewer_id, is_platform_admin),
+                                      media_by_post.get(str(r["id"]), [])) for r in rows]
         return {"items": items, "next_cursor": _cursor(rows[-1]["created_at"], rows[-1]["id"]) if (rows and more) else None}
 
     # ---------- curtidas ----------
@@ -188,6 +229,77 @@ class FeedService:
                 conn.execute("delete from post_likes where post_id = %s and user_id = %s", (r["id"], user_id))
             n = conn.execute("select count(*) as n from post_likes where post_id = %s", (r["id"],)).fetchone()["n"]
         return {"liked": bool(liked), "likes": n}
+
+    # ---------- mídia anexada ----------
+    def _require_owned_post(self, conn, user_id: str, post_id: str, is_platform_admin: bool = False) -> dict:
+        row = conn.execute(
+            "select id, author_id, band_id from posts where id=%s and deleted_at is null", (post_id,),
+        ).fetchone()
+        if not row:
+            raise NotFound("Post não encontrado.", "SOCIAL_POST_NOT_FOUND")
+        if is_platform_admin:
+            return row
+        if row["author_id"] != user_id and not (row["band_id"] and self.bands.is_active_admin(conn, row["band_id"], user_id)):
+            raise Forbidden()
+        return row
+
+    def add_media_file(self, user_id: str, post_id: str, kind: str, file_storage) -> dict:
+        if kind not in POST_MEDIA_KINDS:
+            raise SocialError("Tipo de mídia inválido.", "SOCIAL_MEDIA_KIND_INVALID")
+        content_type = file_storage.mimetype or ""
+        valid = is_image(content_type) if kind == "photo" else is_video(content_type)
+        if not valid:
+            raise SocialError(
+                f"Arquivo não parece ser um(a) {'imagem' if kind == 'photo' else 'vídeo'} válido(a) "
+                f"(formatos aceitos: {'PNG, JPEG, WebP, GIF' if kind == 'photo' else 'MP4, WebM, OGG, MOV'}).",
+                "SOCIAL_MEDIA_TYPE_MISMATCH",
+            )
+        data = file_storage.read()
+        if len(data) > MAX_POST_MEDIA_FILE_BYTES:
+            raise SocialError(
+                f"Arquivo maior que o limite de {MAX_POST_MEDIA_FILE_BYTES // (1024 * 1024)} MB.", "SOCIAL_MEDIA_TOO_LARGE",
+            )
+        # dono + limite de itens checados ANTES do upload pro Blob (rede,
+        # potencialmente lento) — mesmo padrão de BandBoardService.add_media_file.
+        with db.get_pool().connection() as conn:
+            self._require_owned_post(conn, user_id, post_id)
+            count = conn.execute("select count(*) as n from post_media where post_id=%s", (post_id,)).fetchone()["n"]
+            if count >= MAX_POST_MEDIA:
+                raise SocialError(f"Limite de {MAX_POST_MEDIA} fotos/vídeos por post atingido.", "SOCIAL_MEDIA_LIMIT_REACHED")
+        ext = Path(file_storage.filename or "").suffix.lower() or (".jpg" if kind == "photo" else ".mp4")
+        pathname = f"posts/{user_id}/{post_id}/{kind}-{uuid.uuid4().hex[:8]}{ext}"
+        blob = blob_client.put(pathname, data, content_type or None)
+        with db.get_pool().connection() as conn:
+            row = conn.execute(
+                """insert into post_media (post_id, kind, blob_url, content_type, size_bytes)
+                   values (%s, %s, %s, %s, %s) returning *""",
+                (post_id, kind, blob["url"], content_type, len(data)),
+            ).fetchone()
+        return _media_row_to_dict(row)
+
+    def delete_media(self, user_id: str, post_id: str, media_id: str, is_platform_admin: bool = False) -> None:
+        with db.get_pool().connection() as conn:
+            self._require_owned_post(conn, user_id, post_id, is_platform_admin)
+            row = conn.execute(
+                "select blob_url from post_media where id=%s and post_id=%s", (media_id, post_id),
+            ).fetchone()
+            if not row:
+                return
+            conn.execute("delete from post_media where id=%s and post_id=%s", (media_id, post_id))
+        if row["blob_url"]:
+            blob_client.delete([row["blob_url"]])
+
+    def media_bytes(self, post_id: str, media_id: str) -> tuple[bytes, str] | None:
+        """Pública (mesmo padrão de BandBoardService.media_bytes) — sem
+        checagem de visibilidade do post: link já publicado continua servível."""
+        with db.get_pool().connection() as conn:
+            row = conn.execute(
+                "select blob_url, content_type from post_media where id=%s and post_id=%s", (media_id, post_id),
+            ).fetchone()
+        if not row or not row["blob_url"]:
+            return None
+        data, _ = blob_client.get(row["blob_url"])
+        return data, row["content_type"] or "application/octet-stream"
 
     # ---------- comentários ----------
     def add_comment(self, user_id: str, post_id: str, body) -> dict:

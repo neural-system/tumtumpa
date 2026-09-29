@@ -600,6 +600,22 @@ create table if not exists post_comments (
 );
 create index if not exists idx_post_comments_post on post_comments (post_id, created_at);
 
+-- Foto/vídeo anexado a um post do feed (melhoria posterior à Fase 10) —
+-- mesmo padrão de band_post_media: upload de verdade, bytes no Blob
+-- privado, sempre servido via proxy do backend. Link e vídeo do YouTube já
+-- são campos nativos de posts (link_url/youtube_id), então aqui só
+-- existe `kind` photo/video (ver POST_MEDIA_KINDS em feed_service.py).
+create table if not exists post_media (
+    id           uuid primary key default gen_random_uuid(),
+    post_id      uuid not null references posts(id) on delete cascade,
+    kind         text not null,
+    blob_url     text not null,
+    content_type text not null default '',
+    size_bytes   bigint not null default 0,
+    created_at   timestamptz not null default now()
+);
+create index if not exists idx_post_media_post on post_media(post_id, created_at);
+
 create table if not exists follows (
     follower_id text not null references users(id) on delete cascade,
     -- 'user' | 'band'

@@ -364,6 +364,121 @@ def test_delete_post_permissions(svc, users):
     svc["feed"].delete_post("u3", p2["id"], is_platform_admin=True)  # admin da plataforma
 
 
+class _FakeFile:
+    """Duck-type mínimo de werkzeug.FileStorage — mesmo padrão de
+    test_band_board_service.py."""
+    def __init__(self, filename, content=b"fake-bytes", mimetype="image/png"):
+        self.filename = filename
+        self.mimetype = mimetype
+        self._content = content
+
+    def read(self):
+        return self._content
+
+
+def test_add_media_photo_and_video(svc, users, fake_blob_store):
+    _publish(svc, "u1", "joao")
+    p = svc["feed"].create_post("u1", {"body": "oi"})
+    photo = svc["feed"].add_media_file("u1", p["id"], "photo", _FakeFile("foto.jpg", b"jpg-bytes", "image/jpeg"))
+    video = svc["feed"].add_media_file("u1", p["id"], "video", _FakeFile("clipe.mp4", b"mp4-bytes", "video/mp4"))
+
+    assert photo["kind"] == "photo"
+    assert video["kind"] == "video" and video["size_bytes"] == len(b"mp4-bytes")
+
+    fetched = svc["feed"].get_post(p["id"], "u1")
+    assert {m["id"] for m in fetched["media"]} == {photo["id"], video["id"]}
+    assert len(svc["feed"].feed(None)["items"][0]["media"]) == 2
+
+    data, content_type = svc["feed"].media_bytes(p["id"], photo["id"])
+    assert data == b"jpg-bytes" and content_type == "image/jpeg"
+
+
+def test_add_media_file_rejects_invalid_kind(svc, users, fake_blob_store):
+    _publish(svc, "u1", "joao")
+    p = svc["feed"].create_post("u1", {"body": "oi"})
+    with pytest.raises(SocialError):
+        svc["feed"].add_media_file("u1", p["id"], "link", _FakeFile("x.jpg"))
+
+
+def test_add_media_file_rejects_mimetype_mismatch(svc, users, fake_blob_store):
+    _publish(svc, "u1", "joao")
+    p = svc["feed"].create_post("u1", {"body": "oi"})
+    with pytest.raises(SocialError):
+        svc["feed"].add_media_file("u1", p["id"], "photo", _FakeFile("x.mp4", mimetype="video/mp4"))
+
+
+def test_add_media_file_rejects_oversized(svc, users, fake_blob_store, monkeypatch):
+    from services import feed_service
+    monkeypatch.setattr(feed_service, "MAX_POST_MEDIA_FILE_BYTES", 10)
+    _publish(svc, "u1", "joao")
+    p = svc["feed"].create_post("u1", {"body": "oi"})
+    with pytest.raises(SocialError):
+        svc["feed"].add_media_file("u1", p["id"], "photo", _FakeFile("x.jpg", b"x" * 100))
+
+
+def test_add_media_enforces_limit_per_post(svc, users, fake_blob_store, monkeypatch):
+    from services import feed_service
+    monkeypatch.setattr(feed_service, "MAX_POST_MEDIA", 2)
+    _publish(svc, "u1", "joao")
+    p = svc["feed"].create_post("u1", {"body": "oi"})
+    svc["feed"].add_media_file("u1", p["id"], "photo", _FakeFile("a.jpg"))
+    svc["feed"].add_media_file("u1", p["id"], "photo", _FakeFile("b.jpg"))
+    with pytest.raises(SocialError):
+        svc["feed"].add_media_file("u1", p["id"], "photo", _FakeFile("c.jpg"))
+
+
+def test_only_author_or_band_admin_can_manage_media(svc, users, fake_blob_store):
+    _publish(svc, "u1", "joao")
+    _publish(svc, "u2", "maria")
+    p = svc["feed"].create_post("u1", {"body": "oi"})
+    with pytest.raises(Forbidden):
+        svc["feed"].add_media_file("u2", p["id"], "photo", _FakeFile("x.jpg"))
+
+    _band(svc, uid="u1", handle="banda_um", publish_with="u2", login="outro")
+    band_post = svc["feed"].create_post("u1", {"body": "show!", "band": "banda_um"})
+    admin_upload = svc["feed"].add_media_file("u2", band_post["id"], "photo", _FakeFile("x.jpg"))  # integrante admin da banda
+    assert admin_upload["kind"] == "photo"
+
+
+def test_delete_media_removes_it_and_blob(svc, users, fake_blob_store):
+    _publish(svc, "u1", "joao")
+    p = svc["feed"].create_post("u1", {"body": "oi"})
+    photo = svc["feed"].add_media_file("u1", p["id"], "photo", _FakeFile("foto.jpg"))
+    assert len(fake_blob_store) == 1
+
+    with pytest.raises(Forbidden):
+        svc["feed"].delete_media("u2", p["id"], photo["id"])
+    svc["feed"].delete_media("u1", p["id"], photo["id"])
+    assert svc["feed"].get_post(p["id"], "u1")["media"] == []
+    assert len(fake_blob_store) == 0
+
+
+def test_delete_media_by_platform_admin(svc, users, fake_blob_store):
+    _publish(svc, "u1", "joao")
+    p = svc["feed"].create_post("u1", {"body": "oi"})
+    photo = svc["feed"].add_media_file("u1", p["id"], "photo", _FakeFile("foto.jpg"))
+    svc["feed"].delete_media("u3", p["id"], photo["id"], is_platform_admin=True)
+    assert svc["feed"].get_post(p["id"], "u1")["media"] == []
+
+
+def test_media_bytes_none_when_missing(svc, users):
+    _publish(svc, "u1", "joao")
+    p = svc["feed"].create_post("u1", {"body": "oi"})
+    assert svc["feed"].media_bytes(p["id"], "00000000-0000-0000-0000-000000000000") is None
+
+
+def test_deleting_user_cascades_post_media(svc, users, fake_blob_store):
+    _publish(svc, "u1", "joao")
+    p = svc["feed"].create_post("u1", {"body": "oi"})
+    svc["feed"].add_media_file("u1", p["id"], "photo", _FakeFile("foto.jpg"))
+    with db.get_pool().connection() as conn:
+        n = conn.execute("select count(*) as n from post_media").fetchone()["n"]
+        assert n == 1
+        conn.execute("delete from users where id=%s", ("u1",))
+        n = conn.execute("select count(*) as n from post_media").fetchone()["n"]
+        assert n == 0
+
+
 def test_likes_are_idempotent_and_counted(svc, users):
     _publish(svc, "u1", "joao")
     p = svc["feed"].create_post("u1", {"body": "oi"})
