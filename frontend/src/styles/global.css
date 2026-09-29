@@ -411,6 +411,9 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 /* rótulo curto ao lado de um controle numa .row (ex.: "Transpor:" antes dos
    botões de semitom) — mesmo tamanho/cor do .meta de .song-row */
 .inline-label { color: var(--muted); font-size: 13px; }
+/* nota/dica pequena e muted (barras de ferramentas, hints) — mesmo tamanho
+   usado em ~15 lugares do app (SyncWorkspace, Tuner, PedalSetup, Metronome...) */
+.muted-sm { color: var(--muted); font-size: 12.5px; }
 .fav-star { color: var(--accent-text); }
 .plan-badge { text-decoration: none; padding: 5px 12px; font: 700 11px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; transition: 120ms; }
 .plan-badge:hover { background: var(--accent); color: var(--bg, #fff); }

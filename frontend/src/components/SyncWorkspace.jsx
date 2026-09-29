@@ -338,9 +338,9 @@ export default function SyncWorkspace({ body, markLineTime, trackBlob, trackUrl,
 
   return (
     <div>
-      <div className="row" style={{ justifyContent: 'space-between', marginBottom: 10, flexWrap: 'wrap' }}>
+      <div className="row between" style={{ marginBottom: 10 }}>
         <h3 style={{ margin: 0 }}>{t('title')}</h3>
-        <span style={{ color: 'var(--muted)', fontSize: 12.5 }}>
+        <span className="muted-sm">
           {t('hint.clickStep')} ·{' '}
           {t('hint.dragMarker')} ·{' '}
           <Trans i18nKey="syncWorkspace:hint.spaceMark" components={{ strong: <strong /> }} />
@@ -351,7 +351,7 @@ export default function SyncWorkspace({ body, markLineTime, trackBlob, trackUrl,
 
       {peaks && duration != null && (
         <>
-          <div className="row" style={{ marginBottom: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="row" style={{ marginBottom: 10 }}>
             <button type="button" className="btn primary" onClick={togglePlay}>
               {playing ? t('pause') : t('play')}
             </button>
@@ -359,17 +359,17 @@ export default function SyncWorkspace({ body, markLineTime, trackBlob, trackUrl,
             <span ref={timeLabelRef} style={{ color: 'var(--muted)', fontSize: 13, fontVariantNumeric: 'tabular-nums' }}>
               {formatTime(0)} / {formatTime(duration)}
             </span>
-            <span style={{ width: 1, alignSelf: 'stretch', background: 'var(--stroke)' }} />
-            <span style={{ color: 'var(--muted)', fontSize: 12.5 }}>{t('speed')}</span>
+            <span className="toolbar-divider" />
+            <span className="muted-sm">{t('speed')}</span>
             {PLAYBACK_RATES.map((r) => (
               <button key={r} type="button" className={`btn ${playbackRate === r ? 'primary' : 'ghost'}`}
                 onClick={() => setPlaybackRate(r)}>{r}x</button>
             ))}
-            <span style={{ width: 1, alignSelf: 'stretch', background: 'var(--stroke)' }} />
-            <span style={{ color: 'var(--muted)', fontSize: 12.5 }}>{t('zoom')}</span>
+            <span className="toolbar-divider" />
+            <span className="muted-sm">{t('zoom')}</span>
             <input type="range" min="1" max="6" step="0.5" value={zoom}
               onChange={(e) => setZoom(Number(e.target.value))} style={{ width: 110 }} />
-            <span style={{ color: 'var(--muted)', fontSize: 12.5, minWidth: 26 }}>{zoom}x</span>
+            <span className="muted-sm" style={{ minWidth: 26 }}>{zoom}x</span>
           </div>
 
           <div ref={waveScrollRef} className="sync-wave-scroll" style={{ marginBottom: 14 }}>
@@ -418,7 +418,7 @@ export default function SyncWorkspace({ body, markLineTime, trackBlob, trackUrl,
           </div>
 
           <details open style={{ marginBottom: 14 }}>
-            <summary style={{ cursor: 'pointer', color: 'var(--muted)', fontSize: 12.5, marginBottom: 8 }}>
+            <summary className="muted-sm" style={{ cursor: 'pointer', marginBottom: 8 }}>
               {t('stagePreview')}
             </summary>
             <div ref={sweepRootRef} style={{ background: '#000', borderRadius: 8, padding: '10px 18px', overflow: 'hidden', marginTop: 8 }}>
@@ -428,13 +428,13 @@ export default function SyncWorkspace({ body, markLineTime, trackBlob, trackUrl,
         </>
       )}
 
-      <div className="row" style={{ marginBottom: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+      <div className="row" style={{ marginBottom: 10 }}>
         <button type="button" className="btn primary" onClick={mark}>
           {t('markStep')} {allSteps.length ? stepIndex + 1 : 0}/{allSteps.length}
         </button>
         <button type="button" className="btn" onClick={() => setStepIndex((i) => Math.max(0, i - 1))}>{t('previous')}</button>
         <button type="button" className="btn" onClick={() => setStepIndex((i) => Math.min(allSteps.length - 1, i + 1))}>{t('next')}</button>
-        <span style={{ color: 'var(--muted)', fontSize: 12.5 }}>
+        <span className="muted-sm">
           {t('markedCount', { marked: markedCount, total: markableSteps.length })}
         </span>
       </div>
@@ -546,7 +546,7 @@ function BlockStepRow({ step, selected, active, expanded, onToggleExpand, onSele
             <div key={i} className="sync-step-block-line">
               <span>{l.text || ' '}</span>
               {timeChip(l.t)}
-              <button type="button" className="btn" style={{ padding: '2px 8px', fontSize: 11.5 }}
+              <button type="button" className="btn xs"
                 onClick={(e) => {
                   e.stopPropagation()
                   if (audioRef.current) markLineTime(l.raw, audioRef.current.currentTime)
