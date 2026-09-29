@@ -1310,6 +1310,15 @@ a.cm-tile:hover { border-color: color-mix(in srgb, var(--accent) 65%, var(--stro
      cifra no modo retrato — o assistente de acordes some (a preferência
      continua salva, só não é exibida aqui); ver KaraokeChordSidebar.jsx. */
   .k-chord-sidebar { display: none; }
+  /* cifra caber na tela sem cortar: a fonte menor cabe mais colunas de
+     texto monoespaçado por linha — o alinhamento acorde/letra depende de
+     largura de caractere fixa, então reduzir a fonte (não a estrutura) é
+     o jeito de caber mais sem quebrar esse alinhamento. Ainda pode rolar
+     na horizontal em linhas muito longas (overflow-x: auto já cobre isso). */
+  .chord-sheet { font-size: 12.5px; }
+}
+@media (max-width: 380px) {
+  .chord-sheet { font-size: 11px; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
