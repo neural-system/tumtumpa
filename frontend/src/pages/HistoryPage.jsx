@@ -10,7 +10,7 @@ export default function HistoryPage() {
     <>
       <h1 className="page-title">{t('title')}</h1>
       <div className="page-sub">{t('subtitle')}</div>
-      <div className="card" style={{ padding: 0 }}>
+      <div className="card flush">
         {!data?.recent.length && <div className="empty">{t('empty')}</div>}
         {data?.recent.map((s) => (
           <Link key={s.slug} to={`/musicas/${s.slug}`} className="song-row" style={{ gridTemplateColumns: '1fr auto' }}>

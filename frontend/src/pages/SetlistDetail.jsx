@@ -333,7 +333,7 @@ export default function SetlistDetail() {
         </div>
       )}
 
-      <div className="card" style={{ padding: 0 }}>
+      <div className="card flush">
         {items.length === 0 && <div className="empty">{t('empty')}</div>}
         {items.map((item, i) => {
           if (item.song) playableIndex += 1

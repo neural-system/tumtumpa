@@ -87,7 +87,7 @@ export default function Songs() {
         )}
       </div>
 
-      <div className="card" style={{ padding: 0 }}>
+      <div className="card flush">
         {items.length === 0 && <div className="empty">{t('empty')}</div>}
         {items.length > 0 && (
           <VirtualList items={items} rowHeight={58} height={Math.min(640, items.length * 58)}

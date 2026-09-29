@@ -173,7 +173,7 @@ export default function Metronome() {
         </div>
         <div className="metronome-tempo-marking">{tempoMarking(bpm)}</div>
 
-        <div className="row" style={{ gap: 10, marginBottom: 18, alignItems: 'center' }}>
+        <div className="row" style={{ gap: 10, marginBottom: 18 }}>
           <button type="button" className="btn metronome-step" onClick={() => stepBpm(-1)} aria-label="-1 BPM">−</button>
           <input
             type="range" min={MIN_BPM} max={MAX_BPM} value={bpm}
@@ -210,7 +210,7 @@ export default function Metronome() {
           </button>
           <button className="btn" style={{ flex: 1 }} onClick={tapTempo}>{t('tapTempo')}</button>
         </div>
-        <p style={{ color: 'var(--muted)', fontSize: 12.5, marginTop: 10, textAlign: 'center' }}>
+        <p className="muted-sm" style={{ marginTop: 10, textAlign: 'center' }}>
           {t('tapHint')}
         </p>
         {token && <p style={{ color: 'var(--muted)', fontSize: 12, marginTop: 4, textAlign: 'center' }}>{t('savedHint')}</p>}

@@ -84,7 +84,7 @@ export default function Setlists() {
       {showChordAssistant && <ChordAssistantPanel onClose={() => setShowChordAssistant(false)} />}
 
       <h2 className="section-heading">{t('myLists')}</h2>
-      <div className="card" style={{ padding: 0, marginBottom: 28 }}>
+      <div className="card flush" style={{ marginBottom: 28 }}>
         {!mine.length && <div className="empty">{t('emptyMine')}</div>}
         {mine.map((s) => (
           <div key={s.id}>
@@ -97,7 +97,7 @@ export default function Setlists() {
                   <div className="meta">{t('itemCount', { count: s.count })}</div>
                 </Link>
               )}
-              <label className="row" style={{ gap: 6, alignItems: 'center', cursor: 'pointer' }}>
+              <label className="row check">
                 <input type="checkbox" checked={s.shared}
                   onChange={(e) => toggleShare.mutate({ id: s.id, value: e.target.checked })} />
                 {t('shared')}
@@ -123,7 +123,7 @@ export default function Setlists() {
       </div>
 
       <h2 className="section-heading">{t('followingLists')}</h2>
-      <div className="card" style={{ padding: 0 }}>
+      <div className="card flush">
         {!following.length && <div className="empty">{t('emptyFollowing')}</div>}
         {following.map((s) => (
           <div key={s.id} className="song-row setlist-row">
@@ -253,14 +253,14 @@ function ChordAssistantPanel({ onClose }) {
 
   return (
     <div className="card no-print" style={{ marginBottom: 18 }}>
-      <div className="row" style={{ justifyContent: 'space-between', marginBottom: 6 }}>
+      <div className="row between" style={{ marginBottom: 6 }}>
         <strong>🎸 {t('chordAssistant.title')}</strong>
         <button className="btn ghost" onClick={onClose}>{t('close')}</button>
       </div>
       <div className="page-sub" style={{ marginBottom: 12 }}>{t('chordAssistant.hint')}</div>
       <div className="row" style={{ gap: 18 }}>
         {CHORD_INSTRUMENTS.map((inst) => (
-          <label key={inst} className="row" style={{ gap: 6, alignItems: 'center', cursor: 'pointer' }}>
+          <label key={inst} className="row check">
             <input type="checkbox" checked={selected.includes(inst)} onChange={() => toggle(inst)} />
             {t(`chordAssistant.${inst}`)}
           </label>

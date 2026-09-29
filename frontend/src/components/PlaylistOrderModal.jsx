@@ -152,22 +152,21 @@ export default function PlaylistOrderModal({ setlistId, items, onApply, onClose 
     return (
       <Modal title={t('orderModalTitle')} onClose={onClose} maxWidth={480}>
         <p className="page-sub" style={{ marginTop: 0 }}>{t('ritmoOrderHint')}</p>
-        <div style={{ maxHeight: '45vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <div className="modal-scroll-list" style={{ maxHeight: '45vh' }}>
           {ritmoOrder.map((ritmo, i) => (
-            <div key={ritmo} className="row"
-              style={{ gap: 10, padding: '6px 10px', borderRadius: 8, background: 'var(--glass)', flexWrap: 'nowrap' }}>
+            <div key={ritmo} className="row reorder-row">
               <span className="chip" style={{ minWidth: 22, textAlign: 'center', flexShrink: 0 }}>{i + 1}</span>
               <div className="title" style={{ flex: 1 }}>{ritmo}</div>
-              <div style={{ display: 'flex', gap: 2 }}>
-                <button type="button" className="btn ghost" style={{ padding: '1px 6px', fontSize: 11 }}
+              <div className="mini-btn-pair">
+                <button type="button" className="btn ghost xs"
                   disabled={i === 0} onClick={() => moveRitmo(i, i - 1)}>▲</button>
-                <button type="button" className="btn ghost" style={{ padding: '1px 6px', fontSize: 11 }}
+                <button type="button" className="btn ghost xs"
                   disabled={i === ritmoOrder.length - 1} onClick={() => moveRitmo(i, i + 1)}>▼</button>
               </div>
             </div>
           ))}
         </div>
-        <div className="row" style={{ marginTop: 16, justifyContent: 'flex-end' }}>
+        <div className="row end" style={{ marginTop: 16 }}>
           <button className="btn ghost" onClick={() => setRitmoPickerOpen(false)}>{t('cancel')}</button>
           <button className="btn primary" onClick={applyRitmoOrder}>{t('applyRitmoOrder')}</button>
         </div>
@@ -177,7 +176,7 @@ export default function PlaylistOrderModal({ setlistId, items, onApply, onClose 
 
   return (
     <Modal title={t('orderModalTitle')} onClose={onClose} maxWidth={640}>
-      <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
+      <div className="row" style={{ gap: 6, marginBottom: 16 }}>
         {FORMATS.map((f) => (
           <button key={f.id} type="button" className={`btn${formatId === f.id ? ' primary' : ' ghost'}`}
             onClick={() => applyFormat(f.id)}>
@@ -191,25 +190,24 @@ export default function PlaylistOrderModal({ setlistId, items, onApply, onClose 
         </button>
       </div>
 
-      <div style={{ maxHeight: '45vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <div className="modal-scroll-list" style={{ maxHeight: '45vh' }}>
         {previewGroups.map((group, i) => (
-          <div key={group.key} className="row"
-            style={{ gap: 10, padding: '6px 10px', borderRadius: 8, background: 'var(--glass)', flexWrap: 'nowrap' }}>
+          <div key={group.key} className="row reorder-row">
             <span className="chip" style={{ minWidth: 22, textAlign: 'center', flexShrink: 0 }}>{i + 1}</span>
-            <div className="title" style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <div className="title truncate" style={{ flex: 1 }}>
               {groupLabel(group.members)}
             </div>
-            <div style={{ display: 'flex', gap: 2 }}>
-              <button type="button" className="btn ghost" style={{ padding: '1px 6px', fontSize: 11 }}
+            <div className="mini-btn-pair">
+              <button type="button" className="btn ghost xs"
                 disabled={i === 0} onClick={() => moveGroup(i, i - 1)}>▲</button>
-              <button type="button" className="btn ghost" style={{ padding: '1px 6px', fontSize: 11 }}
+              <button type="button" className="btn ghost xs"
                 disabled={i === previewGroups.length - 1} onClick={() => moveGroup(i, i + 1)}>▼</button>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="row" style={{ marginTop: 16, justifyContent: 'flex-end' }}>
+      <div className="row end" style={{ marginTop: 16 }}>
         <button className="btn ghost" onClick={onClose}>{t('cancel')}</button>
         <button className="btn primary" onClick={() => onApply(previewGroups.flatMap((g) => g.members))}>{t('applyOrder')}</button>
       </div>

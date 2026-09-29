@@ -86,7 +86,7 @@ export default function PublicFeedback() {
 
       <div className="field" style={{ marginTop: 18, textAlign: 'left' }}>
         <label>{t('ratingLabel')}</label>
-        <div className="row" style={{ gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
+        <div className="row center" style={{ gap: 6 }}>
           {NOTAS.map((n) => (
             <button key={n} type="button" className={`btn${nota === n ? ' primary' : ' ghost'}`}
               style={{ minWidth: 38, padding: '8px 0' }} onClick={() => setNota(n)}>
@@ -111,7 +111,7 @@ export default function PublicFeedback() {
         {submit.error?.response?.data?.error_code === 'FEEDBACK_NO_ACTIVE_SONG' ? t('errorNoActiveSong') : t('errorGeneric')}
       </div>}
 
-      <div className="row" style={{ marginTop: 18, justifyContent: 'center' }}>
+      <div className="row center" style={{ marginTop: 18 }}>
         <button className="btn primary" disabled={!nota || submit.isPending} onClick={() => submit.mutate()}>
           {submit.isPending ? t('submitting') : t('submit')}
         </button>
