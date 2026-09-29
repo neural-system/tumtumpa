@@ -280,6 +280,10 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .row.stretch { align-items: stretch; }
 .row.top { align-items: flex-start; }
 .row.check { gap: 6px; cursor: pointer; }
+.row.end { justify-content: flex-end; }
+/* trunca texto de uma linha com reticências — repetido em várias listas
+   compactas (MedleyModal, PlaylistOrderModal, bandBoardShared...) */
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .btn.xs { padding: 1px 6px; font-size: 11px; line-height: 1.4; }
 /* card de largura flexível numa .row de cards lado a lado (Dashboard,
    AdminTools, AdminSales) — cresce até caber, empilha em telas estreitas */
@@ -1002,6 +1006,12 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 }
 .modal-close:hover { background: var(--glass); color: var(--text); }
 .modal-body { padding: 20px; }
+
+/* ---------- medley (components/MedleyModal.jsx) ---------- */
+.modal-column-title { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+.modal-scroll-list { max-height: 50vh; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+.medley-pick-row { gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm); flex-wrap: nowrap; }
+.medley-group-row { gap: 10px; padding: 6px 10px; border-radius: var(--radius-sm); background: var(--glass); }
 
 /* ---------- metrônomo ---------- */
 .metronome-pendulum-wrap { position: relative; height: 108px; margin: 4px auto 18px; width: 100%; }

@@ -40,9 +40,9 @@ export default function MedleyModal({ items, isEligible, medleyGroups, onUngroup
 
   const createColumn = (
     <div style={{ minWidth: 0, flex: '1 1 320px' }}>
-      {hasGroups && <h4 style={{ margin: '0 0 8px', fontSize: 13, color: 'var(--muted)' }}>{t('createMedleyNewSection')}</h4>}
+      {hasGroups && <h4 className="modal-column-title">{t('createMedleyNewSection')}</h4>}
       <p className="page-sub" style={{ marginTop: 0 }}>{t('medleyModalHint')}</p>
-      <div style={{ maxHeight: '50vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <div className="modal-scroll-list">
         {items.map((item, idx) => {
           const eligible = isEligible(item)
           const reason = eligible ? null : reasonFor(item)
@@ -50,9 +50,8 @@ export default function MedleyModal({ items, isEligible, medleyGroups, onUngroup
           return (
             <div key={item.ref + idx}
               onClick={() => eligible && toggle(idx)}
-              className="row"
+              className="row medley-pick-row"
               style={{
-                gap: 10, padding: '8px 10px', borderRadius: 8, flexWrap: 'nowrap',
                 cursor: eligible ? 'pointer' : 'default',
                 opacity: eligible ? 1 : 0.45,
                 background: chosenAt >= 0 ? 'var(--accent-soft)' : 'transparent',
@@ -61,10 +60,10 @@ export default function MedleyModal({ items, isEligible, medleyGroups, onUngroup
                 {chosenAt >= 0 ? chosenAt + 1 : idx + 1}
               </span>
               <div style={{ minWidth: 0, flex: 1 }}>
-                <div className="title" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <div className="title truncate">
                   {item.song?.titulo || item.ref}
                 </div>
-                <div className="meta" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <div className="meta truncate">
                   {item.song?.interprete || ''}
                   {reason && <span style={{ marginLeft: 6 }}>· {reason}</span>}
                 </div>
@@ -81,12 +80,11 @@ export default function MedleyModal({ items, isEligible, medleyGroups, onUngroup
       {hasGroups ? (
         <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
           <div style={{ minWidth: 0, flex: '1 1 280px' }}>
-            <h4 style={{ margin: '0 0 8px', fontSize: 13, color: 'var(--muted)' }}>{t('currentMedleysTitle')}</h4>
-            <div style={{ maxHeight: '50vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <h4 className="modal-column-title">{t('currentMedleysTitle')}</h4>
+            <div className="modal-scroll-list">
               {medleyGroups.map((group) => (
-                <div key={group.medleyId} className="row"
-                  style={{ gap: 10, padding: '6px 10px', borderRadius: 8, background: 'var(--glass)', flexWrap: 'wrap' }}>
-                  <div style={{ minWidth: 0, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <div key={group.medleyId} className="row medley-group-row">
+                  <div className="truncate" style={{ minWidth: 0, flex: 1 }}>
                     🔗 {group.members.map((m) => m.song?.titulo || m.ref).join(', ')}
                   </div>
                   <button type="button" className="btn ghost" style={{ flexShrink: 0 }}
@@ -100,7 +98,7 @@ export default function MedleyModal({ items, isEligible, medleyGroups, onUngroup
           {createColumn}
         </div>
       ) : createColumn}
-      <div className="row" style={{ marginTop: 16, justifyContent: 'flex-end' }}>
+      <div className="row end" style={{ marginTop: 16 }}>
         <button className="btn ghost" onClick={onClose}>{t('cancel')}</button>
         <button className="btn primary" disabled={order.length < 2} onClick={() => onConfirm(order)}>
           {t('confirmMedley')}
