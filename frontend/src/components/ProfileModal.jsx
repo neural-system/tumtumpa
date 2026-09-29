@@ -49,7 +49,7 @@ function PasswordSection({ t }) {
       {(localError || save.isError) && (
         <p className="error-text">{localError || save.error?.response?.data?.error || t('genericError')}</p>
       )}
-      {success && <p style={{ color: 'var(--ok, #46c48a)', fontSize: 13, marginTop: 8 }}>{t('password.success')}</p>}
+      {success && <p className="success-text">{t('password.success')}</p>}
       <button type="submit" className="btn primary" disabled={save.isPending}>
         {save.isPending ? t('password.saving') : t('password.submit')}
       </button>
@@ -77,7 +77,7 @@ function EmailSection({ t, currentEmail }) {
 
   return (
     <>
-      <p style={{ color: 'var(--muted)', margin: '0 0 12px' }}>
+      <p className="card-desc">
         {t('email.current')}: {currentEmail || t('email.none')}
       </p>
       <form onSubmit={submit}>
@@ -90,7 +90,7 @@ function EmailSection({ t, currentEmail }) {
           <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </div>
         {save.isError && <p className="error-text">{save.error?.response?.data?.error || t('genericError')}</p>}
-        {success && <p style={{ color: 'var(--ok, #46c48a)', fontSize: 13, marginTop: 8 }}>{t('email.success')}</p>}
+        {success && <p className="success-text">{t('email.success')}</p>}
         <button type="submit" className="btn primary" disabled={save.isPending}>
           {save.isPending ? t('email.saving') : t('email.submit')}
         </button>
@@ -127,7 +127,7 @@ function AlertProfileSection({ t, me }) {
         <InstrumentPicker value={instruments} onChange={setInstruments} />
       </div>
       {save.isError && <p className="error-text">{save.error?.response?.data?.error || t('genericError')}</p>}
-      {success && <p style={{ color: 'var(--ok, #46c48a)', fontSize: 13, marginTop: 8 }}>{t('alertProfile.success')}</p>}
+      {success && <p className="success-text">{t('alertProfile.success')}</p>}
       <button type="button" className="btn primary" style={{ marginTop: 12 }} disabled={save.isPending}
         onClick={() => { setSuccess(false); save.mutate() }}>
         {save.isPending ? t('alertProfile.saving') : t('alertProfile.submit')}
@@ -145,9 +145,9 @@ export default function ProfileModal({ onClose }) {
   return (
     <Modal title={t('title')} onClose={onClose} maxWidth={560}>
       {!me ? <div className="empty">{t('loading')}</div> : (
-        <>
-          <div className="card" style={{ marginBottom: 14 }}>
-            <h3 style={{ marginBottom: 12 }}>{t('sections.account')}</h3>
+        <div className="stacked-cards">
+          <div className="card">
+            <h3>{t('sections.account')}</h3>
             <div className="field"><label>{t('fields.username')}</label><div>@{me.username}</div></div>
             <div className="field"><label>{t('fields.name')}</label><div>{me.name}</div></div>
             <div className="field"><label>{t('fields.memberSince')}</label><div>{formatDate(me.created_at)}</div></div>
@@ -157,24 +157,24 @@ export default function ProfileModal({ onClose }) {
             </div>
           </div>
 
-          <div className="card" style={{ marginBottom: 14 }}>
-            <h3 style={{ marginBottom: 12 }}>{t('sections.alertProfile')}</h3>
-            <p style={{ color: 'var(--muted)', margin: '0 0 12px' }}>{t('alertProfile.description')}</p>
+          <div className="card">
+            <h3>{t('sections.alertProfile')}</h3>
+            <p className="card-desc">{t('alertProfile.description')}</p>
             <AlertProfileSection t={t} me={me} />
           </div>
 
-          <div className="card" style={{ marginBottom: 14 }}>
-            <h3 style={{ marginBottom: 12 }}>{t('sections.security')}</h3>
+          <div className="card">
+            <h3>{t('sections.security')}</h3>
             <PasswordSection t={t} />
           </div>
 
-          <div className="card" style={{ marginBottom: 14 }}>
-            <h3 style={{ marginBottom: 12 }}>{t('sections.email')}</h3>
+          <div className="card">
+            <h3>{t('sections.email')}</h3>
             <EmailSection t={t} currentEmail={me.email} />
           </div>
 
-          <div className="card" style={{ marginBottom: 14 }}>
-            <h3 style={{ marginBottom: 12 }}>{t('sections.plan')}</h3>
+          <div className="card">
+            <h3>{t('sections.plan')}</h3>
             <div className="field"><label>{t('plan.current')}</label><div>{billing?.plan_name || t('plan.none')}</div></div>
             {billing && (
               <div className="field"><label>Status</label><div>{t(`plan.status.${billing.subscription_status}`)}</div></div>
@@ -187,8 +187,8 @@ export default function ProfileModal({ onClose }) {
             <Link to="/planos" className="btn" onClick={onClose} style={{ marginTop: 8 }}>{t('plan.manage')}</Link>
           </div>
 
-          <div className="card" style={{ marginBottom: 0 }}>
-            <h3 style={{ marginBottom: 12 }}>{t('sections.usage')}</h3>
+          <div className="card">
+            <h3>{t('sections.usage')}</h3>
             {usage?.setlists_max != null ? (
               <>
                 <div className="field"><label>{t('usage.setlists')}</label><div>{usage.setlists_used} / {usage.setlists_max}</div></div>
@@ -198,7 +198,7 @@ export default function ProfileModal({ onClose }) {
               </>
             ) : <div className="empty">{t('usage.unlimited')}</div>}
           </div>
-        </>
+        </div>
       )}
     </Modal>
   )

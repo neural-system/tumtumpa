@@ -910,6 +910,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .login-card .tag { color: var(--muted); margin-bottom: 26px; }
 
 .error-text { color: var(--danger); font-size: 13px; margin-top: 8px; }
+.success-text { color: var(--ok); font-size: 13px; margin-top: 8px; }
 .empty { color: var(--muted); text-align: center; padding: 46px 0; }
 
 /* ---------- cluster fixo (alternar tema + menu do usuário) ---------- */
