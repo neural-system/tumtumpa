@@ -67,7 +67,7 @@ function MediaSlot({ t, kind, onAttach }) {
   }
 
   return (
-    <div style={{ flex: '1 1 220px', border: '1px solid var(--stroke)', borderRadius: 8, padding: 10 }}>
+    <div className="bb-media-slot">
       <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 6 }}>{t(`media.kinds.${kind}`)}</div>
       {isFileKind ? (
         <input className="input" type="file" accept={kind === 'photo' ? 'image/*' : 'video/*'}
@@ -125,16 +125,16 @@ function MediaGalleryEditor({ t, postId, media, pendingMedia, onPendingChange, o
     <div className="field" style={{ marginBottom: 0 }}>
       <label>{t('media.title')}</label>
       {items.length > 0 && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 10, marginBottom: 12 }}>
+        <div className="bb-media-grid" style={{ marginBottom: 12 }}>
           {items.map((m) => (
-            <div key={isStaged ? m.localId : m.id} style={{ border: '1px solid var(--stroke)', borderRadius: 8, padding: 8 }}>
+            <div key={isStaged ? m.localId : m.id} className="bb-media-item">
               {m.kind === 'photo' && (
                 <img src={isStaged ? m.previewUrl : `/api/band-board/${postId}/media/${m.id}/file`} alt={m.label}
-                  style={{ width: '100%', height: 84, objectFit: 'cover', borderRadius: 6 }} />
+                  className="bb-media-thumb" />
               )}
               {m.kind === 'video' && (
                 <video src={isStaged ? m.previewUrl : `/api/band-board/${postId}/media/${m.id}/file`} controls
-                  style={{ width: '100%', height: 84, borderRadius: 6 }} />
+                  className="bb-media-thumb" />
               )}
               {(m.kind === 'link' || m.kind === 'youtube') && (
                 <div style={{ height: 84, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28 }}>
@@ -152,7 +152,7 @@ function MediaGalleryEditor({ t, postId, media, pendingMedia, onPendingChange, o
           ))}
         </div>
       )}
-      <div className="row" style={{ flexWrap: 'wrap', gap: 10 }}>
+      <div className="row" style={{ gap: 10 }}>
         {[...MEDIA_FILE_KINDS, ...MEDIA_LINK_KINDS].map((kind) => (
           <MediaSlot key={kind} t={t} kind={kind} onAttach={attach} />
         ))}
@@ -179,12 +179,11 @@ function SocialLinksEditor({ t, value, onChange }) {
     <div className="field">
       <label>{t('form.socialLinks')}</label>
       {value.length > 0 && (
-        <div className="row" style={{ flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
+        <div className="row" style={{ gap: 8, marginBottom: 10 }}>
           {value.map((link, i) => (
-            <span key={i} className="chip" style={{ display: 'flex', alignItems: 'center', gap: 6, maxWidth: 260 }}>
+            <span key={i} className="chip removable" style={{ maxWidth: 260 }}>
               <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{link}</span>
-              <button type="button" onClick={() => remove(i)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0, lineHeight: 1 }}
+              <button type="button" className="chip-remove" onClick={() => remove(i)}
                 aria-label={t('form.removeSocialLink')}>×</button>
             </span>
           ))}
@@ -210,7 +209,7 @@ function AuthorBadge({ userId }) {
   })
   if (!data?.has_logo && !data?.band_name) return null
   return (
-    <div className="row" style={{ gap: 8, alignItems: 'center', marginBottom: 10 }}>
+    <div className="row" style={{ gap: 8, marginBottom: 10 }}>
       {data.has_logo && <img src={`/api/branding/${userId}/logo?theme=${theme}`} alt="" style={{ height: 28, borderRadius: 6 }} />}
       {data.band_name && <strong>{data.band_name}</strong>}
     </div>
@@ -299,7 +298,7 @@ export function PostForm({ initial, onDone, t }) {
   return (
     <div className="card no-print" style={{ marginBottom: 18 }}>
       <h3 style={{ marginBottom: 14 }}>{t(isEdit ? 'form.editTitle' : 'form.createTitle')}</h3>
-      <div className="row" style={{ flexWrap: 'wrap', gap: 12 }}>
+      <div className="row" style={{ gap: 12 }}>
         <div className="field" style={{ flex: '1 1 220px' }}>
           <label>{t('form.bandName')}</label>
           <input className="input" value={form.band_name} onChange={(e) => setForm({ ...form, band_name: e.target.value })} />
@@ -318,7 +317,7 @@ export function PostForm({ initial, onDone, t }) {
           <input className="input" value={form.style_freeform} onChange={(e) => setForm({ ...form, style_freeform: e.target.value })} />
         </div>
       </div>
-      <div className="row" style={{ flexWrap: 'wrap', gap: 12 }}>
+      <div className="row" style={{ gap: 12 }}>
         <div className="field" style={{ flex: '1 1 200px' }}>
           <label>{t('form.skillLevel')}</label>
           <select className="input" value={form.skill_level} onChange={(e) => setForm({ ...form, skill_level: e.target.value })}>
@@ -336,9 +335,9 @@ export function PostForm({ initial, onDone, t }) {
       </div>
       <div className="field">
         <label>{t('form.rehearsalDays')}</label>
-        <div className="row" style={{ gap: 10, flexWrap: 'wrap' }}>
+        <div className="row" style={{ gap: 10 }}>
           {WEEKDAYS.map((id) => (
-            <label key={id} className="row" style={{ gap: 6, alignItems: 'center', cursor: 'pointer' }}>
+            <label key={id} className="row check">
               <input type="checkbox" checked={form.rehearsal_days.includes(id)}
                 onChange={() => toggleRehearsalDay(id)} />
               {t(`form.weekdays.${id}`)}
@@ -348,9 +347,9 @@ export function PostForm({ initial, onDone, t }) {
       </div>
       <div className="field">
         <label>{t('form.instrumentsNeeded')}</label>
-        <div className="row" style={{ gap: 10, flexWrap: 'wrap' }}>
+        <div className="row" style={{ gap: 10 }}>
           {INSTRUMENTS.map((id) => (
-            <label key={id} className="row" style={{ gap: 6, alignItems: 'center', cursor: 'pointer' }}>
+            <label key={id} className="row check">
               <input type="checkbox" checked={form.instruments_needed.includes(id)}
                 onChange={() => toggleInstrument(id)} />
               {ti(`names.${id}`)}
@@ -381,9 +380,9 @@ export function PostForm({ initial, onDone, t }) {
       {mySetlists?.filter((s) => s.is_owner).length > 0 && (
         <div className="field" style={{ marginBottom: 0, marginTop: 14 }}>
           <label>{t('form.linkSetlists')}</label>
-          <div className="row" style={{ gap: 10, flexWrap: 'wrap' }}>
+          <div className="row" style={{ gap: 10 }}>
             {mySetlists.filter((s) => s.is_owner).map((s) => (
-              <label key={s.id} className="row" style={{ gap: 6, alignItems: 'center', cursor: 'pointer' }}>
+              <label key={s.id} className="row check">
                 <input type="checkbox" checked={form.setlist_refs.includes(s.id)}
                   onChange={() => toggleSetlist(s.id)} />
                 {s.nome}
@@ -413,14 +412,14 @@ function PostMediaGallery({ post, t }) {
   return (
     <div style={{ marginBottom: 10 }}>
       {(photos.length > 0 || videos.length > 0) && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 8, marginBottom: links.length || youtube.length ? 10 : 0 }}>
+        <div className="bb-media-grid" style={{ gap: 8, marginBottom: links.length || youtube.length ? 10 : 0 }}>
           {photos.map((m) => (
             <img key={m.id} src={`/api/band-board/${post.id}/media/${m.id}/file`} alt={m.label}
-              style={{ width: '100%', height: 110, objectFit: 'cover', borderRadius: 8 }} />
+              className="bb-media-photo" />
           ))}
           {videos.map((m) => (
             <video key={m.id} src={`/api/band-board/${post.id}/media/${m.id}/file`} controls
-              style={{ width: '100%', height: 110, borderRadius: 8 }} />
+              className="bb-media-photo" />
           ))}
         </div>
       )}
@@ -440,7 +439,7 @@ function PostMediaGallery({ post, t }) {
         )
       })}
       {links.length > 0 && (
-        <div className="row" style={{ flexWrap: 'wrap' }}>
+        <div className="row">
           {links.map((m) => (
             <a key={m.id} href={m.url} target="_blank" rel="noopener noreferrer" className="btn">
               🔗 {m.label || m.url}
@@ -471,7 +470,7 @@ export function PostCard({ post, mine, t, onEdit }) {
   return (
     <div className="card" style={{ marginBottom: 14 }}>
       <AuthorBadge userId={post.user_id} />
-      <div className="row" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div className="row between top">
         <h3 style={{ marginBottom: 4 }}>
           {post.band_name}
           {!post.active && <span className="chip" style={{ marginLeft: 8 }}>{t('inactiveBadge')}</span>}
@@ -485,7 +484,7 @@ export function PostCard({ post, mine, t, onEdit }) {
       {post.bio && <p style={{ marginBottom: 10 }}>{post.bio}</p>}
       <PostMediaGallery post={post} t={t} />
       {knownInstruments.length > 0 && (
-        <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
+        <div className="row" style={{ gap: 6, marginBottom: 10 }}>
           <strong>{t('card.instrumentsNeeded')}</strong>
           {knownInstruments.map((id) => <span key={id} className="chip">{ti(`names.${id}`)}</span>)}
         </div>
@@ -496,7 +495,7 @@ export function PostCard({ post, mine, t, onEdit }) {
         </div>
       )}
       {knownRehearsalDays.length > 0 && (
-        <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
+        <div className="row" style={{ gap: 6, marginBottom: 10 }}>
           <strong>{t('card.rehearsalDays')}</strong>
           {knownRehearsalDays.map((id) => <span key={id} className="chip">{t(`form.weekdays.${id}`)}</span>)}
         </div>
@@ -507,7 +506,7 @@ export function PostCard({ post, mine, t, onEdit }) {
         </div>
       )}
       {post.social_links?.length > 0 && (
-        <div className="row" style={{ flexWrap: 'wrap', marginBottom: 10 }}>
+        <div className="row" style={{ marginBottom: 10 }}>
           {post.social_links.map((link) => (
             <a key={link} href={link} target="_blank" rel="noopener noreferrer" className="btn">🔗 {link}</a>
           ))}

@@ -26,13 +26,12 @@ export default function InstrumentPicker({ value, onChange }) {
   return (
     <div>
       {value.length > 0 && (
-        <div className="row" style={{ flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
+        <div className="row" style={{ gap: 8, marginBottom: 10 }}>
           {value.map((v) => (
-            <span key={v.instrument} className="chip" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span key={v.instrument} className="chip removable">
               {t(`names.${v.instrument}`)}
               {v.skill_level && <span style={{ opacity: 0.7 }}>· {t(`skillLevels.${v.skill_level}`)}</span>}
-              <button type="button" onClick={() => remove(v.instrument)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0, lineHeight: 1 }}
+              <button type="button" className="chip-remove" onClick={() => remove(v.instrument)}
                 aria-label={t('picker.remove')}>×</button>
             </span>
           ))}

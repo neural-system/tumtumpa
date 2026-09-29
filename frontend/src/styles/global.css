@@ -399,6 +399,11 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .chip.danger { background: var(--danger); color: #fff; }
 .chip.normalized { background: var(--star-gold-soft); color: var(--star-gold); }
 .chip.muted { background: var(--glass); color: var(--muted); }
+/* chip com um × de remover embutido (línguas/instrumentos escolhidos, link
+   social adicionado...) — .chip-remove é o reset do botãozinho, reaproveitado
+   fora de chip também onde cabe um "x" inline */
+.chip.removable { display: flex; align-items: center; gap: 6px; }
+.chip-remove { background: none; border: none; cursor: pointer; color: inherit; padding: 0; line-height: 1; }
 /* estrela de favorito dentro do .meta de uma linha (SetlistDetail) — cor
    fixa (--star-gold) quando marcada, muted quando não */
 .setlist-fav-icon { font-size: 14px; line-height: 15px; color: var(--muted); }
@@ -1207,6 +1212,13 @@ a.cm-tile:hover { border-color: color-mix(in srgb, var(--accent) 65%, var(--stro
   .cm-event-when { flex-basis: 100%; }
   .cm-profile-actions { flex-direction: row; align-items: center; }
 }
+
+/* ---------- mural de bandas — components/bandBoardShared.jsx ---------- */
+.bb-media-slot { flex: 1 1 220px; border: 1px solid var(--stroke); border-radius: var(--radius-sm); padding: 10px; }
+.bb-media-item { border: 1px solid var(--stroke); border-radius: var(--radius-sm); padding: 8px; }
+.bb-media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.bb-media-thumb { width: 100%; height: 84px; object-fit: cover; border-radius: var(--radius-sm); }
+.bb-media-photo { width: 100%; height: 110px; object-fit: cover; border-radius: var(--radius); }
 
 /* ---------- impressão ---------- */
 @media print {
