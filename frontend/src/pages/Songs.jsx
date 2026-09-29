@@ -6,6 +6,7 @@ import api from '../services/api'
 import { useAuthStore } from '../store/authStore'
 import { useDebounce } from '../hooks/useDebounce'
 import VirtualList from '../components/VirtualList'
+import AddToSetlistButton from '../components/AddToSetlistButton'
 
 /** "Encontre uma Música": a biblioteca compartilhada inteira (as músicas do usuário
  * ficam em MySongs.jsx). */
@@ -20,6 +21,7 @@ export default function Songs() {
   const debouncedQ = useDebounce(q)
   const navigate = useNavigate()
   const user = useAuthStore((s) => s.user)
+  const qc = useQueryClient()
 
   const { data } = useQuery({
     queryKey: ['songs', 'library', debouncedQ, filters, onlyMine, page],
@@ -32,6 +34,11 @@ export default function Songs() {
     keepPreviousData: true,
   })
   const { data: facets } = useQuery({ queryKey: ['facets'], queryFn: () => api.get('/songs/facets').then((r) => r.data) })
+
+  const toggleFav = useMutation({
+    mutationFn: ({ slug, value }) => api.post(`/songs/${slug}/favorite`, { value }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['songs'] }); qc.invalidateQueries({ queryKey: ['dashboard'] }) },
+  })
 
   const items = data?.items || []
 
@@ -96,7 +103,15 @@ export default function Songs() {
                 onClick={() => navigate(`/musicas/${s.slug}`)}
                 onKeyDown={(e) => { if (e.key === 'Enter' && e.target === e.currentTarget) navigate(`/musicas/${s.slug}`) }}>
                 <div>
-                  <div className="title">{s.favorita && <span className="fav-star">★ </span>}{s.titulo}</div>
+                  <div className="title">
+                    <button type="button" className={`fav-toggle${s.favorita ? ' on' : ''}`}
+                      aria-pressed={!!s.favorita}
+                      title={s.favorita ? t('mySongs.unfav') : t('mySongs.fav')}
+                      onClick={(e) => { e.stopPropagation(); toggleFav.mutate({ slug: s.slug, value: !s.favorita }) }}>
+                      {s.favorita ? '★' : '☆'}
+                    </button>
+                    {' '}{s.titulo}
+                  </div>
                   <div className="meta">
                     {s.interprete}
                     {s.user_id && s.user_id !== user?.id && <span className="chip" style={{ marginLeft: 8 }} title={t('otherUserTitle')}>{t('otherUserChip')}</span>}
@@ -106,8 +121,11 @@ export default function Songs() {
                 <div className="meta hide-sm">{s.genero}</div>
                 <div className="meta hide-sm">{s.tags.slice(0, 2).join(', ')}</div>
                 <div>{s.tom && <span className="chip">{s.tom}</span>}</div>
-                <button className="btn" style={{ padding: '5px 12px' }} aria-label={`▶ ${s.titulo}`}
-                  onClick={(e) => { e.stopPropagation(); navigate(`/karaoke/${s.slug}`) }}>▶</button>
+                <div className="row" style={{ gap: 4, justifyContent: 'flex-end', flexWrap: 'nowrap' }}>
+                  <AddToSetlistButton song={s} />
+                  <button className="btn" style={{ padding: '5px 12px' }} aria-label={`▶ ${s.titulo}`}
+                    onClick={(e) => { e.stopPropagation(); navigate(`/karaoke/${s.slug}`) }}>▶</button>
+                </div>
               </div>
             )} />
         )}

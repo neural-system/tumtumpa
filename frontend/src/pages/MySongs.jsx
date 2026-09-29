@@ -7,6 +7,7 @@ import { useAuthStore } from '../store/authStore'
 import { useDebounce } from '../hooks/useDebounce'
 import VirtualList from '../components/VirtualList'
 import FavoriteArtistsGenres from '../components/FavoriteArtistsGenres'
+import AddToSetlistButton from '../components/AddToSetlistButton'
 import { UploadCard, CreateCard } from './Songs'
 
 const ROW_H = 58
@@ -194,7 +195,10 @@ export default function MySongs() {
                   {(s.setlists || []).slice(0, 2).map((l) => <span key={l.id} className="chip ms-sl-chip">{l.nome}</span>)}
                   {(s.setlists || []).length > 2 && <span className="meta">{t('mySongs.moreSetlists', { count: s.setlists.length - 2 })}</span>}
                 </div>
-                <button className="btn sm ms-col-play" aria-label={`▶ ${s.titulo}`} onClick={(e) => { e.stopPropagation(); navigate(`/karaoke/${s.slug}`) }}>▶</button>
+                <div className="ms-col-play">
+                  <AddToSetlistButton song={s} className="btn sm" />
+                  <button className="btn sm" aria-label={`▶ ${s.titulo}`} onClick={(e) => { e.stopPropagation(); navigate(`/karaoke/${s.slug}`) }}>▶</button>
+                </div>
               </div>
             )} />
         )}

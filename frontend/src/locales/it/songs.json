@@ -79,5 +79,12 @@
       "bpm": "BPM",
       "setlists": "Setlist"
     }
+  },
+  "addToSetlist": {
+    "button": "Aggiungi a una scaletta",
+    "title": "Aggiungi \"{{song}}\" a una scaletta",
+    "empty": "Non hai ancora nessuna scaletta.",
+    "createLink": "Crea una scaletta",
+    "added": "Aggiunto ✓"
   }
 }

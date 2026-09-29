@@ -359,7 +359,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 
 /* ---------- tabela de músicas ---------- */
 .song-row {
-  display: grid; grid-template-columns: 1fr 180px 130px 60px 90px;
+  display: grid; grid-template-columns: 1fr 180px 130px 60px 130px;
   gap: 12px; align-items: center;
   padding: 11px 16px; border-bottom: 1px solid var(--stroke);
   cursor: pointer; transition: 100ms;
@@ -504,6 +504,11 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .chord-dict-row .meta { color: var(--muted); font-size: 12px; }
 .fav-toggle { background: none; border: none; cursor: pointer; font-size: 18px; color: var(--muted); line-height: 1; padding: 4px; }
 .fav-toggle:hover { color: var(--accent-text); }
+.fav-toggle.on { color: var(--accent-text); }
+/* linha clicável de setlist dentro do modal "adicionar a um setlist" —
+   .reorder-row já dá o visual, isto só reseta o <button> por baixo */
+.setlist-pick-row { border: none; width: 100%; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.setlist-pick-row:disabled { opacity: 0.6; cursor: not-allowed; }
 .chord-dict-detail { min-height: 420px; }
 .chord-dict-title { font-family: var(--font-display); font-size: 26px; font-weight: 700; display: flex; align-items: center; }
 .chord-dict-diagram-wrap { width: 100%; max-width: 320px; height: 260px; margin: 0 auto; }
@@ -1102,7 +1107,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .ms-check input { accent-color: var(--accent); }
 .ms-row {
   display: grid; align-items: center; gap: 12px; padding: 0 16px;
-  grid-template-columns: 44px minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) 64px 64px minmax(0, 1.6fr) 56px;
+  grid-template-columns: 44px minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) 64px 64px minmax(0, 1.6fr) 92px;
 }
 .ms-head { position: sticky; top: 0; z-index: 2; height: 42px; border-bottom: 1px solid var(--stroke); background: var(--bg-raise); border-radius: var(--radius) var(--radius) 0 0; }
 .ms-th {
@@ -1119,7 +1124,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .ms-origin { color: var(--accent-text); }
 .ms-title-cell .meta, .ms-body > .meta { color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ms-col-narrow { text-align: left; }
-.ms-col-play { justify-self: end; }
+.ms-col-play { justify-self: end; display: flex; gap: 4px; }
 .ms-star { background: none; border: none; cursor: pointer; font-size: 19px; line-height: 1; color: var(--muted); padding: 4px; transition: transform 120ms, color 120ms; }
 .ms-star:hover { transform: scale(1.2); color: var(--accent-text); }
 .ms-star.on { color: var(--accent-text); }
@@ -1127,7 +1132,7 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 .ms-setlists { display: flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; }
 .ms-sl-chip { max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-transform: none; letter-spacing: 0; font: 600 12px var(--font-body); padding: 3px 8px; }
 @media (max-width: 900px) {
-  .ms-row { grid-template-columns: 44px minmax(0, 1fr) 60px 56px; }
+  .ms-row { grid-template-columns: 44px minmax(0, 1fr) 60px 92px; }
   .ms-row .hide-sm { display: none; }
 }
 
@@ -1296,7 +1301,7 @@ a.cm-tile:hover { border-color: color-mix(in srgb, var(--accent) 65%, var(--stro
   .nav-item svg { transform: scale(0.9); }
   .nav-item span { opacity: 0; }
   .nav-section-label { display: none; }
-  .song-row { grid-template-columns: 1fr 90px; }
+  .song-row { grid-template-columns: 1fr 130px; }
   .song-row .hide-sm { display: none; }
   .main { padding: 76px 18px 18px; }
   .chord-dict-layout { grid-template-columns: 1fr; }

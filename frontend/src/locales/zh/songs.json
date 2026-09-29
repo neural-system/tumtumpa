@@ -79,5 +79,12 @@
       "bpm": "BPM",
       "setlists": "歌单"
     }
+  },
+  "addToSetlist": {
+    "button": "添加到歌单",
+    "title": "把《{{song}}》添加到歌单",
+    "empty": "你还没有任何歌单。",
+    "createLink": "创建歌单",
+    "added": "已添加 ✓"
   }
 }

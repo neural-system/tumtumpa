@@ -79,5 +79,12 @@
       "bpm": "BPM",
       "setlists": "Setlists"
     }
+  },
+  "addToSetlist": {
+    "button": "Add to a setlist",
+    "title": "Add \"{{song}}\" to a setlist",
+    "empty": "You don't have any setlists yet.",
+    "createLink": "Create a setlist",
+    "added": "Added ✓"
   }
 }
