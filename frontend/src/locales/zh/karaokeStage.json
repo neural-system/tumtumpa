@@ -39,5 +39,13 @@
   },
   "countdown": {
     "hint": "准备…（点击或按空格跳过）"
+  },
+  "songEnded": {
+    "title": "歌曲已结束",
+    "next": "下一首：{{title}}",
+    "playNext": "播放下一首",
+    "stayHere": "留在这里",
+    "playlistDone": "歌单已播完",
+    "exit": "退出"
   }
 }

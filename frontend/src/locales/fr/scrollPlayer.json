@@ -36,5 +36,13 @@
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {
     "hint": "Préparez-vous… (cliquez ou Espace pour passer)"
+  },
+  "songEnded": {
+    "title": "Morceau terminé",
+    "next": "Suivant : {{title}}",
+    "playNext": "Jouer le suivant",
+    "stayHere": "Rester ici",
+    "playlistDone": "Fin du répertoire",
+    "exit": "Quitter"
   }
 }

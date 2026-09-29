@@ -36,5 +36,13 @@
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {
     "hint": "Get ready… (click or Space to skip)"
+  },
+  "songEnded": {
+    "title": "Song ended",
+    "next": "Next: {{title}}",
+    "playNext": "Play next",
+    "stayHere": "Stay here",
+    "playlistDone": "End of setlist",
+    "exit": "Exit"
   }
 }

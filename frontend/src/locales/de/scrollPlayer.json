@@ -34,5 +34,13 @@
   },
   "countdown": {
     "hint": "Mach dich bereit… (Klick oder Leertaste zum Überspringen)"
+  },
+  "songEnded": {
+    "title": "Song beendet",
+    "next": "Weiter: {{title}}",
+    "playNext": "Nächsten Song spielen",
+    "stayHere": "Hier bleiben",
+    "playlistDone": "Ende der Setlist",
+    "exit": "Verlassen"
   }
 }

@@ -36,5 +36,13 @@
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {
     "hint": "Приготовьтесь… (нажмите или Пробел, чтобы пропустить)"
+  },
+  "songEnded": {
+    "title": "Песня закончилась",
+    "next": "Далее: {{title}}",
+    "playNext": "Включить следующую",
+    "stayHere": "Остаться здесь",
+    "playlistDone": "Конец сетлиста",
+    "exit": "Выйти"
   }
 }

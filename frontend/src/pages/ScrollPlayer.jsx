@@ -117,6 +117,11 @@ export default function ScrollPlayer({ data }) {
   const [countdown, setCountdown] = useState(null) // null = sem contagem; número = segundos restantes
   const countdownTimer = useRef(null)
   const countdownOnDoneRef = useRef(null)
+  // true a partir do fim natural da música (onSongEnd) até o usuário
+  // retomar/buscar de novo — mostra o aviso "Próxima: X" (ver JSX) e faz
+  // o próprio botão de tocar/pedal avançar em vez de tentar retomar uma
+  // faixa que já zerou (ver togglePlay).
+  const [ended, setEnded] = useState(false)
 
   const inPlaylist = playlist.active && playlist.queue[playlist.index]?.song?.slug === slug
 
@@ -129,6 +134,17 @@ export default function ScrollPlayer({ data }) {
   // precisa checar modo_execucao de novo aqui.
   const currentQueueEntry = inPlaylist ? playlist.queue[playlist.index] : null
   const medleyId = currentQueueEntry?.medley_id || null
+  // próxima música da fila (sem avançar de verdade) — pula o medley inteiro
+  // atual, mesma regra de playlistStore::advance, só que só pra EXIBIR o
+  // nome (ver aviso de fim de música no JSX); null quando é a última.
+  const nextQueueEntry = useMemo(() => {
+    if (!inPlaylist) return null
+    let next = playlist.index + 1
+    if (medleyId) {
+      while (next < playlist.queue.length && playlist.queue[next].medley_id === medleyId) next += 1
+    }
+    return playlist.queue[next] || null
+  }, [inPlaylist, playlist.queue, playlist.index, medleyId])
   const isMedleyAnchor = Boolean(medleyId) &&
     (playlist.index === 0 || playlist.queue[playlist.index - 1]?.medley_id !== medleyId)
   const medleyMembers = useMemo(() => {
@@ -306,6 +322,7 @@ export default function ScrollPlayer({ data }) {
   // busca (seek) pra uma posição em ms — no elemento <audio> real quando a
   // música tem faixa, ou no cronômetro (elapsedRef) no modo legado.
   const seekToMs = (ms) => {
+    setEnded(false)
     const clamped = Math.max(0, Math.min(totalMs || 0, ms))
     if (effectiveHasAudio) {
       if (audioRef.current) audioRef.current.currentTime = clamped / 1000
@@ -366,9 +383,11 @@ export default function ScrollPlayer({ data }) {
     goToSetlist(slug)
   }
   // NÃO avança sozinho pra próxima música da playlist ao terminar — item 6
-  // do pedido: só o botão manual "Próxima música" (⏭, goNextSong) avança.
+  // do pedido: só um toque do músico avança (botão ⏭, pedal ou o próprio
+  // botão de tocar — ver `ended`/togglePlay abaixo), nunca automático.
   const onSongEnd = () => {
     setPlaying(false)
+    setEnded(true)
   }
 
   // laço de rolagem legado (sem áudio): avança `elapsedRef` pelo tempo real
@@ -494,16 +513,22 @@ export default function ScrollPlayer({ data }) {
   const beginPlayback = (onStart) => {
     if (countdown != null) return
     const nearStart = getElapsedMs() < 500
-    const start = () => { setPlaying(true); onStart?.() }
+    const start = () => { setPlaying(true); setEnded(false); onStart?.() }
     if (nearStart) startCountdown(start)
     else start()
   }
 
+  // pedido do usuário: ao terminar uma música dentro de uma playlist, o
+  // mesmo botão/pedal de tocar (não só o ⏭ dedicado) já avança pra próxima
+  // — sem isso, apertar de novo só tentava retomar uma faixa que já tinha
+  // zerado, sem efeito nenhum. Sem próxima música (última da fila) ou fora
+  // de playlist, comportamento de sempre (retoma/reinicia).
   const togglePlay = () => {
     if (!canPlay) return
     if (countdown != null) { skipCountdown(); return }
-    if (playing) setPlaying(false)
-    else beginPlayback()
+    if (playing) { setPlaying(false); return }
+    if (ended && inPlaylist && nextQueueEntry) { goNextSong(); return }
+    beginPlayback()
   }
   // "Tocar + YT" (item 5): começa o karaokê normalmente E dá play no
   // vídeo do YouTube junto, quando a música tem um link cadastrado.
@@ -572,7 +597,10 @@ export default function ScrollPlayer({ data }) {
     // trocar de música dentro de uma playlist reusa o mesmo componente
     // (replace:true), não remonta. countdown entra pelo mesmo motivo — Space
     // precisa de uma closure atual pra pular a contagem em vez de pausar.
-  }, [canPlay, totalMs, inPlaylist, countdown, playing])
+    // ended/nextQueueEntry: Space precisa saber, no exato instante do
+    // toque, se a música já terminou e tem próxima, pra avançar em vez de
+    // tentar retomar uma faixa zerada (ver togglePlay).
+  }, [canPlay, totalMs, inPlaylist, countdown, playing, ended, nextQueueEntry])
 
   return (
     <div ref={stageRef}
@@ -670,6 +698,26 @@ export default function ScrollPlayer({ data }) {
         <div className="k-countdown" onClick={skipCountdown}>
           <div key={countdown} className="k-countdown-number">{countdown}</div>
           <div className="k-countdown-label">{t('countdown.hint')}</div>
+        </div>
+      )}
+
+      {ended && inPlaylist && (
+        <div className="k-song-ended">
+          {nextQueueEntry ? (
+            <>
+              <div className="k-song-ended-label">{t('songEnded.title')}</div>
+              <div className="k-song-ended-next">{t('songEnded.next', { title: nextQueueEntry.song.titulo })}</div>
+              <div className="row">
+                <button className="btn primary" onClick={goNextSong}>▶ {t('songEnded.playNext')}</button>
+                <button className="btn ghost" onClick={() => setEnded(false)}>{t('songEnded.stayHere')}</button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="k-song-ended-label">{t('songEnded.playlistDone')}</div>
+              <button className="btn" onClick={exitPlayer}>{t('songEnded.exit')}</button>
+            </>
+          )}
         </div>
       )}
     </div>

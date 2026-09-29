@@ -39,5 +39,13 @@
   },
   "countdown": {
     "hint": "Prepare-se… (clique ou Espaço pra pular)"
+  },
+  "songEnded": {
+    "title": "Música terminou",
+    "next": "Próxima: {{title}}",
+    "playNext": "Tocar próxima",
+    "stayHere": "Ficar aqui",
+    "playlistDone": "Fim do repertório",
+    "exit": "Sair"
   }
 }

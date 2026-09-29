@@ -36,5 +36,13 @@
   "medleyDivider": "MEDLEY: {{nome}}",
   "countdown": {
     "hint": "Preparati… (clicca o Spazio per saltare)"
+  },
+  "songEnded": {
+    "title": "Brano terminato",
+    "next": "Prossimo: {{title}}",
+    "playNext": "Riproduci il prossimo",
+    "stayHere": "Resta qui",
+    "playlistDone": "Fine della scaletta",
+    "exit": "Esci"
   }
 }

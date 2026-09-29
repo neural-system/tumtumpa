@@ -80,6 +80,11 @@ export default function KaraokeStage() {
   const [countdown, setCountdown] = useState(null) // null = sem contagem; número = segundos restantes
   const countdownTimer = useRef(null)
   const ytRef = useRef(null)
+  // true a partir do fim natural da música (onSongEnd) até o usuário
+  // retomar/o palco trocar de música — mostra o aviso "Próxima: X" (ver
+  // JSX) e faz o próprio botão de tocar/pedal avançar em vez de tentar
+  // retomar uma faixa que já terminou (ver togglePlay).
+  const [ended, setEnded] = useState(false)
 
   // a rota /karaoke/:slug não desmonta o componente ao trocar de música
   // (mesmo elemento de rota) — precisa resetar manualmente o que é
@@ -90,12 +95,16 @@ export default function KaraokeStage() {
     setAudioReady(false)
     clearInterval(countdownTimer.current)
     setCountdown(null)
+    setEnded(false)
   }, [slug])
 
   // só considera "dentro de uma playlist" se a música atual da tela é
   // mesmo a música atual da fila — evita ativar os controles de playlist
   // por causa de um estado esquecido de uma sessão anterior
   const inPlaylist = playlist.active && playlist.queue[playlist.index]?.song?.slug === slug
+  // próxima música da fila (sem avançar de verdade) — só pra EXIBIR o nome
+  // no aviso de fim de música (ver JSX); null quando é a última.
+  const nextQueueEntry = inPlaylist ? (playlist.queue[playlist.index + 1] || null) : null
 
   // feedback da plateia (QR code, ver SetlistDetail.jsx/FeedbackQRModal.jsx):
   // avisa o backend qual música está tocando agora, sempre que a música
@@ -353,15 +362,22 @@ export default function KaraokeStage() {
   }
   const beginPlayback = () => {
     if (countdown != null) return
+    setEnded(false)
     const nearStart = !audioRef.current || audioRef.current.currentTime < 0.5
     if (player.audioMode && nearStart) startCountdown(() => player.play())
     else player.play()
   }
+  // pedido do usuário: ao terminar uma música dentro de uma playlist, o
+  // mesmo botão/pedal de tocar (não só o ⏭ dedicado) já avança pra próxima
+  // — sem isso, apertar de novo só tentava retomar uma faixa que já tinha
+  // zerado, sem efeito nenhum. Sem próxima música (última da fila) ou fora
+  // de playlist, comportamento de sempre (retoma/reinicia).
   const togglePlay = () => {
     if (!canPlay) return
     if (countdown != null) { skipCountdown(); return }
-    if (player.playing) player.pause()
-    else beginPlayback()
+    if (player.playing) { player.pause(); return }
+    if (ended && inPlaylist && nextQueueEntry) { goNextSong(); return }
+    beginPlayback()
   }
   // "Tocar + YT" (item 5): começa o karaokê normalmente E dá play no
   // vídeo do YouTube junto, quando a música tem um link cadastrado.
@@ -426,8 +442,9 @@ export default function KaraokeStage() {
   }
   const pedal = usePedalControl(slug, data, pedalActions)
   // NÃO avança sozinho pra próxima música da playlist ao terminar — item 6
-  // do pedido: só o botão manual "Próxima música" (⏭, goNextSong) avança.
-  const onSongEnd = () => { player.pause() }
+  // do pedido: só um toque do músico avança (botão ⏭, pedal ou o próprio
+  // botão de tocar — ver `ended`/togglePlay acima), nunca automático.
+  const onSongEnd = () => { player.pause(); setEnded(true) }
 
   // fim de música em modo sintetizado: não existe elemento <audio> real
   // pra disparar onEnded, então escuta o evento 'ended' que o SynthClock
@@ -474,7 +491,7 @@ export default function KaraokeStage() {
     // de música dentro de uma playlist reusa o mesmo componente
     // (replace:true), não remonta — sem isso exitPlayer usaria uma
     // closure velha de slug/inPlaylist.
-  }, [player, canPlay, resolvedSteps, rate, countdown, inPlaylist])
+  }, [player, canPlay, resolvedSteps, rate, countdown, inPlaylist, ended, nextQueueEntry])
 
   if (isLoading || !data) {
     return <div className="karaoke-stage controls-visible"
@@ -618,6 +635,26 @@ export default function KaraokeStage() {
         <div className="k-countdown" onClick={skipCountdown}>
           <div key={countdown} className="k-countdown-number">{countdown}</div>
           <div className="k-countdown-label">{t('countdown.hint')}</div>
+        </div>
+      )}
+
+      {ended && inPlaylist && (
+        <div className="k-song-ended">
+          {nextQueueEntry ? (
+            <>
+              <div className="k-song-ended-label">{t('songEnded.title')}</div>
+              <div className="k-song-ended-next">{t('songEnded.next', { title: nextQueueEntry.song.titulo })}</div>
+              <div className="row">
+                <button className="btn primary" onClick={goNextSong}>▶ {t('songEnded.playNext')}</button>
+                <button className="btn ghost" onClick={() => setEnded(false)}>{t('songEnded.stayHere')}</button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="k-song-ended-label">{t('songEnded.playlistDone')}</div>
+              <button className="btn" onClick={exitPlayer}>{t('songEnded.exit')}</button>
+            </>
+          )}
         </div>
       )}
     </div>
