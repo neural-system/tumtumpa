@@ -209,6 +209,31 @@ button.nav-item { border: none; background: none; cursor: pointer; width: 100%; 
 }
 .spacer { flex: 1; }
 
+/* ---------- navegação inferior (celular, ≤768px) — components/BottomNav.jsx ---------- */
+.bottom-nav { display: none; }
+.bottom-nav-item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  flex: 1; padding: 7px 0 8px; color: var(--muted);
+  font: 600 10px var(--font-mono); text-transform: uppercase; letter-spacing: 0.04em;
+}
+.bottom-nav-item svg { width: 22px; height: 22px; }
+.bottom-nav-item.active { color: var(--accent-text); }
+
+/* ---------- menu "Mais" (celular) — pages/More.jsx ---------- */
+.more-menu { padding: 4px 0; }
+.more-menu-item {
+  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  padding: 13px 18px; border: none; border-bottom: 1px solid var(--stroke);
+  background: none; color: var(--text); font-size: 14px; cursor: pointer;
+}
+.more-menu-item:last-child { border-bottom: none; }
+.more-menu-item:hover { background: var(--glass); }
+.more-menu-item svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--muted); }
+.more-menu-section {
+  padding: 14px 18px 6px; font: 700 10px var(--font-mono); letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted); opacity: 0.75;
+}
+
 /* ---------- vidro / cartões ---------- */
 .card {
   background: var(--glass);
@@ -1316,6 +1341,18 @@ a.cm-tile:hover { border-color: color-mix(in srgb, var(--accent) 65%, var(--stro
      o jeito de caber mais sem quebrar esse alinhamento. Ainda pode rolar
      na horizontal em linhas muito longas (overflow-x: auto já cobre isso). */
   .chord-sheet { font-size: 12.5px; }
+}
+@media (max-width: 768px) {
+  /* celular: troca a sidebar (mesmo só o trilho de ícones) pela navegação
+     inferior — no polegar, mais perto de onde a mão já segura o aparelho. */
+  .sidebar { display: none; }
+  .bottom-nav {
+    display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 45;
+    background: var(--sidebar-bg); backdrop-filter: blur(14px);
+    border-top: 1px solid var(--stroke);
+    padding-bottom: env(safe-area-inset-bottom, 0px); /* home indicator do iPhone */
+  }
+  .main { padding-bottom: 78px; }
 }
 @media (max-width: 380px) {
   .chord-sheet { font-size: 11px; }

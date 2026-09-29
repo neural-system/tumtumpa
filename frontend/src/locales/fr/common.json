@@ -20,7 +20,8 @@
     "mySongs": "Mes chansons",
     "accompaniment": "Générateur d'accompagnement",
     "community": "Communauté",
-    "adminModeration": "Modération"
+    "adminModeration": "Modération",
+    "more": "Plus"
   },
   "login": {
     "tagline": "Vos partitions synchronisées avec la scène.",

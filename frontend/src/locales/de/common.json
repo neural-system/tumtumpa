@@ -20,7 +20,8 @@
     "mySongs": "Meine Songs",
     "accompaniment": "Begleitungsgenerator",
     "community": "Community",
-    "adminModeration": "Moderation"
+    "adminModeration": "Moderation",
+    "more": "Mehr"
   },
   "login": {
     "tagline": "Deine Songtexte, synchron auf der Bühne.",

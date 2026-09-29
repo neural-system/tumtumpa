@@ -20,7 +20,8 @@
     "mySongs": "Мои песни",
     "accompaniment": "Генератор аккомпанемента",
     "community": "Сообщество",
-    "adminModeration": "Модерация"
+    "adminModeration": "Модерация",
+    "more": "Ещё"
   },
   "login": {
     "tagline": "Ваши тексты песен синхронизированы со сценой.",

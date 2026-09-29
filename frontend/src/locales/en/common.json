@@ -20,7 +20,8 @@
     "mySongs": "My Songs",
     "accompaniment": "Accompaniment Generator",
     "community": "Community",
-    "adminModeration": "Moderation"
+    "adminModeration": "Moderation",
+    "more": "More"
   },
   "login": {
     "tagline": "Your chord sheets, synced to the stage.",

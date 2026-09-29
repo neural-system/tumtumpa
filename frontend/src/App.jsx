@@ -28,6 +28,7 @@ import ChordDictionary from './pages/ChordDictionary'
 import HistoryPage from './pages/HistoryPage'
 import Settings from './pages/Settings'
 import Profile from './pages/Profile'
+import More from './pages/More'
 import Pricing from './pages/Pricing'
 import Metronome from './pages/Metronome'
 import Tuner from './pages/Tuner'
@@ -83,6 +84,7 @@ export default function App() {
           <Route path="/historico" element={<HistoryPage />} />
           <Route path="/configuracoes" element={<Settings />} />
           <Route path="/perfil" element={<Profile />} />
+          <Route path="/mais" element={<More />} />
           <Route path="/planos" element={<Pricing />} />
           <Route path="/metronomo" element={<Metronome />} />
           <Route path="/acompanhamento" element={<Accompaniment />} />

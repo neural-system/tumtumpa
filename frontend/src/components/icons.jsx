@@ -6,6 +6,7 @@ const I = (path) => (props) => (
 export const IconHome = I(<><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></>)
 export const IconMusic = I(<><circle cx="7" cy="18" r="3"/><circle cx="17" cy="16" r="3"/><path d="M10 18V5l10-2v13"/></>)
 export const IconList = I(<><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></>)
+export const IconMore = I(<><circle cx="5" cy="12" r="1.8" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.8" fill="currentColor" stroke="none"/></>)
 export const IconStar = I(<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>)
 export const IconClock = I(<><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></>)
 export const IconSearch = I(<><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></>)

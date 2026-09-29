@@ -1,5 +1,6 @@
 import { Outlet, Navigate } from 'react-router-dom'
 import Sidebar from './Sidebar'
+import BottomNav from './BottomNav'
 import ThemeToggle from './ThemeToggle'
 import UserMenu from './UserMenu'
 import AlertsBell from './AlertsBell'
@@ -20,6 +21,7 @@ export function AppFrame({ children }) {
         <ThemeToggle />
       </div>
       <main className="main">{children}</main>
+      <BottomNav />
     </div>
   )
 }
