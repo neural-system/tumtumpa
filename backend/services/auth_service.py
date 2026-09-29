@@ -150,9 +150,27 @@ class AuthService:
             ).fetchall()
         return [dict(r) for r in rows]
 
+    def _reassign_orphans_to_admin(self, conn, user_id: str) -> None:
+        """Chamado ANTES de apagar `user_id`: passa suas músicas e setlists pro
+        administrador mais antigo (excluindo o próprio `user_id`, se ele for
+        admin) — decisão explícita do dono do produto, em vez de deixar
+        `user_id` nulo (órfão) como fazia antes. Sem admin nenhum sobrando
+        (não deveria acontecer — sempre há pelo menos um, ver as checagens de
+        "último administrador" antes desta função) simplesmente não reatribui,
+        e o registro cai de volta no comportamento antigo (ON DELETE SET NULL)."""
+        admin = conn.execute(
+            "select id from users where is_admin = true and id != %s order by created_at asc limit 1",
+            (user_id,),
+        ).fetchone()
+        if not admin:
+            return
+        conn.execute("update songs set user_id=%s where user_id=%s", (admin["id"], user_id))
+        conn.execute("update setlists set user_id=%s where user_id=%s", (admin["id"], user_id))
+
     def delete_user(self, user_id: str, requesting_user_id: str) -> None:
-        """Conteúdo do usuário excluído sobrevive (ON DELETE SET NULL em
-        songs.user_id/setlists.user_id — ver schema.sql), só perde o autor."""
+        """Músicas e setlists do usuário excluído passam pro administrador
+        mais antigo (ver _reassign_orphans_to_admin) — decisão do dono do
+        produto, pra nunca sobrar conteúdo sem dono nenhum."""
         if user_id == requesting_user_id:
             raise AuthError("Você não pode excluir sua própria conta.")
         with db.get_pool().connection() as conn:
@@ -165,6 +183,7 @@ class AuthService:
                 ).fetchone()["n"]
                 if remaining == 0:
                     raise AuthError("Não é possível excluir o último administrador.")
+            self._reassign_orphans_to_admin(conn, user_id)
             conn.execute("delete from users where id=%s", (user_id,))
         self._sessions.pop(user_id, None)
 
@@ -177,9 +196,10 @@ class AuthService:
         atual, recusa o último administrador e quem ainda tem assinatura ativa
         (senão a Stripe continuaria cobrando um cliente sem conta). Perfil,
         posts, comentários, curtidas, bandas e convites saem em cascata (FKs);
-        músicas e setlists sobrevivem sem autor, como sempre (ver delete_user).
-        Os arquivos do Blob que só existem por causa do usuário (logos e mídia
-        de anúncios) são apagados depois, sem travar a exclusão se falharem."""
+        músicas e setlists passam pro administrador mais antigo, como em
+        delete_user/_reassign_orphans_to_admin. Os arquivos do Blob que só
+        existem por causa do usuário (logos e mídia de anúncios) são apagados
+        depois, sem travar a exclusão se falharem."""
         with db.get_pool().connection() as conn:
             row = conn.execute(
                 "select password_hash, is_admin, subscription_status from users where id=%s", (user_id,),
@@ -201,6 +221,7 @@ class AuthService:
                 """select m.blob_url from band_post_media m join band_posts p on p.id = m.post_id
                    where p.user_id = %s and m.blob_url is not null""", (user_id,),
             ).fetchall()]
+            self._reassign_orphans_to_admin(conn, user_id)
             conn.execute("delete from users where id=%s", (user_id,))
         self._sessions.pop(user_id, None)
         if urls:

@@ -1,3 +1,5 @@
+import uuid
+
 import pytest
 
 import db
@@ -553,3 +555,65 @@ def test_token_without_version_claim_counts_as_zero(auth):
     legacy = auth.verify_token(auth.issue_token(user["id"], "demo"))
     legacy.pop("tv")
     assert auth.check_session(legacy) is False
+
+
+def _make_song(user_id):
+    with db.get_pool().connection() as conn:
+        row = conn.execute(
+            "insert into songs (user_id, slug, titulo) values (%s, %s, %s) returning id",
+            (user_id, f"slug-{uuid.uuid4().hex}", "Musica de teste"),
+        ).fetchone()
+    return row["id"]
+
+
+def _make_setlist(user_id):
+    with db.get_pool().connection() as conn:
+        row = conn.execute(
+            "insert into setlists (user_id, slug, nome) values (%s, %s, %s) returning id",
+            (user_id, f"slug-{uuid.uuid4().hex}", "Setlist de teste"),
+        ).fetchone()
+    return row["id"]
+
+
+def _owner_of(table, row_id):
+    with db.get_pool().connection() as conn:
+        return conn.execute(f"select user_id from {table} where id=%s", (row_id,)).fetchone()["user_id"]
+
+
+# item 3 das "decisões do dono do produto": músicas/setlists de um usuário
+# excluído passam a pertencer ao administrador mais antigo (nunca ficam sem
+# dono) — ver AuthService._reassign_orphans_to_admin.
+def test_delete_user_reassigns_songs_and_setlists_to_oldest_admin(auth):
+    oldest_admin = auth.register("chefe1", "senha123", is_admin=True)
+    newer_admin = auth.register("chefe2", "senha123", is_admin=True)
+    dono = auth.register("dono", "senha123")
+    song_id = _make_song(dono["id"])
+    setlist_id = _make_setlist(dono["id"])
+
+    auth.delete_user(dono["id"], newer_admin["id"])
+
+    assert _owner_of("songs", song_id) == oldest_admin["id"]
+    assert _owner_of("setlists", setlist_id) == oldest_admin["id"]
+
+
+def test_delete_own_account_reassigns_songs_to_oldest_admin(auth):
+    oldest_admin = auth.register("chefe1", "senha123", is_admin=True)
+    auth.register("chefe2", "senha123", is_admin=True)
+    dono = auth.register("dono", "senha123")
+    song_id = _make_song(dono["id"])
+
+    auth.delete_own_account(dono["id"], "senha123")
+
+    assert _owner_of("songs", song_id) == oldest_admin["id"]
+
+
+def test_reassign_excludes_the_admin_being_deleted(auth):
+    """O admin mais antigo excluindo a própria conta não pode "herdar" o
+    conteúdo dele mesmo — vai pro próximo admin mais antigo que sobrar."""
+    oldest_admin = auth.register("chefe1", "senha123", is_admin=True)
+    next_admin = auth.register("chefe2", "senha123", is_admin=True)
+    song_id = _make_song(oldest_admin["id"])
+
+    auth.delete_own_account(oldest_admin["id"], "senha123")
+
+    assert _owner_of("songs", song_id) == next_admin["id"]
