@@ -311,6 +311,18 @@ def build_blueprint(ctx) -> Blueprint:
                              "error_code": "FEEDBACK_NO_ACTIVE_SONG"}), 409
         return "", 204
 
+    # Setlist compartilhado publicamente (PublicSetlistView.jsx) — sem login,
+    # mesmo padrão de token de /public/feedback acima. Devolve o setlist
+    # inteiro resolvido (mesma forma de GET /setlists/<id>, sem `is_owner`/
+    # `shared`, que não fazem sentido pra visitante); tocar cada música passa
+    # por /public/karaoke/<slug> (já público) como sempre.
+    @api.get("/public/setlists/<token>")
+    def public_get_setlist(token):
+        try:
+            return jsonify(ctx.setlists.get_by_share_token(token))
+        except FileNotFoundError:
+            return jsonify({"error": "Link de setlist inválido.", "error_code": "SETLIST_SHARE_NOT_FOUND"}), 404
+
     # Heartbeat de sessão (Fase 12) — chamado pelo hook useActivityPing.js
     # enquanto a aba está visível; alimenta o "tempo médio de acesso" do
     # painel admin (Fase 13).
@@ -1133,6 +1145,42 @@ def build_blueprint(ctx) -> Blueprint:
             return jsonify({"error": "Setlist não encontrado.", "error_code": "SETLIST_NOT_FOUND"}), 404
         except PermissionError:
             return jsonify({"error": "Só quem criou este setlist pode alterar o compartilhamento.",
+                             "error_code": "SETLIST_NOT_OWNER"}), 403
+
+    # Link público (sem conta) — diferente de /share acima (esse é só entre
+    # usuários logados). Ver docstring de SetlistService.
+    @api.post("/setlists/<setlist_id>/share-link/activate")
+    @protected
+    def activate_setlist_share_link(setlist_id):
+        try:
+            return jsonify(ctx.setlists.activate_public_share(g.user_id, setlist_id, is_admin=g.is_admin))
+        except FileNotFoundError:
+            return jsonify({"error": "Setlist não encontrado.", "error_code": "SETLIST_NOT_FOUND"}), 404
+        except PermissionError:
+            return jsonify({"error": "Só quem criou este setlist pode compartilhá-lo publicamente.",
+                             "error_code": "SETLIST_NOT_OWNER"}), 403
+
+    @api.post("/setlists/<setlist_id>/share-link/deactivate")
+    @protected
+    def deactivate_setlist_share_link(setlist_id):
+        try:
+            ctx.setlists.deactivate_public_share(g.user_id, setlist_id, is_admin=g.is_admin)
+        except FileNotFoundError:
+            return jsonify({"error": "Setlist não encontrado.", "error_code": "SETLIST_NOT_FOUND"}), 404
+        except PermissionError:
+            return jsonify({"error": "Só quem criou este setlist pode desativar o link público.",
+                             "error_code": "SETLIST_NOT_OWNER"}), 403
+        return "", 204
+
+    @api.get("/setlists/<setlist_id>/share-link/status")
+    @protected
+    def setlist_share_link_status(setlist_id):
+        try:
+            return jsonify(ctx.setlists.public_share_status(g.user_id, setlist_id, is_admin=g.is_admin))
+        except FileNotFoundError:
+            return jsonify({"error": "Setlist não encontrado.", "error_code": "SETLIST_NOT_FOUND"}), 404
+        except PermissionError:
+            return jsonify({"error": "Só quem criou este setlist pode ver o link público.",
                              "error_code": "SETLIST_NOT_OWNER"}), 403
 
     @api.post("/setlists/<setlist_id>/clone")

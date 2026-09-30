@@ -6,6 +6,7 @@ import { useTheme } from './hooks/useTheme'
 import { useActivityPing } from './hooks/useActivityPing'
 import Layout from './components/Layout'
 import PublicSongView from './pages/PublicSongView'
+import PublicSetlistView from './pages/PublicSetlistView'
 import PublicFeedback from './pages/PublicFeedback'
 import Palco from './pages/Palco'
 import PalcoFluxo from './pages/PalcoFluxo'
@@ -62,6 +63,7 @@ export default function App() {
         <Route path="/palco/rede-ttp" element={<PalcoRedeTTP />} />
         <Route path="/palco/classificados" element={<PalcoClassificados />} />
         <Route path="/cifra/:slug" element={<PublicSongView />} />
+        <Route path="/setlist/:token" element={<PublicSetlistView />} />
         <Route path="/feedback/:token" element={<PublicFeedback />} />
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<SignUp />} />

@@ -397,7 +397,10 @@ export default function KaraokeStage() {
   // que o músico estava — sem isso, "sair" sempre voltava pro topo da
   // lista, obrigando a rolar até achar a música de novo (ver
   // SetlistDetail.jsx, que lê state.focusSlug pra rolar/destacar a linha).
-  const goToSetlist = (focusSlug) => navigate(`/setlists/${playlist.setlistId}`, { state: { focusSlug } })
+  // `playlist.returnPath` (ver playlistStore.js) sobrescreve o destino
+  // padrão quando a playlist veio de um link público (PublicSetlistView.jsx)
+  // — sem isso, um visitante sem conta cairia numa tela de login ao sair.
+  const goToSetlist = (focusSlug) => navigate(playlist.returnPath || `/setlists/${playlist.setlistId}`, { state: { focusSlug } })
 
   // navegação entre músicas de uma playlist ativa — distinta da navegação
   // por linha (← →) já existente

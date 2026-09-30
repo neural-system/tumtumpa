@@ -11,6 +11,7 @@
   "gate": {
     "title": "Create a free account",
     "favorite": "Create a free account to favorite songs.",
+    "editSetlist": "Editing a setlist is only for account holders. Create yours for free to edit, save, and organize your own setlists.",
     "login": "Sign in",
     "signup": "Create account",
     "freeBadge": "Free",

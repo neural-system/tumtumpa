@@ -11,6 +11,7 @@
   "gate": {
     "title": "Kostenloses Konto erstellen",
     "favorite": "Erstelle ein kostenloses Konto, um Lieder als Favoriten zu markieren.",
+    "editSetlist": "Eine Setlist bearbeiten kannst du nur mit einem Konto. Erstelle dein kostenloses Konto, um eigene Setlists zu bearbeiten, zu speichern und zu organisieren.",
     "login": "Anmelden",
     "signup": "Konto erstellen",
     "freeBadge": "Kostenlos",

@@ -14,6 +14,12 @@ restritos ao dono ou a um admin (levanta `PermissionError` senão). Quem não
 é dono pode `clone()` um setlist visível pra ter sua própria cópia editável
 — mesmo princípio de SongsService.clone().
 
+Link público: mecanismo SEPARADO de `shared` — pra visitante SEM conta
+nenhuma (ver `activate_public_share`/`get_by_share_token`, mesmo padrão de
+token de FeedbackService). Só leitura/reprodução; qualquer tentativa de
+edição no frontend abre o gate de cadastro (ver AuthGate.jsx), nunca chega
+até aqui.
+
 Minhas x Seguindo: `list()` devolve `is_owner` por item — o frontend separa
 "Minhas setlists" (dono, ou órfão) de "Setlists seguindo" (de outra pessoa,
 `shared=true`). Quem segue pode `unfollow()` pra parar de ver um setlist
@@ -22,6 +28,8 @@ apaga a linha de verdade: marca `deleted=true` (ver schema.sql) — some de
 `list()`/`get()` pra qualquer usuário (dono ou quem seguia), mas o conteúdo
 continua no banco."""
 from __future__ import annotations
+
+import secrets
 
 import db
 from utils.slug import slugify
@@ -274,6 +282,73 @@ class SetlistService:
                 raise PermissionError(setlist_id)
             conn.execute("update setlists set shared=%s where id=%s", (value, row["id"]))
         return self.get(user_id, setlist_id)
+
+    # ---------- link público (sem conta, token na URL — ver docstring da classe) ----------
+    def _owner_row(self, conn, user_id: str, setlist_id: str, is_admin: bool = False) -> dict:
+        row = conn.execute(
+            "select id, user_id from setlists where slug=%s and not deleted order by (user_id = %s) desc nulls last limit 1",
+            (setlist_id, user_id),
+        ).fetchone()
+        if not row:
+            raise FileNotFoundError(setlist_id)
+        if row["user_id"] is not None and row["user_id"] != user_id and not is_admin:
+            raise PermissionError(setlist_id)
+        return row
+
+    def activate_public_share(self, user_id: str, setlist_id: str, is_admin: bool = False) -> dict:
+        with db.get_pool().connection() as conn:
+            row = self._owner_row(conn, user_id, setlist_id, is_admin)
+            existing = conn.execute(
+                "select token from setlist_share_tokens where setlist_id=%s and active=true", (row["id"],),
+            ).fetchone()
+            if existing:
+                return {"token": existing["token"]}
+            token = secrets.token_urlsafe(9)
+            conn.execute(
+                "insert into setlist_share_tokens (setlist_id, token) values (%s, %s)", (row["id"], token),
+            )
+        return {"token": token}
+
+    def deactivate_public_share(self, user_id: str, setlist_id: str, is_admin: bool = False) -> None:
+        with db.get_pool().connection() as conn:
+            row = self._owner_row(conn, user_id, setlist_id, is_admin)
+            conn.execute(
+                "update setlist_share_tokens set active=false where setlist_id=%s and active=true", (row["id"],),
+            )
+
+    def public_share_status(self, user_id: str, setlist_id: str, is_admin: bool = False) -> dict | None:
+        with db.get_pool().connection() as conn:
+            row = self._owner_row(conn, user_id, setlist_id, is_admin)
+            existing = conn.execute(
+                "select token from setlist_share_tokens where setlist_id=%s and active=true", (row["id"],),
+            ).fetchone()
+        return {"token": existing["token"]} if existing else None
+
+    def get_by_share_token(self, token: str) -> dict:
+        """Setlist resolvido pro visitante público (`/setlist/<token>`, sem
+        login) — mesma forma de get(), mas sem checagem de dono/`shared`
+        (um token ativo já É a autorização) e sempre com user_id=None
+        (`_resolve_many` então não marca `favorita` pra ninguém)."""
+        with db.get_pool().connection() as conn:
+            row = conn.execute(
+                """select s.id, s.nome from setlist_share_tokens t join setlists s on s.id = t.setlist_id
+                   where t.token=%s and t.active=true and not s.deleted""",
+                (token,),
+            ).fetchone()
+            if not row:
+                raise FileNotFoundError(token)
+            items = conn.execute(
+                "select ref, medley_id from setlist_items where setlist_id=%s order by position", (row["id"],),
+            ).fetchall()
+        refs = [i["ref"] for i in items]
+        resolved = self._resolve_many(None, refs)
+        return {
+            "nome": row["nome"],
+            "items": [
+                {"ref": ref, "song": song, "medley_id": items[idx]["medley_id"]}
+                for idx, (ref, song) in enumerate(zip(refs, resolved))
+            ],
+        }
 
     def delete(self, user_id: str, setlist_id: str, is_admin: bool = False) -> None:
         """Excluir nunca apaga a linha de verdade: marca `deleted=true` (ver

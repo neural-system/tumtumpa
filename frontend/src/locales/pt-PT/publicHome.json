@@ -11,6 +11,7 @@
   "gate": {
     "title": "Cria a tua conta gratuita",
     "favorite": "Cria uma conta gratuita para marcar músicas como favoritas.",
+    "editSetlist": "Editar um setlist é só para quem tem conta. Cria a tua gratuitamente para editar, guardar e organizar as tuas próprias setlists.",
     "login": "Iniciar sessão",
     "signup": "Criar conta",
     "freeBadge": "Grátis",

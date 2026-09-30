@@ -11,6 +11,7 @@
   "gate": {
     "title": "Créer un compte gratuit",
     "favorite": "Créez un compte gratuit pour mettre des chansons en favori.",
+    "editSetlist": "Modifier une setlist est réservé aux titulaires d'un compte. Créez le vôtre gratuitement pour modifier, enregistrer et organiser vos propres setlists.",
     "login": "Se connecter",
     "signup": "Créer un compte",
     "freeBadge": "Gratuit",

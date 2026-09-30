@@ -12,9 +12,15 @@ export const usePlaylistStore = create((set, get) => ({
   queue: [], // [{ ref, song }] — só itens já linkados a uma música real
   index: 0,
   active: false,
+  // Pra onde "sair"/fim da playlist volta (ScrollPlayer.jsx/KaraokeStage.jsx
+  // ::goToSetlist) — por padrão `/setlists/${setlistId}` (setlist do próprio
+  // usuário, autenticado); PublicSetlistView.jsx passa o link público
+  // (`/setlist/${token}`) explicitamente, senão um visitante sem conta
+  // cairia numa tela de login ao sair da playlist.
+  returnPath: null,
 
-  start: (setlistId, setlistNome, queue, index = 0) =>
-    set({ setlistId, setlistNome, queue, index, active: true }),
+  start: (setlistId, setlistNome, queue, index = 0, returnPath = null) =>
+    set({ setlistId, setlistNome, queue, index, active: true, returnPath }),
 
   stop: () => set({ active: false, index: 0 }),
 

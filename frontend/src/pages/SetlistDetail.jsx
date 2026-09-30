@@ -8,6 +8,7 @@ import MedleyModal from '../components/MedleyModal'
 import PlaylistOrderModal from '../components/PlaylistOrderModal'
 import FeedbackQRModal from '../components/FeedbackQRModal'
 import FeedbackReportModal from '../components/FeedbackReportModal'
+import SetlistShareModal from '../components/SetlistShareModal'
 import { usePlaylistStore } from '../store/playlistStore'
 
 export default function SetlistDetail() {
@@ -29,6 +30,7 @@ export default function SetlistDetail() {
   const [orderModalOpen, setOrderModalOpen] = useState(false)
   const [qrModalOpen, setQrModalOpen] = useState(false)
   const [reportModalOpen, setReportModalOpen] = useState(false)
+  const [shareModalOpen, setShareModalOpen] = useState(false)
 
   // destaca uma linha por 5s (vindo do karaokê ao "sair" numa setlist, ou de
   // um salto manual de posição via jumpToPosition abaixo). `token` sempre
@@ -94,6 +96,23 @@ export default function SetlistDetail() {
   const deactivateFeedback = useMutation({
     mutationFn: () => api.post(`/setlists/${id}/feedback/deactivate`),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['feedback-status', id] }),
+  })
+
+  // Link público (sem conta) — diferente do "shared" de sempre (esse é só
+  // entre usuários logados, alternado na tela Setlists.jsx). Status já
+  // pronto sempre que a tela abre, mesmo padrão de feedbackStatus acima.
+  const { data: publicShareStatus } = useQuery({
+    queryKey: ['setlist-public-share', id],
+    queryFn: () => api.get(`/setlists/${id}/share-link/status`).then((r) => r.data),
+    enabled: Boolean(data?.is_owner),
+  })
+  const activatePublicShare = useMutation({
+    mutationFn: () => api.post(`/setlists/${id}/share-link/activate`),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['setlist-public-share', id] }); setShareModalOpen(true) },
+  })
+  const deactivatePublicShare = useMutation({
+    mutationFn: () => api.post(`/setlists/${id}/share-link/deactivate`),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['setlist-public-share', id] }); setShareModalOpen(false) },
   })
 
   const save = useMutation({
@@ -310,6 +329,18 @@ export default function SetlistDetail() {
             </button>
           )
         )}
+        {isOwner && (
+          publicShareStatus ? (
+            <>
+              <span className="chip">{t('publicShareActive')}</span>
+              <button className="btn" onClick={() => setShareModalOpen(true)}>{t('showPublicShareLink')}</button>
+            </>
+          ) : (
+            <button className="btn" onClick={() => activatePublicShare.mutate()} disabled={activatePublicShare.isPending}>
+              {t('activatePublicShare')}
+            </button>
+          )
+        )}
       </div>
 
       {medleyModalOpen && (
@@ -325,6 +356,10 @@ export default function SetlistDetail() {
       )}
       {reportModalOpen && (
         <FeedbackReportModal setlistId={id} onClose={() => setReportModalOpen(false)} />
+      )}
+      {shareModalOpen && publicShareStatus && (
+        <SetlistShareModal token={publicShareStatus.token} onDeactivate={() => deactivatePublicShare.mutate()}
+          deactivating={deactivatePublicShare.isPending} onClose={() => setShareModalOpen(false)} />
       )}
 
       {isOwner && (

@@ -11,6 +11,7 @@
   "gate": {
     "title": "Crea un account gratuito",
     "favorite": "Crea un account gratuito per aggiungere canzoni ai preferiti.",
+    "editSetlist": "Modificare una scaletta è riservato a chi ha un account. Crea il tuo account gratuito per modificare, salvare e organizzare le tue scalette.",
     "login": "Accedi",
     "signup": "Crea account",
     "freeBadge": "Gratis",

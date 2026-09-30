@@ -526,6 +526,86 @@ def test_non_owner_cannot_toggle_sharing(ctx, other_user_id):
         setlists.set_shared(other_user_id, created["id"], False)
 
 
+def test_public_share_link_activate_reuses_token_and_lists_songs(ctx):
+    songs, setlists, _ = ctx
+    _create(songs)
+    created = setlists.save("u1", "Show", ["Coldplay/Yellow"])
+    assert setlists.public_share_status("u1", created["id"]) is None
+
+    first = setlists.activate_public_share("u1", created["id"])
+    again = setlists.activate_public_share("u1", created["id"])
+    assert first["token"] == again["token"]  # reaproveita, não gera um novo a cada clique
+    assert setlists.public_share_status("u1", created["id"]) == {"token": first["token"]}
+
+    public = setlists.get_by_share_token(first["token"])
+    assert public["nome"] == "Show"
+    assert public["items"][0]["song"]["titulo"] == "Yellow"
+
+
+def test_public_share_link_works_even_when_shared_false(ctx):
+    """Link público é um mecanismo SEPARADO de `shared` (esse é só entre
+    usuários logados) — desligar `shared` não revoga um link já ativo."""
+    songs, setlists, _ = ctx
+    _create(songs)
+    created = setlists.save("u1", "Show", ["Coldplay/Yellow"])
+    setlists.set_shared("u1", created["id"], False)
+    token = setlists.activate_public_share("u1", created["id"])["token"]
+    assert setlists.get_by_share_token(token)["nome"] == "Show"
+
+
+def test_deactivated_public_share_link_404s(ctx):
+    songs, setlists, _ = ctx
+    _create(songs)
+    created = setlists.save("u1", "Show", ["Coldplay/Yellow"])
+    token = setlists.activate_public_share("u1", created["id"])["token"]
+    setlists.deactivate_public_share("u1", created["id"])
+    assert setlists.public_share_status("u1", created["id"]) is None
+    with pytest.raises(FileNotFoundError):
+        setlists.get_by_share_token(token)
+
+
+def test_reactivating_public_share_link_issues_a_new_token(ctx):
+    songs, setlists, _ = ctx
+    _create(songs)
+    created = setlists.save("u1", "Show", ["Coldplay/Yellow"])
+    old_token = setlists.activate_public_share("u1", created["id"])["token"]
+    setlists.deactivate_public_share("u1", created["id"])
+    new_token = setlists.activate_public_share("u1", created["id"])["token"]
+    assert new_token != old_token
+    with pytest.raises(FileNotFoundError):
+        setlists.get_by_share_token(old_token)
+
+
+def test_unknown_public_share_token_404s(ctx):
+    _, setlists, _ = ctx
+    with pytest.raises(FileNotFoundError):
+        setlists.get_by_share_token("token-que-nao-existe")
+
+
+def test_non_owner_cannot_manage_public_share_link(ctx, other_user_id):
+    songs, setlists, _ = ctx
+    _create(songs)
+    created = setlists.save("u1", "Show", ["Coldplay/Yellow"])
+    with pytest.raises(PermissionError):
+        setlists.activate_public_share(other_user_id, created["id"])
+    with pytest.raises(PermissionError):
+        setlists.public_share_status(other_user_id, created["id"])
+    token = setlists.activate_public_share("u1", created["id"])["token"]
+    with pytest.raises(PermissionError):
+        setlists.deactivate_public_share(other_user_id, created["id"])
+    assert setlists.get_by_share_token(token)["nome"] == "Show"  # segue ativo
+
+
+def test_admin_can_manage_others_public_share_link(ctx, other_user_id):
+    songs, setlists, _ = ctx
+    _create(songs)
+    created = setlists.save("u1", "Show", ["Coldplay/Yellow"])
+    token = setlists.activate_public_share(other_user_id, created["id"], is_admin=True)["token"]
+    assert setlists.get_by_share_token(token)["nome"] == "Show"
+    setlists.deactivate_public_share(other_user_id, created["id"], is_admin=True)
+    assert setlists.public_share_status("u1", created["id"]) is None
+
+
 def test_admin_can_save_and_delete_others_setlist(ctx, other_user_id):
     songs, setlists, _ = ctx
     _create(songs)

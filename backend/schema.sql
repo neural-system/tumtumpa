@@ -346,6 +346,24 @@ create table if not exists setlist_feedback_sessions (
 );
 create index if not exists idx_feedback_sessions_setlist on setlist_feedback_sessions(setlist_id);
 
+-- Link público de UM setlist pra quem NÃO tem conta no TumTumPá (diferente
+-- de `setlists.shared`, que é só entre usuários já logados — ver
+-- SetlistService). Mesmo padrão de setlist_feedback_sessions: token curto e
+-- imprevisível na URL pública (`/setlist/<token>`, nunca o slug/id do
+-- setlist) faz as vezes de autenticação; "Compartilhar" reaproveita um
+-- token ativo existente em vez de gerar um novo a cada clique, e
+-- "Desativar" só marca active=false (não apaga — reativar de novo cria um
+-- token novo, o antigo nunca mais funciona). Quem abre o link só lê/toca
+-- (karaokê completo, sem edição) — ver PublicSetlistView.jsx/AuthGate.jsx.
+create table if not exists setlist_share_tokens (
+    id         uuid primary key default gen_random_uuid(),
+    setlist_id uuid not null references setlists(id) on delete cascade,
+    token      text not null unique,
+    active     boolean not null default true,
+    created_at timestamptz not null default now()
+);
+create index if not exists idx_setlist_share_tokens_setlist on setlist_share_tokens(setlist_id);
+
 create table if not exists feedback_ratings (
     id           uuid primary key default gen_random_uuid(),
     session_id   uuid not null references setlist_feedback_sessions(id) on delete cascade,
