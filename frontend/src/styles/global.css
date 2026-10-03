@@ -877,6 +877,38 @@ textarea.input { font-family: var(--font-mono); line-height: 1.55; resize: verti
 }
 .k-youtube-mini-resize-handle:hover { background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.85) 50%); }
 
+/* ---------- palco no celular (karaokê e rolagem) ----------
+   Mesma condição de useIsPhone.js (que cuida do que nem deve ser renderizado,
+   como o iframe do YouTube). Aqui: cabeçalho de uma linha só, enquanto toca
+   some tudo que não é letra/acordes (cabeçalho e velocidade; a barra de
+   controles reaparece num toque) e os botões viram 3 linhas de alvos grandes:
+   transporte (.kc-t) → velocidade/fonte (.kc-a) → demais (.kc-m). As
+   .kc-break só existem pra forçar a quebra de linha entre os grupos; no
+   desktop ficam escondidas e a ordem do DOM de sempre vale. */
+.kc-break { display: none; }
+@media (max-width: 768px), (max-height: 500px) and (pointer: coarse) {
+  .k-header { padding: 8px 12px; font-size: 12px; }
+  .k-header > div:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .k-header > div:nth-child(2), .k-brand { display: none; }
+  .karaoke-stage.is-playing .k-header,
+  .karaoke-stage.is-playing .scroll-rate-hud { display: none; }
+
+  .k-controls { gap: 6px; padding: 10px 8px calc(10px + env(safe-area-inset-bottom, 0px)); }
+  .k-controls .btn { flex: 1 1 0; min-width: 0; min-height: 44px; padding: 6px 4px; font-size: 14px; }
+  .k-controls .btn.kc-play { flex: 3 1 0; min-width: 0; font-size: 16px; }
+  .scroll-rate-indicator.kc-a { flex: 1.4 1 0; min-width: 0; padding: 2px 4px; }
+  .kc-t { order: 1; }
+  .kc-break { display: block; flex: 0 0 100%; height: 0; }
+  .kc-break-1 { order: 2; }
+  .kc-a { order: 3; }
+  .kc-break-2 { order: 4; }
+  .kc-m { order: 5; }
+}
+@media (max-height: 500px) and (pointer: coarse) {
+  .k-controls { gap: 4px; padding: 6px 8px; }
+  .k-controls .btn { min-height: 36px; }
+}
+
 /* ---------- player modo rolagem (ScrollPlayer.jsx) ---------- */
 /* overflow-y:auto (não hidden) é proposital — dá de graça o scroll do
    mouse e a barra de rolagem nativa pro músico avançar/voltar na música

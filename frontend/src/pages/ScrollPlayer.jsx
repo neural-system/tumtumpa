@@ -10,6 +10,7 @@ import { useZoomStore } from '../store/zoomStore'
 import { useHotkeys } from '../hooks/useHotkeys'
 import { usePedalControl } from '../hooks/usePedalControl'
 import { useWakeLock } from '../hooks/useWakeLock'
+import { useIsPhone } from '../hooks/useIsPhone'
 import { extractUniqueChords } from '../utils/chordParser'
 import { useChordSidebarStore } from '../store/chordSidebarStore'
 import KaraokeChordSidebar from '../components/KaraokeChordSidebar'
@@ -99,6 +100,7 @@ export default function ScrollPlayer({ data }) {
   const hasAudio = Boolean(data.has_audio)
   const [playing, setPlaying] = useState(false)
   const [controlsVisible, setControlsVisible] = useState(true)
+  const isPhone = useIsPhone()
   const [rate, setRate] = useState(1)
   const [elapsedDisplay, setElapsedDisplay] = useState(0)
   const [audioDuration, setAudioDuration] = useState(null)
@@ -476,7 +478,16 @@ export default function ScrollPlayer({ data }) {
     hideTimer.current = setTimeout(() => { if (playingRef.current) setControlsVisible(false) }, 2500)
   }
   useEffect(() => { poke(); return () => clearTimeout(hideTimer.current) }, [])
-  useEffect(() => { playingRef.current = playing; if (!playing) setControlsVisible(true) }, [playing])
+  useEffect(() => {
+    playingRef.current = playing
+    if (!playing) { setControlsVisible(true); return }
+    // celular: ao começar a tocar, a barra some quase na hora (deixa só a
+    // letra/acordes) em vez de esperar os 2,5s de `poke`; um toque traz de volta
+    if (isPhone) {
+      clearTimeout(hideTimer.current)
+      hideTimer.current = setTimeout(() => setControlsVisible(false), 700)
+    }
+  }, [playing, isPhone])
   useWakeLock(playing)
   useEffect(() => () => clearInterval(countdownTimer.current), [])
 
@@ -607,7 +618,7 @@ export default function ScrollPlayer({ data }) {
 
   return (
     <div ref={stageRef}
-      className={`karaoke-stage${controlsVisible ? ' controls-visible' : ''}`}
+      className={`karaoke-stage${controlsVisible ? ' controls-visible' : ''}${playing ? ' is-playing' : ''}`}
       style={{ '--k-zoom': zoom, '--k-sidebar-w': chordSidebarVisible ? `${chordSidebarWidth + 10}px` : '0px' }}
       onMouseMove={poke} onClick={poke}>
 
@@ -617,7 +628,7 @@ export default function ScrollPlayer({ data }) {
           onEnded={onSongEnd} />
       )}
       {pedal.modoPedal === 'fila_clipes' && <audio ref={pedal.clipAudioRef} preload="auto" />}
-      {youtubeVideoId && <YoutubeMiniPlayer ref={ytRef} videoId={youtubeVideoId} title={data.titulo} />}
+      {youtubeVideoId && !isPhone && <YoutubeMiniPlayer ref={ytRef} videoId={youtubeVideoId} title={data.titulo} />}
 
       {/* sempre visível (a barra de controles some sozinha enquanto toca) */}
       <div className="scroll-rate-hud" title={t('controls.speedTitle')}>{formatRate(rate)}</div>
@@ -667,34 +678,36 @@ export default function ScrollPlayer({ data }) {
 
       <div className="k-controls no-print">
         {inPlaylist && (
-          <button className="btn" onClick={goPrevSong} disabled={playlist.index === 0} title={t('controls.prevSong')}>⏮</button>
+          <button className="btn kc-t kc-prev" onClick={goPrevSong} disabled={playlist.index === 0} title={t('controls.prevSong')}>⏮</button>
         )}
-        <button className="btn" onClick={restart} title={t('controls.restart')}>⟲</button>
-        <button className="btn primary" onClick={togglePlay} disabled={!canPlay} title={t('controls.playPause')}>
+        <button className="btn kc-t" onClick={restart} title={t('controls.restart')}>⟲</button>
+        <button className="btn primary kc-t kc-play" onClick={togglePlay} disabled={!canPlay} title={t('controls.playPause')}>
           {countdown != null ? t('controls.skipCountdown', { count: countdown }) : playing ? t('controls.pause') : t('controls.play')}
         </button>
-        {youtubeVideoId && (
+        {youtubeVideoId && !isPhone && (
           <button className="btn" onClick={toggleWithYoutube} disabled={!canPlay}
             title={t('controls.playWithYoutubeTitle')}>
             {countdown != null ? t('controls.skipCountdown', { count: countdown })
               : playing ? t('controls.pauseWithYoutube') : t('controls.playWithYoutube')}
           </button>
         )}
-        <button className="btn" onClick={() => adjustRate(-1)} title={t('controls.slower')}>−</button>
-        <span className="scroll-rate-indicator" title={t('controls.speedTitle')} aria-live="polite">
+        <span className="kc-break kc-break-1" />
+        <button className="btn kc-a" onClick={() => adjustRate(-1)} title={t('controls.slower')}>−</button>
+        <span className="scroll-rate-indicator kc-a" title={t('controls.speedTitle')} aria-live="polite">
           <b>{formatRate(rate)}</b><small>{t('controls.speedLabel')}</small>
         </span>
-        <button className="btn" onClick={() => adjustRate(1)} title={t('controls.faster')}>+</button>
-        <button className="btn" onClick={zoomOut} title={t('controls.zoomOut')}>A−</button>
-        <button className="btn" onClick={zoomIn} title={t('controls.zoomIn')}>A+</button>
+        <button className="btn kc-a" onClick={() => adjustRate(1)} title={t('controls.faster')}>+</button>
+        <button className="btn kc-a" onClick={zoomOut} title={t('controls.zoomOut')}>A−</button>
+        <button className="btn kc-a" onClick={zoomIn} title={t('controls.zoomIn')}>A+</button>
+        <span className="kc-break kc-break-2" />
         {inPlaylist && <>
-          <button className="btn" onClick={goNextSong} title={t('controls.nextSong')}>⏭</button>
-          <button className="btn danger" onClick={stopPlaylist} title={t('controls.stopPlaylist')}>■</button>
+          <button className="btn kc-t kc-next" onClick={goNextSong} title={t('controls.nextSong')}>⏭</button>
+          <button className="btn danger kc-m" onClick={stopPlaylist} title={t('controls.stopPlaylist')}>■</button>
         </>}
-        <button className="btn" onClick={toggleFullscreen} title={t('controls.fullscreen')}>⛶</button>
-        <button className="btn" onClick={() => navigate(`/musicas/${slug}`, { state: { fromKaraoke: true, initialTab: 'edit' } })}
+        <button className="btn kc-m" onClick={toggleFullscreen} title={t('controls.fullscreen')}>⛶</button>
+        <button className="btn kc-m" onClick={() => navigate(`/musicas/${slug}`, { state: { fromKaraoke: true, initialTab: 'edit' } })}
           title={t('controls.editTitle')}>{t('controls.edit')}</button>
-        <button className="btn ghost" onClick={exitPlayer} title={t('controls.back')}>{t('controls.exit')}</button>
+        <button className="btn ghost kc-m" onClick={exitPlayer} title={t('controls.back')}>{t('controls.exit')}</button>
       </div>
 
       {countdown != null && (
